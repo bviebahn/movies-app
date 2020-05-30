@@ -11,10 +11,12 @@ import {
     StyleProp,
     TouchableOpacity,
 } from "react-native";
-import { gray2, gray3, textColor, gray4 } from "../constants/colors";
+import { gray2, gray3, textColor } from "../constants/colors";
 import { getImageUrl } from "../tmdb/util";
 import { shadowStyle } from "../constants/styles";
 import { formatDate } from "../util/date";
+import CircularProgress from "./CircularProgress";
+import Rating from "./Rating";
 
 type Props = {
     title: string;
@@ -30,7 +32,7 @@ const elementWidth = 160;
 const elementHorizontalMargin = 10;
 
 const MovieElement: React.FC<ElementProps> = ({ movie, style }) => {
-    const { posterPath, title, releaseDate } = movie;
+    const { posterPath, title, releaseDate, voteAverage } = movie;
 
     return (
         <TouchableOpacity style={[styles.movieElement, shadowStyle, style]}>
@@ -40,6 +42,10 @@ const MovieElement: React.FC<ElementProps> = ({ movie, style }) => {
                     style={styles.image}
                 />
             ) : undefined}
+            <Rating
+                percent={voteAverage * 10}
+                style={{ position: "absolute", top: 220, right: 10 }}
+            />
             <View style={styles.infoContainer}>
                 <Text numberOfLines={2} style={styles.movieTitle}>
                     {title}
@@ -97,13 +103,13 @@ const styles = StyleSheet.create({
         backgroundColor: gray2,
         marginHorizontal: elementHorizontalMargin,
         marginVertical: 10,
-        height: 350,
+        height: 340,
         width: elementWidth,
         borderRadius: 8,
     },
     movieTitle: {
         color: textColor,
-        fontSize: 18,
+        fontSize: 16,
         fontWeight: "bold",
     },
     image: {
@@ -115,6 +121,7 @@ const styles = StyleSheet.create({
     infoContainer: {
         flex: 1,
         margin: 10,
+        marginTop: 20,
     },
     releaseDate: {
         color: gray3,
