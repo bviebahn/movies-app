@@ -3,18 +3,38 @@ import React from "react";
 import { StatusBar } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import TabNavigator from "./navigators/TabNavigator";
+import {
+    gray1,
+    primaryColor,
+    gray2,
+    textColor,
+    black,
+} from "./constants/colors";
+import { GenreProvider } from "./tmdb/useGenres";
 
 declare const global: { HermesInternal: null | {} };
 
 const App = () => {
-  return (
-    <>
-      <StatusBar barStyle="dark-content" />
-      <NavigationContainer>
-        <TabNavigator />
-      </NavigationContainer>
-    </>
-  );
+    return (
+        <GenreProvider>
+            <>
+                <StatusBar barStyle="light-content" />
+                <NavigationContainer
+                    theme={{
+                        dark: true,
+                        colors: {
+                            background: gray1,
+                            primary: primaryColor,
+                            card: gray2,
+                            text: textColor,
+                            border: black,
+                        },
+                    }}>
+                    <TabNavigator />
+                </NavigationContainer>
+            </>
+        </GenreProvider>
+    );
 };
 
 export default App;
