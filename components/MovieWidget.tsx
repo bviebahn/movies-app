@@ -26,8 +26,11 @@ type ElementProps = {
     style?: StyleProp<ViewStyle>;
 };
 
+const elementWidth = 160;
+const elementHorizontalMargin = 10;
+
 const MovieElement: React.FC<ElementProps> = ({ movie, style }) => {
-    const { posterPath, title, releaseDate, genres } = movie;
+    const { posterPath, title, releaseDate } = movie;
 
     return (
         <TouchableOpacity style={[styles.movieElement, shadowStyle, style]}>
@@ -44,35 +47,39 @@ const MovieElement: React.FC<ElementProps> = ({ movie, style }) => {
                 <Text style={styles.releaseDate}>
                     {formatDate(releaseDate)}
                 </Text>
-                <Text style={styles.genre}>
-                    {genres.map((genre) => genre.name).join(", ")}
-                </Text>
             </View>
         </TouchableOpacity>
     );
 };
 
 const MovieWidget: React.FC<Props> = ({ movies, title }) => {
-    const { width } = useWindowDimensions();
-    const elementWidth = width - 80;
+    const { width: screenWidth } = useWindowDimensions();
+    const elementsPerInterval = Math.floor(
+        screenWidth / (elementWidth + elementHorizontalMargin * 2),
+    );
+
+    const snapOffsets = [...Array(movies.length - 1)].reduce(
+        (prev, _, index) => {
+            return [
+                ...prev,
+                prev[index] + elementsPerInterval * (elementWidth + 20),
+            ];
+        },
+        [0],
+    );
+
     return (
         <>
             <Text style={styles.title}>{title}</Text>
             <FlatList
                 horizontal
                 data={movies}
-                renderItem={({ item }) => (
-                    <MovieElement
-                        movie={item}
-                        style={{ width: elementWidth }}
-                    />
-                )}
+                renderItem={({ item }) => <MovieElement movie={item} />}
                 keyExtractor={(item) => `${item.id}`}
                 pagingEnabled
-                snapToInterval={elementWidth + 20}
-                snapToAlignment="center"
+                snapToOffsets={snapOffsets}
                 decelerationRate="fast"
-                initialNumToRender={3}
+                initialNumToRender={(elementsPerInterval + 1) * 2}
                 showsHorizontalScrollIndicator={false}
             />
         </>
@@ -87,22 +94,23 @@ const styles = StyleSheet.create({
         marginBottom: 0,
     },
     movieElement: {
-        flexDirection: "row",
         backgroundColor: gray2,
-        margin: 10,
-        height: 180,
+        marginHorizontal: elementHorizontalMargin,
+        marginVertical: 10,
+        height: 350,
+        width: elementWidth,
         borderRadius: 8,
     },
     movieTitle: {
         color: textColor,
-        fontSize: 22,
+        fontSize: 18,
         fontWeight: "bold",
     },
     image: {
-        height: 180,
-        width: 120,
+        height: 240,
+        width: elementWidth,
+        borderTopRightRadius: 8,
         borderTopLeftRadius: 8,
-        borderBottomLeftRadius: 8,
     },
     infoContainer: {
         flex: 1,
@@ -110,11 +118,6 @@ const styles = StyleSheet.create({
     },
     releaseDate: {
         color: gray3,
-        marginTop: 5,
-    },
-    genre: {
-        color: gray4,
-        fontWeight: "200",
         marginTop: 5,
     },
 });
