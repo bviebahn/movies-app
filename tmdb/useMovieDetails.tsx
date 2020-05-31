@@ -1,13 +1,17 @@
-import React, { useContext, useState } from "react";
-import { MovieDetails, TmdbMovieDetails } from "./types";
+import React, { useContext, useReducer } from "react";
+import { MovieDetails, TmdbMovieDetails, Credits, TmdbCredits } from "./types";
 import { TMDB_ACCESS_TOKEN, TMDB_BASE_URL } from "./constants";
 
 type MovieDetailsResult = {
     movieDetails?: MovieDetails;
     loading: boolean;
-    error: boolean;
+    credits?: Credits;
+    creditsLoading: boolean;
 };
-type State = Record<number, MovieDetailsResult>;
+
+type State = {
+    [id: number]: MovieDetailsResult;
+};
 
 function convertMovieDetails(details: TmdbMovieDetails): MovieDetails {
     return {
@@ -35,21 +39,84 @@ function convertMovieDetails(details: TmdbMovieDetails): MovieDetails {
     };
 }
 
+function convertCredits(credits: TmdbCredits): Credits {
+    const interestingJobs = ["Director", "Writer", "Producer", "Creator"];
+    return {
+        id: credits.id,
+        cast: credits.cast.map((c) => ({
+            castId: c.cast_id,
+            character: c.character,
+            creditId: c.credit_id,
+            id: c.id,
+            name: c.name,
+            order: c.order,
+            gender: c.gender,
+            profilePath: c.profile_path,
+        })),
+        crew: credits.crew
+            .filter((c) => interestingJobs.includes(c.job))
+            .map((c) => ({
+                creditId: c.credit_id,
+                department: c.department,
+                id: c.id,
+                job: c.job,
+                name: c.name,
+                gender: c.gender,
+                profilePath: c.profile_path,
+            })),
+    };
+}
+
 type ContextType = {
     useMovieDetails: (id: number) => MovieDetailsResult;
 };
 
-const MovieDetailsContext = React.createContext<ContextType>({
-    useMovieDetails: () => ({ loading: false, error: false }),
-});
+const MovieDetailsContext = React.createContext<ContextType | undefined>(
+    undefined,
+);
+
+type Action =
+    | { type: "LOAD_DETAILS_START"; payload: number }
+    | { type: "LOAD_DETAILS_FINISH"; payload: MovieDetails }
+    | { type: "LOAD_CREDITS_FINISH"; payload: Credits };
+
+function reducer(state: State, action: Action): State {
+    switch (action.type) {
+        case "LOAD_DETAILS_START":
+            return {
+                ...state,
+                [action.payload]: {
+                    loading: true,
+                    creditsLoading: true,
+                },
+            };
+        case "LOAD_DETAILS_FINISH":
+            return {
+                ...state,
+                [action.payload.id]: {
+                    ...state[action.payload.id],
+                    movieDetails: action.payload,
+                    loading: false,
+                },
+            };
+        case "LOAD_CREDITS_FINISH":
+            return {
+                ...state,
+                [action.payload.id]: {
+                    ...state[action.payload.id],
+                    creditsLoading: false,
+                    credits: action.payload,
+                },
+            };
+    }
+}
 
 export const MovieDetailsProvider: React.FC<{ children: React.ReactNode }> = ({
     children,
 }) => {
-    const [state, setState] = useState<State>({});
-    const fetchMovieDetails = async (id: number) => {
-        console.log("fetch details", id);
+    const [state, dispatch] = useReducer(reducer, {});
 
+    const fetchDetails = async (id: number) => {
         const response = await fetch(`${TMDB_BASE_URL}movie/${id}`, {
             method: "GET",
             headers: {
@@ -59,23 +126,34 @@ export const MovieDetailsProvider: React.FC<{ children: React.ReactNode }> = ({
 
         if (response.ok) {
             const result = await response.json();
-            setState((prev) => ({
-                ...prev,
-                [id]: {
-                    movieDetails: convertMovieDetails(result),
-                    loading: false,
-                    error: false,
-                },
-            }));
-        } else {
-            setState((prev) => ({
-                ...prev,
-                [id]: {
-                    loading: false,
-                    error: true,
-                },
-            }));
+            dispatch({
+                type: "LOAD_DETAILS_FINISH",
+                payload: convertMovieDetails(result),
+            });
         }
+    };
+
+    const fetchCredits = async (id: number) => {
+        const response = await fetch(`${TMDB_BASE_URL}movie/${id}/credits`, {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${TMDB_ACCESS_TOKEN}`,
+            },
+        });
+
+        if (response.ok) {
+            const result = await response.json();
+            dispatch({
+                type: "LOAD_CREDITS_FINISH",
+                payload: convertCredits(result),
+            });
+        }
+    };
+
+    const fetchMovieDetails = (id: number) => {
+        dispatch({ type: "LOAD_DETAILS_START", payload: id });
+        fetchDetails(id);
+        fetchCredits(id);
     };
 
     const useMovieDetails = (id: number) => {
@@ -83,18 +161,11 @@ export const MovieDetailsProvider: React.FC<{ children: React.ReactNode }> = ({
             return state[id];
         }
 
-        setState((prev) => ({
-            ...prev,
-            [id]: {
-                loading: true,
-                error: false,
-            },
-        }));
-
         fetchMovieDetails(id);
+
         return {
             loading: true,
-            error: false,
+            creditsLoading: true,
         };
     };
 
@@ -105,7 +176,14 @@ export const MovieDetailsProvider: React.FC<{ children: React.ReactNode }> = ({
     );
 };
 
-const useMovieDetails = (id: number) =>
-    useContext(MovieDetailsContext).useMovieDetails(id);
+const useMovieDetails = (id: number) => {
+    const context = useContext(MovieDetailsContext);
+    if (!context) {
+        throw new Error(
+            "useMovieDetails must be used within a MovieDetailsProvider",
+        );
+    }
+    return context.useMovieDetails(id);
+};
 
 export default useMovieDetails;

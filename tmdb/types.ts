@@ -56,3 +56,49 @@ export type Genre = {
     id: number;
     name: string;
 };
+
+export type TmdbCredits = {
+    id: number;
+    cast: ReadonlyArray<{
+        cast_id: number;
+        character: string;
+        credit_id: string;
+        gender?: number;
+        id: number;
+        name: string;
+        order: number;
+        profile_path?: string;
+    }>;
+    crew: ReadonlyArray<{
+        credit_id: string;
+        department: string;
+        gender?: number;
+        id: number;
+        job: string;
+        name: string;
+        profile_path?: string;
+    }>;
+};
+
+export type Credits = {
+    id: number;
+    cast: ReadonlyArray<{
+        castId: number;
+        character: string;
+        creditId: string;
+        gender?: number;
+        id: number;
+        name: string;
+        order: number;
+        profilePath?: string;
+    }>;
+    crew: ReadonlyArray<{
+        creditId: string;
+        department: string;
+        gender?: number;
+        id: number;
+        job: string;
+        name: string;
+        profilePath?: string;
+    }>;
+};

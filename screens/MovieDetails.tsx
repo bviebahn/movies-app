@@ -11,12 +11,18 @@ import {
 import { useRoute } from "@react-navigation/native";
 import { StartStackRouteProp } from "../navigators/StartStackNavigator";
 import { getPosterUrl, getBackdropUrl } from "../tmdb/util";
-import { textColor, gray2, textColorSecondary } from "../constants/colors";
+import {
+    textColor,
+    gray2,
+    textColorSecondary,
+    primaryColor,
+} from "../constants/colors";
 import { shadowStyle } from "../constants/styles";
 import { formatDate } from "../util/date";
 import Rating from "../components/Rating";
 import useMovieDetails from "../tmdb/useMovieDetails";
 import { convertMinutesToTimeString } from "../util/time";
+import { getLanguage } from "iso-countries-languages";
 
 const MovieDetails: React.FC = () => {
     const route = useRoute<StartStackRouteProp<"MovieDetails">>();
@@ -32,10 +38,12 @@ const MovieDetails: React.FC = () => {
             genres,
             voteAverage,
             overview,
+            originalLanguage,
         },
     } = route.params;
 
-    const { movieDetails, loading } = useMovieDetails(id);
+    const { movieDetails, loading, credits } = useMovieDetails(id);
+    console.log(credits);
 
     const { runtime, tagline } = movieDetails || {};
 
@@ -63,23 +71,35 @@ const MovieDetails: React.FC = () => {
                     </View>
                 ) : undefined}
                 <View style={styles.infoContainer}>
-                    <Text style={styles.title}>{title}</Text>
+                    <Text
+                        style={[
+                            styles.title,
+                            title.length > 40 && styles.titleSmall,
+                        ]}>
+                        {title}
+                    </Text>
                     <View style={styles.dateRuntimeWrapper}>
-                        <Text style={styles.secondaryText}>
+                        <Text style={styles.infoValue}>
                             {formatDate(new Date(releaseDate))}
                         </Text>
                         {runtime ? (
                             <>
                                 <View style={styles.dot} />
-                                <Text style={styles.secondaryText}>
+                                <Text style={styles.infoValue}>
                                     {convertMinutesToTimeString(runtime)}
                                 </Text>
                             </>
                         ) : undefined}
                     </View>
-                    <Text style={styles.genre}>
+                    <Text style={styles.infoKey}>Original Language</Text>
+                    <Text style={styles.infoValue}>
+                        {getLanguage("en", originalLanguage)}
+                    </Text>
+                    <Text style={styles.infoKey}>Genres</Text>
+                    <Text style={styles.infoValue}>
                         {genres.map((genre) => genre.name).join(", ")}
                     </Text>
+
                     {loading ? (
                         <ActivityIndicator style={styles.activityIndicator} />
                     ) : undefined}
@@ -121,13 +141,17 @@ const styles = StyleSheet.create({
         fontSize: 24,
         fontWeight: "bold",
     },
-    secondaryText: {
-        color: textColorSecondary,
+    titleSmall: {
+        fontSize: 20,
     },
-    genre: {
-        color: textColorSecondary,
-        marginTop: 5,
+    infoKey: {
+        color: primaryColor,
+        marginTop: 10,
+        marginBottom: 2,
         fontWeight: "bold",
+    },
+    infoValue: {
+        color: textColorSecondary,
     },
     rating: { position: "absolute", right: 20 },
     overviewWrapper: {
