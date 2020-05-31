@@ -8,3 +8,4 @@ export const primaryColor = "#bb86fc";
 export const primaryVariantColor = "#3700b3";
 
 export const textColor = "#fff";
+export const textColorSecondary = "#ddd";

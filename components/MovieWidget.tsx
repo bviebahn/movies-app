@@ -12,11 +12,14 @@ import {
     TouchableOpacity,
 } from "react-native";
 import { gray2, gray3, textColor } from "../constants/colors";
-import { getImageUrl } from "../tmdb/util";
+import { getPosterUrl } from "../tmdb/util";
 import { shadowStyle } from "../constants/styles";
 import { formatDate } from "../util/date";
-import CircularProgress from "./CircularProgress";
 import Rating from "./Rating";
+import { useNavigation } from "@react-navigation/native";
+import { StartStackNavigationProp } from "../navigators/StartStackNavigator";
+
+type NavigationProp = StartStackNavigationProp<"Home">;
 
 type Props = {
     title: string;
@@ -25,33 +28,33 @@ type Props = {
 
 type ElementProps = {
     movie: Movie;
+    navigation: NavigationProp;
     style?: StyleProp<ViewStyle>;
 };
 
 const elementWidth = 160;
 const elementHorizontalMargin = 10;
 
-const MovieElement: React.FC<ElementProps> = ({ movie, style }) => {
+const MovieElement: React.FC<ElementProps> = ({ movie, navigation, style }) => {
     const { posterPath, title, releaseDate, voteAverage } = movie;
 
     return (
-        <TouchableOpacity style={[styles.movieElement, shadowStyle, style]}>
+        <TouchableOpacity
+            onPress={() => navigation.push("MovieDetails", { movie })}
+            style={[styles.movieElement, shadowStyle, style]}>
             {posterPath ? (
                 <Image
-                    source={{ uri: getImageUrl(posterPath) }}
+                    source={{ uri: getPosterUrl(posterPath) }}
                     style={styles.image}
                 />
             ) : undefined}
-            <Rating
-                percent={voteAverage * 10}
-                style={{ position: "absolute", top: 220, right: 10 }}
-            />
+            <Rating percent={voteAverage * 10} style={styles.rating} />
             <View style={styles.infoContainer}>
                 <Text numberOfLines={2} style={styles.movieTitle}>
                     {title}
                 </Text>
                 <Text style={styles.releaseDate}>
-                    {formatDate(releaseDate)}
+                    {formatDate(new Date(releaseDate))}
                 </Text>
             </View>
         </TouchableOpacity>
@@ -60,6 +63,8 @@ const MovieElement: React.FC<ElementProps> = ({ movie, style }) => {
 
 const MovieWidget: React.FC<Props> = ({ movies, title }) => {
     const { width: screenWidth } = useWindowDimensions();
+    const navigation = useNavigation<NavigationProp>();
+
     const elementsPerInterval = Math.floor(
         screenWidth / (elementWidth + elementHorizontalMargin * 2),
     );
@@ -80,7 +85,9 @@ const MovieWidget: React.FC<Props> = ({ movies, title }) => {
             <FlatList
                 horizontal
                 data={movies}
-                renderItem={({ item }) => <MovieElement movie={item} />}
+                renderItem={({ item }) => (
+                    <MovieElement movie={item} navigation={navigation} />
+                )}
                 keyExtractor={(item) => `${item.id}`}
                 pagingEnabled
                 snapToOffsets={snapOffsets}
@@ -94,7 +101,7 @@ const MovieWidget: React.FC<Props> = ({ movies, title }) => {
 
 const styles = StyleSheet.create({
     title: {
-        color: "#fff",
+        color: textColor,
         fontSize: 26,
         margin: 20,
         marginBottom: 0,
@@ -121,12 +128,13 @@ const styles = StyleSheet.create({
     infoContainer: {
         flex: 1,
         margin: 10,
-        marginTop: 20,
+        marginTop: 25,
     },
     releaseDate: {
         color: gray3,
         marginTop: 5,
     },
+    rating: { position: "absolute", top: 220, right: 10 },
 });
 
 export default MovieWidget;

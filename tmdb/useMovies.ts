@@ -16,7 +16,7 @@ const convertMovie = (movie: TmdbMovie): Movie => ({
     originalLanguage: movie.original_language,
     originalTitle: movie.original_title,
     posterPath: movie.poster_path,
-    releaseDate: new Date(movie.release_date),
+    releaseDate: movie.release_date,
     voteAverage: movie.vote_average,
     voteCount: movie.vote_count,
 });

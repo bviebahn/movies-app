@@ -11,28 +11,31 @@ import {
     black,
 } from "./constants/colors";
 import { GenreProvider } from "./tmdb/useGenres";
+import { MovieDetailsProvider } from "./tmdb/useMovieDetails";
 
 declare const global: { HermesInternal: null | {} };
 
 const App = () => {
     return (
         <GenreProvider>
-            <>
-                <StatusBar barStyle="light-content" />
-                <NavigationContainer
-                    theme={{
-                        dark: true,
-                        colors: {
-                            background: gray1,
-                            primary: primaryColor,
-                            card: gray2,
-                            text: textColor,
-                            border: black,
-                        },
-                    }}>
-                    <TabNavigator />
-                </NavigationContainer>
-            </>
+            <MovieDetailsProvider>
+                <>
+                    <StatusBar barStyle="light-content" />
+                    <NavigationContainer
+                        theme={{
+                            dark: true,
+                            colors: {
+                                background: gray1,
+                                primary: primaryColor,
+                                card: gray2,
+                                text: textColor,
+                                border: black,
+                            },
+                        }}>
+                        <TabNavigator />
+                    </NavigationContainer>
+                </>
+            </MovieDetailsProvider>
         </GenreProvider>
     );
 };

@@ -26,11 +26,30 @@ export type Movie = {
     overview: string;
     popularity: number;
     posterPath?: string;
-    releaseDate: Date;
+    releaseDate: string;
     title: string;
     video: false;
     voteAverage: number;
     voteCount: number;
+};
+
+export type TmdbMovieDetails = TmdbMovie & {
+    budget?: number;
+    genres: ReadonlyArray<Genre>;
+    homepage?: string;
+    imdb_id?: string;
+    runtime?: number;
+    status: string;
+    tagline?: string;
+};
+
+export type MovieDetails = Movie & {
+    budget?: number;
+    homepage?: string;
+    imdbId?: string;
+    runtime?: number;
+    status: string;
+    tagline?: string;
 };
 
 export type Genre = {

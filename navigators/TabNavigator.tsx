@@ -1,12 +1,12 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import Home from "../screens/Home";
 import Icon from "react-native-vector-icons/FontAwesome";
 import Saved from "../screens/Saved";
 import { gray1, primaryColor } from "../constants/colors";
+import StartStackNavigator from "./StartStackNavigator";
 
 type TabParams = {
-    Home: undefined;
+    Start: undefined;
     Saved: undefined;
 };
 
@@ -16,7 +16,7 @@ const TabIcon: React.FC<{ route: keyof TabParams; focused: boolean }> = ({
 }) => {
     const color = focused ? primaryColor : "#777";
     switch (route) {
-        case "Home":
+        case "Start":
             return <Icon name="home" size={24} color={color} />;
         case "Saved":
             return <Icon name="bookmark" size={24} color={color} />;
@@ -38,7 +38,7 @@ const TabNavigator: React.FC = () => (
             showLabel: false,
             style: { backgroundColor: gray1 },
         }}>
-        <Tab.Screen name="Home" component={Home} />
+        <Tab.Screen name="Start" component={StartStackNavigator} />
         <Tab.Screen name="Saved" component={Saved} />
     </Tab.Navigator>
 );
