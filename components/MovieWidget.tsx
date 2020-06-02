@@ -5,8 +5,6 @@ import {
     Text,
     StyleSheet,
     Image,
-    FlatList,
-    useWindowDimensions,
     ViewStyle,
     StyleProp,
     TouchableOpacity,
@@ -18,6 +16,7 @@ import { formatDate } from "../util/date";
 import Rating from "./Rating";
 import { useNavigation } from "@react-navigation/native";
 import { StartStackNavigationProp } from "../navigators/StartStackNavigator";
+import Carousel from "./Carousel";
 
 type NavigationProp = StartStackNavigationProp<"Home">;
 
@@ -62,38 +61,18 @@ const MovieElement: React.FC<ElementProps> = ({ movie, navigation, style }) => {
 };
 
 const MovieWidget: React.FC<Props> = ({ movies, title }) => {
-    const { width: screenWidth } = useWindowDimensions();
     const navigation = useNavigation<NavigationProp>();
-
-    const elementsPerInterval = Math.floor(
-        screenWidth / (elementWidth + elementHorizontalMargin * 2),
-    );
-
-    const snapOffsets = [...Array(movies.length - 1)].reduce(
-        (prev, _, index) => {
-            return [
-                ...prev,
-                prev[index] + elementsPerInterval * (elementWidth + 20),
-            ];
-        },
-        [0],
-    );
 
     return (
         <>
             <Text style={styles.title}>{title}</Text>
-            <FlatList
-                horizontal
+            <Carousel
                 data={movies}
-                renderItem={({ item }) => (
+                renderItem={(item) => (
                     <MovieElement movie={item} navigation={navigation} />
                 )}
                 keyExtractor={(item) => `${item.id}`}
-                pagingEnabled
-                snapToOffsets={snapOffsets}
-                decelerationRate="fast"
-                initialNumToRender={(elementsPerInterval + 1) * 2}
-                showsHorizontalScrollIndicator={false}
+                itemWidth={elementWidth + elementHorizontalMargin * 2}
             />
         </>
     );

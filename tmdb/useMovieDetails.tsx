@@ -5,39 +5,12 @@ import { TMDB_ACCESS_TOKEN, TMDB_BASE_URL } from "./constants";
 type MovieDetailsResult = {
     movieDetails?: MovieDetails;
     loading: boolean;
-    credits?: Credits;
-    creditsLoading: boolean;
+    error: boolean;
 };
 
 type State = {
     [id: number]: MovieDetailsResult;
 };
-
-function convertMovieDetails(details: TmdbMovieDetails): MovieDetails {
-    return {
-        id: details.id,
-        adult: details.adult,
-        overview: details.overview,
-        popularity: details.popularity,
-        video: details.video,
-        title: details.title,
-        backdropPath: details.backdrop_path,
-        genreIds: details.genre_ids,
-        genres: [],
-        originalLanguage: details.original_language,
-        originalTitle: details.original_title,
-        posterPath: details.poster_path,
-        releaseDate: details.release_date,
-        voteAverage: details.vote_average,
-        voteCount: details.vote_count,
-        status: details.status,
-        budget: details.budget,
-        homepage: details.homepage,
-        imdbId: details.imdb_id,
-        runtime: details.runtime,
-        tagline: details.tagline,
-    };
-}
 
 function convertCredits(credits: TmdbCredits): Credits {
     const interestingJobs = ["Director", "Writer", "Producer", "Creator"];
@@ -67,6 +40,33 @@ function convertCredits(credits: TmdbCredits): Credits {
     };
 }
 
+function convertMovieDetails(details: TmdbMovieDetails): MovieDetails {
+    return {
+        id: details.id,
+        adult: details.adult,
+        overview: details.overview,
+        popularity: details.popularity,
+        video: details.video,
+        title: details.title,
+        backdropPath: details.backdrop_path,
+        genreIds: details.genre_ids,
+        genres: [],
+        originalLanguage: details.original_language,
+        originalTitle: details.original_title,
+        posterPath: details.poster_path,
+        releaseDate: details.release_date,
+        voteAverage: details.vote_average,
+        voteCount: details.vote_count,
+        status: details.status,
+        budget: details.budget,
+        homepage: details.homepage,
+        imdbId: details.imdb_id,
+        runtime: details.runtime,
+        tagline: details.tagline,
+        credits: convertCredits(details.credits),
+    };
+}
+
 type ContextType = {
     useMovieDetails: (id: number) => MovieDetailsResult;
 };
@@ -78,7 +78,7 @@ const MovieDetailsContext = React.createContext<ContextType | undefined>(
 type Action =
     | { type: "LOAD_DETAILS_START"; payload: number }
     | { type: "LOAD_DETAILS_FINISH"; payload: MovieDetails }
-    | { type: "LOAD_CREDITS_FINISH"; payload: Credits };
+    | { type: "LOAD_DETAILS_ERROR"; payload: number };
 
 function reducer(state: State, action: Action): State {
     switch (action.type) {
@@ -87,25 +87,24 @@ function reducer(state: State, action: Action): State {
                 ...state,
                 [action.payload]: {
                     loading: true,
-                    creditsLoading: true,
+                    error: false,
                 },
             };
         case "LOAD_DETAILS_FINISH":
             return {
                 ...state,
                 [action.payload.id]: {
-                    ...state[action.payload.id],
                     movieDetails: action.payload,
                     loading: false,
+                    error: false,
                 },
             };
-        case "LOAD_CREDITS_FINISH":
+        case "LOAD_DETAILS_ERROR":
             return {
                 ...state,
-                [action.payload.id]: {
-                    ...state[action.payload.id],
-                    creditsLoading: false,
-                    credits: action.payload,
+                [action.payload]: {
+                    loading: false,
+                    error: true,
                 },
             };
     }
@@ -116,47 +115,35 @@ export const MovieDetailsProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
     const [state, dispatch] = useReducer(reducer, {});
 
-    const fetchDetails = async (id: number) => {
-        const response = await fetch(`${TMDB_BASE_URL}movie/${id}`, {
-            method: "GET",
-            headers: {
-                Authorization: `Bearer ${TMDB_ACCESS_TOKEN}`,
+    const fetchMovieDetails = async (id: number) => {
+        dispatch({ type: "LOAD_DETAILS_START", payload: id });
+        const response = await fetch(
+            `${TMDB_BASE_URL}movie/${id}?append_to_response=credits,reviews`,
+            {
+                method: "GET",
+                headers: {
+                    Authorization: `Bearer ${TMDB_ACCESS_TOKEN}`,
+                },
             },
-        });
+        );
 
         if (response.ok) {
             const result = await response.json();
+            console.log("result", result);
+
             dispatch({
                 type: "LOAD_DETAILS_FINISH",
                 payload: convertMovieDetails(result),
             });
-        }
-    };
-
-    const fetchCredits = async (id: number) => {
-        const response = await fetch(`${TMDB_BASE_URL}movie/${id}/credits`, {
-            method: "GET",
-            headers: {
-                Authorization: `Bearer ${TMDB_ACCESS_TOKEN}`,
-            },
-        });
-
-        if (response.ok) {
-            const result = await response.json();
+        } else {
             dispatch({
-                type: "LOAD_CREDITS_FINISH",
-                payload: convertCredits(result),
+                type: "LOAD_DETAILS_ERROR",
+                payload: id,
             });
         }
     };
 
-    const fetchMovieDetails = (id: number) => {
-        dispatch({ type: "LOAD_DETAILS_START", payload: id });
-        fetchDetails(id);
-        fetchCredits(id);
-    };
-
-    const useMovieDetails = (id: number) => {
+    const useMovieDetails = (id: number): MovieDetailsResult => {
         if (state[id]) {
             return state[id];
         }
@@ -165,7 +152,7 @@ export const MovieDetailsProvider: React.FC<{ children: React.ReactNode }> = ({
 
         return {
             loading: true,
-            creditsLoading: true,
+            error: false,
         };
     };
 
@@ -176,7 +163,7 @@ export const MovieDetailsProvider: React.FC<{ children: React.ReactNode }> = ({
     );
 };
 
-const useMovieDetails = (id: number) => {
+const useMovieDetails = (id: number): MovieDetailsResult => {
     const context = useContext(MovieDetailsContext);
     if (!context) {
         throw new Error(

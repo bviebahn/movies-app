@@ -23,6 +23,7 @@ import Rating from "../components/Rating";
 import useMovieDetails from "../tmdb/useMovieDetails";
 import { convertMinutesToTimeString } from "../util/time";
 import { getLanguage } from "iso-countries-languages";
+import CreditWidget from "../components/CreditWidget";
 
 const MovieDetails: React.FC = () => {
     const route = useRoute<StartStackRouteProp<"MovieDetails">>();
@@ -42,15 +43,14 @@ const MovieDetails: React.FC = () => {
         },
     } = route.params;
 
-    const { movieDetails, loading, credits } = useMovieDetails(id);
-    console.log(credits);
+    const { movieDetails, loading } = useMovieDetails(id);
 
-    const { runtime, tagline } = movieDetails || {};
+    const { runtime, tagline, credits } = movieDetails || {};
 
     const backdropHeight = (screenWidth * 9) / 16;
 
     return (
-        <ScrollView>
+        <ScrollView contentContainerStyle={styles.movieDetails}>
             {backdropPath ? (
                 <Image
                     source={{ uri: getBackdropUrl(backdropPath) }}
@@ -111,11 +111,17 @@ const MovieDetails: React.FC = () => {
             <View style={styles.overviewWrapper}>
                 <Text style={styles.overview}>{overview}</Text>
             </View>
+            {credits ? (
+                <CreditWidget credits={credits.cast.slice(0, 5)} />
+            ) : undefined}
         </ScrollView>
     );
 };
 
 const styles = StyleSheet.create({
+    movieDetails: {
+        paddingBottom: 40,
+    },
     backdrop: {
         width: "100%",
     },

@@ -34,22 +34,24 @@ export type Movie = {
 };
 
 export type TmdbMovieDetails = TmdbMovie & {
-    budget?: number;
+    budget: number;
     genres: ReadonlyArray<Genre>;
     homepage?: string;
     imdb_id?: string;
     runtime?: number;
     status: string;
     tagline?: string;
+    credits: TmdbCredits;
 };
 
 export type MovieDetails = Movie & {
-    budget?: number;
+    budget: number;
     homepage?: string;
     imdbId?: string;
     runtime?: number;
     status: string;
     tagline?: string;
+    credits: Credits;
 };
 
 export type Genre = {
