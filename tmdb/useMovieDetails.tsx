@@ -64,6 +64,7 @@ function convertMovieDetails(details: TmdbMovieDetails): MovieDetails {
         runtime: details.runtime,
         tagline: details.tagline,
         credits: convertCredits(details.credits),
+        reviews: details.reviews.results,
     };
 }
 

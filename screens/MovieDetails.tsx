@@ -24,6 +24,7 @@ import useMovieDetails from "../tmdb/useMovieDetails";
 import { convertMinutesToTimeString } from "../util/time";
 import { getLanguage } from "iso-countries-languages";
 import CreditWidget from "../components/CreditWidget";
+import ReviewsWidget from "../components/ReviewsWidget";
 
 const MovieDetails: React.FC = () => {
     const route = useRoute<StartStackRouteProp<"MovieDetails">>();
@@ -45,12 +46,12 @@ const MovieDetails: React.FC = () => {
 
     const { movieDetails, loading } = useMovieDetails(id);
 
-    const { runtime, tagline, credits } = movieDetails || {};
+    const { runtime, tagline, credits, reviews } = movieDetails || {};
 
     const backdropHeight = (screenWidth * 9) / 16;
 
     return (
-        <ScrollView contentContainerStyle={styles.movieDetails}>
+        <ScrollView contentContainerStyle={styles.movieDetails} bounces={false}>
             {backdropPath ? (
                 <Image
                     source={{ uri: getBackdropUrl(backdropPath) }}
@@ -63,7 +64,7 @@ const MovieDetails: React.FC = () => {
             />
             <View style={styles.mainContent}>
                 {posterPath ? (
-                    <View style={styles.posterWrapper}>
+                    <View style={shadowStyle}>
                         <Image
                             source={{ uri: getPosterUrl(posterPath) }}
                             style={styles.poster}
@@ -111,8 +112,11 @@ const MovieDetails: React.FC = () => {
             <View style={styles.overviewWrapper}>
                 <Text style={styles.overview}>{overview}</Text>
             </View>
-            {credits ? (
-                <CreditWidget credits={credits.cast.slice(0, 5)} />
+            {credits && credits.cast.length ? (
+                <CreditWidget credits={credits.cast.slice(0, 10)} />
+            ) : undefined}
+            {reviews && reviews.length ? (
+                <ReviewsWidget reviews={reviews} />
             ) : undefined}
         </ScrollView>
     );
@@ -128,9 +132,6 @@ const styles = StyleSheet.create({
     mainContent: {
         flexDirection: "row",
         margin: 20,
-    },
-    posterWrapper: {
-        ...shadowStyle,
     },
     poster: {
         width: 160,

@@ -42,6 +42,13 @@ export type TmdbMovieDetails = TmdbMovie & {
     status: string;
     tagline?: string;
     credits: TmdbCredits;
+    reviews: {
+        id: number;
+        page: number;
+        total_pages: number;
+        total_results: number;
+        results: ReadonlyArray<Review>;
+    };
 };
 
 export type MovieDetails = Movie & {
@@ -52,6 +59,7 @@ export type MovieDetails = Movie & {
     status: string;
     tagline?: string;
     credits: Credits;
+    reviews: ReadonlyArray<Review>;
 };
 
 export type Genre = {
@@ -103,4 +111,11 @@ export type Credits = {
         name: string;
         profilePath?: string;
     }>;
+};
+
+export type Review = {
+    id: string;
+    author: string;
+    content: string;
+    url: string;
 };
