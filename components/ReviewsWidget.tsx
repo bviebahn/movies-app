@@ -13,6 +13,7 @@ import {
 import Markdown from "react-native-markdown-display";
 import { textColor, gray2, primaryColor } from "../constants/colors";
 import { shadowStyle } from "../constants/styles";
+import translate from "../i18/Locale";
 
 type Props = {
     reviews: ReadonlyArray<Review>;
@@ -31,9 +32,11 @@ const ReviewTile: React.FC<ReviewTileProps> = ({ author, content, style }) => {
             : `${content.substr(0, content.indexOf(" ", 200) || 200)}...`;
     return (
         <TouchableOpacity style={[styles.reviewTile, shadowStyle, style]}>
-            <Text style={styles.author}>by {author}</Text>
+            <Text style={styles.author}>
+                {translate("BY", { name: author })}
+            </Text>
             <Markdown style={markdownStyle}>{strippedContent}</Markdown>
-            <Text style={styles.readMore}>Read more</Text>
+            <Text style={styles.readMore}>{translate("READ_MORE")}</Text>
         </TouchableOpacity>
     );
 };
@@ -42,7 +45,7 @@ const ReviewsWidget: React.FC<Props> = ({ reviews }) => {
     const { width } = useWindowDimensions();
     return (
         <View>
-            <Text style={styles.title}>Reviews</Text>
+            <Text style={styles.title}>{translate("REVIEWS")}</Text>
             <Carousel
                 data={reviews}
                 renderItem={({ author, content }) => (

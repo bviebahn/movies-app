@@ -5,8 +5,8 @@ import {
     Text,
     useWindowDimensions,
     StyleSheet,
-    ScrollView,
     ActivityIndicator,
+    ScrollView,
 } from "react-native";
 import { useRoute } from "@react-navigation/native";
 import { StartStackRouteProp } from "../navigators/StartStackNavigator";
@@ -25,6 +25,8 @@ import { convertMinutesToTimeString } from "../util/time";
 import { getLanguage } from "iso-countries-languages";
 import CreditWidget from "../components/CreditWidget";
 import ReviewsWidget from "../components/ReviewsWidget";
+import MovieWidget from "../components/MovieWidget";
+import translate from "../i18/Locale";
 
 const MovieDetails: React.FC = () => {
     const route = useRoute<StartStackRouteProp<"MovieDetails">>();
@@ -46,12 +48,13 @@ const MovieDetails: React.FC = () => {
 
     const { movieDetails, loading } = useMovieDetails(id);
 
-    const { runtime, tagline, credits, reviews } = movieDetails || {};
+    const { runtime, tagline, credits, reviews, recommendations } =
+        movieDetails || {};
 
     const backdropHeight = (screenWidth * 9) / 16;
 
     return (
-        <ScrollView contentContainerStyle={styles.movieDetails} bounces={false}>
+        <ScrollView contentContainerStyle={styles.movieDetails}>
             {backdropPath ? (
                 <Image
                     source={{ uri: getBackdropUrl(backdropPath) }}
@@ -117,6 +120,12 @@ const MovieDetails: React.FC = () => {
             ) : undefined}
             {reviews && reviews.length ? (
                 <ReviewsWidget reviews={reviews} />
+            ) : undefined}
+            {recommendations ? (
+                <MovieWidget
+                    movies={recommendations}
+                    title={translate("RECOMMENDATIONS")}
+                />
             ) : undefined}
         </ScrollView>
     );

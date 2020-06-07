@@ -49,6 +49,7 @@ export type TmdbMovieDetails = TmdbMovie & {
         total_results: number;
         results: ReadonlyArray<Review>;
     };
+    recommendations: { results: ReadonlyArray<TmdbMovie> };
 };
 
 export type MovieDetails = Movie & {
@@ -60,6 +61,7 @@ export type MovieDetails = Movie & {
     tagline?: string;
     credits: Credits;
     reviews: ReadonlyArray<Review>;
+    recommendations: ReadonlyArray<Movie>;
 };
 
 export type Genre = {

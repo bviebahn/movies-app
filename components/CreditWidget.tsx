@@ -3,6 +3,7 @@ import Carousel from "./Carousel";
 import CreditTile, { itemWidth } from "./CreditTile";
 import { StyleSheet, View, Text } from "react-native";
 import { textColor } from "../constants/colors";
+import translate from "../i18/Locale";
 
 type Props = {
     credits: ReadonlyArray<{
@@ -18,7 +19,7 @@ const itemHorizontalMargin = 10;
 const CreditWidget: React.FC<Props> = ({ credits }) => {
     return (
         <View>
-            <Text style={styles.title}>Credits</Text>
+            <Text style={styles.title}>{translate("CAST")}</Text>
             <Carousel
                 data={credits}
                 renderItem={({ name, character, profilePath }) => (
