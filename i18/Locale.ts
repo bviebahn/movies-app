@@ -3,12 +3,6 @@ import { findBestAvailableLanguage } from "react-native-localize";
 
 let translations: Translations;
 
-function isSubstituteTranslation<D>(
-    translation: SubstituteTranslation<D> | string,
-): translation is SubstituteTranslation<D> {
-    return (<SubstituteTranslation<D>>translation).apply !== undefined;
-}
-
 function translate<Key extends keyof Translations>(
     key: Key,
     ...data: Translations[Key] extends SubstituteTranslation<infer P> ? [P] : []
@@ -19,8 +13,8 @@ function translate<Key extends keyof Translations>(
         return key;
     }
 
-    if (isSubstituteTranslation(translation)) {
-        return translation(data[0] as any);
+    if ((translation as any).apply) {
+        return (translation as any)(data[0] as any);
     }
 
     return translation;

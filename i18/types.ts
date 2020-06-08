@@ -11,4 +11,7 @@ export type Translations = {
     SEARCH: string;
     ORIGINAL_LANGUAGE: string;
     GENRES: string;
+    SEASONS: string;
+    EPISODES: string;
+    CREATOR: SubstituteTranslation<{ n: number }>;
 };

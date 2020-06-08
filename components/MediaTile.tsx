@@ -1,17 +1,25 @@
 import React from "react";
 import {
-    ViewStyle,
-    StyleProp,
-    TouchableOpacity,
     Image,
-    View,
-    Text,
+    StyleProp,
     StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
+    ViewStyle,
 } from "react-native";
+import Icon from "react-native-vector-icons/FontAwesome";
+
+import {
+    gray2,
+    gray3,
+    textColor,
+    textColorSecondary,
+} from "../constants/colors";
 import { shadowStyle } from "../constants/styles";
 import { getPosterUrl } from "../tmdb/util";
 import Rating from "./Rating";
-import { gray2, textColor, gray3 } from "../constants/colors";
+import { TILE_WIDTH_M, TILE_WIDTH_S } from "../constants/values";
 
 type Props = {
     posterPath?: string;
@@ -20,28 +28,43 @@ type Props = {
     voteAverage?: number;
     onPress: () => void;
     style?: StyleProp<ViewStyle>;
+    size?: "small" | "medium";
 };
 
-export const TILE_WIDTH = 160;
-
-const MovieTile: React.FC<Props> = ({
+const MediaTile: React.FC<Props> = ({
     posterPath,
     title,
     subtitle,
     voteAverage,
     onPress,
     style,
+    size = "medium",
 }) => {
+    const width = size === "medium" ? TILE_WIDTH_M : TILE_WIDTH_S;
+    const imageHeight = width * 1.5;
+
     return (
         <TouchableOpacity
             onPress={onPress}
-            style={[styles.mediaTile, shadowStyle, style]}>
+            style={[
+                styles.mediaTile,
+                shadowStyle,
+                {
+                    width,
+                    height: width * 2 + 20,
+                },
+                style,
+            ]}>
             {posterPath ? (
                 <Image
                     source={{ uri: getPosterUrl(posterPath) }}
-                    style={styles.image}
+                    style={[styles.image, { height: imageHeight }]}
                 />
-            ) : undefined}
+            ) : (
+                <View style={styles.placeholderImage}>
+                    <Icon name="image" size={64} color={textColorSecondary} />
+                </View>
+            )}
             {voteAverage ? (
                 <Rating percent={voteAverage * 10} style={styles.rating} />
             ) : undefined}
@@ -58,8 +81,6 @@ const MovieTile: React.FC<Props> = ({
 const styles = StyleSheet.create({
     mediaTile: {
         backgroundColor: gray2,
-        height: 340,
-        width: TILE_WIDTH,
         borderRadius: 8,
     },
     title: {
@@ -68,15 +89,19 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
     },
     image: {
-        height: 240,
-        width: TILE_WIDTH,
+        width: "100%",
         borderTopRightRadius: 8,
         borderTopLeftRadius: 8,
     },
+    placeholderImage: {
+        width: "100%",
+        justifyContent: "center",
+        alignItems: "center",
+    },
     infoContainer: {
         flex: 1,
-        margin: 10,
-        marginTop: 25,
+        marginHorizontal: 10,
+        justifyContent: "center",
     },
     subtitle: {
         color: gray3,
@@ -85,4 +110,4 @@ const styles = StyleSheet.create({
     rating: { position: "absolute", top: 220, right: 10 },
 });
 
-export default MovieTile;
+export default MediaTile;

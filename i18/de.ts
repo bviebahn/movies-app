@@ -11,6 +11,9 @@ const translations: Translations = {
     SEARCH: "Suche",
     ORIGINAL_LANGUAGE: "Originalsprache",
     GENRES: "Genres",
+    SEASONS: "Staffeln",
+    EPISODES: "Folgen",
+    CREATOR: ({ n }) => (n > 1 ? "Creators" : "Creator"),
 };
 
 export default translations;

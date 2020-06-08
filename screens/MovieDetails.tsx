@@ -11,12 +11,7 @@ import {
     View,
 } from "react-native";
 
-import CreditTile, {
-    TILE_WIDTH as CREDIT_TILE_WIDTH,
-} from "../components/CreditTile";
-import MediaTile, {
-    TILE_WIDTH as MEDIA_TILE_WIDTH,
-} from "../components/MediaTile";
+import MediaTile from "../components/MediaTile";
 import MediaWidget from "../components/MediaWidget";
 import Rating from "../components/Rating";
 import ReviewsWidget from "../components/ReviewsWidget";
@@ -26,8 +21,12 @@ import {
     textColor,
     textColorSecondary,
 } from "../constants/colors";
-import { shadowStyle, dot } from "../constants/styles";
-import { TILE_HORIZONTAL_MARGIN } from "../constants/values";
+import { dot, shadowStyle } from "../constants/styles";
+import {
+    TILE_HORIZONTAL_MARGIN,
+    TILE_WIDTH_M,
+    TILE_WIDTH_S,
+} from "../constants/values";
 import translate from "../i18/Locale";
 import {
     StartStackNavigationProp,
@@ -139,12 +138,14 @@ const MovieDetails: React.FC = () => {
                 <MediaWidget
                     title={translate("CAST")}
                     data={credits.cast.slice(0, 10)}
-                    itemWidth={CREDIT_TILE_WIDTH + TILE_HORIZONTAL_MARGIN * 2}
+                    itemWidth={TILE_WIDTH_S + TILE_HORIZONTAL_MARGIN * 2}
                     renderItem={(credit) => (
-                        <CreditTile
-                            name={credit.name}
-                            character={credit.character}
-                            profilePath={credit.profilePath}
+                        <MediaTile
+                            title={credit.name}
+                            subtitle={credit.character}
+                            posterPath={credit.profilePath}
+                            onPress={() => undefined}
+                            size="small"
                             style={styles.tileMargin}
                         />
                     )}
@@ -158,7 +159,7 @@ const MovieDetails: React.FC = () => {
                 <MediaWidget
                     title={translate("RECOMMENDATIONS")}
                     data={recommendations}
-                    itemWidth={MEDIA_TILE_WIDTH + TILE_HORIZONTAL_MARGIN * 2}
+                    itemWidth={TILE_WIDTH_M + TILE_HORIZONTAL_MARGIN * 2}
                     renderItem={(movie) => (
                         <MediaTile
                             title={movie.title}

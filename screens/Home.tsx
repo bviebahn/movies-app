@@ -2,13 +2,13 @@ import React from "react";
 import useMovies from "../tmdb/useMovies";
 import { SafeAreaView, ScrollView, StyleSheet } from "react-native";
 import translate from "../i18/Locale";
-import MediaTile, { TILE_WIDTH } from "../components/MediaTile";
+import MediaTile from "../components/MediaTile";
 import { useNavigation } from "@react-navigation/native";
 import { StartStackNavigationProp } from "../navigators/StartStackNavigator";
 import { formatDate } from "../util/date";
 import MediaWidget from "../components/MediaWidget";
 import useTvShows from "../tmdb/useTvShows";
-import { TILE_HORIZONTAL_MARGIN } from "../constants/values";
+import { TILE_HORIZONTAL_MARGIN, TILE_WIDTH_M } from "../constants/values";
 
 const Home: React.FC = () => {
     const { data: popularMovies } = useMovies("popular");
@@ -21,7 +21,7 @@ const Home: React.FC = () => {
                 <MediaWidget
                     title={translate("POPULAR_MOVIES")}
                     data={popularMovies}
-                    itemWidth={TILE_WIDTH + TILE_HORIZONTAL_MARGIN * 2}
+                    itemWidth={TILE_WIDTH_M + TILE_HORIZONTAL_MARGIN * 2}
                     renderItem={(movie) => (
                         <MediaTile
                             title={movie.title}
@@ -39,7 +39,7 @@ const Home: React.FC = () => {
                 <MediaWidget
                     title={translate("POPULAR_TV_SHOWS")}
                     data={popularTvShows}
-                    itemWidth={TILE_WIDTH + TILE_HORIZONTAL_MARGIN * 2}
+                    itemWidth={TILE_WIDTH_M + TILE_HORIZONTAL_MARGIN * 2}
                     renderItem={(tvShow) => (
                         <MediaTile
                             title={tvShow.name}
