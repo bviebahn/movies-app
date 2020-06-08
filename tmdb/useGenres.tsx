@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { Genre } from "./types";
 import { TMDB_ACCESS_TOKEN, TMDB_BASE_URL } from "./constants";
 
+// TODO: don't need? genres are in details
 const GenreContext = React.createContext<{
     movieGenres: ReadonlyArray<Genre>;
     tvGenres: ReadonlyArray<Genre>;

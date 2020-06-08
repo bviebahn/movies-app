@@ -22,9 +22,7 @@ type Props = {
     style?: StyleProp<ViewStyle>;
 };
 
-const TILE_WIDTH = 160;
-const TILE_HORIZONTAL_MARGIN = 10;
-export const TOTAL_TILE_WIDTH = TILE_WIDTH + TILE_HORIZONTAL_MARGIN * 2;
+export const TILE_WIDTH = 160;
 
 const MovieTile: React.FC<Props> = ({
     posterPath,
@@ -60,8 +58,6 @@ const MovieTile: React.FC<Props> = ({
 const styles = StyleSheet.create({
     mediaTile: {
         backgroundColor: gray2,
-        marginHorizontal: TILE_HORIZONTAL_MARGIN,
-        marginVertical: 10,
         height: 340,
         width: TILE_WIDTH,
         borderRadius: 8,

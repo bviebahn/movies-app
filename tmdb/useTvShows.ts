@@ -1,8 +1,7 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { TvShow } from "./types";
 import { TMDB_BASE_URL, TMDB_ACCESS_TOKEN } from "./constants";
-import useGenres from "./useGenres";
-import { convertTvShow, addGenres } from "./util";
+import { convertTvShow } from "./util";
 
 const useTvShows = (
     type: "popular" | "latest" | "airing_today" | "top_rated" | "on_the_air",
@@ -10,7 +9,6 @@ const useTvShows = (
     const [data, setData] = useState<ReadonlyArray<TvShow>>();
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
-    const { tvGenres } = useGenres();
 
     useEffect(() => {
         const fetchTvShows = async () => {
@@ -32,12 +30,7 @@ const useTvShows = (
         fetchTvShows();
     }, [type]);
 
-    const dataWithGenres = useMemo(
-        () => data?.map((movie) => addGenres(movie, tvGenres)),
-        [data, tvGenres],
-    );
-
-    return { data: dataWithGenres, loading, error };
+    return { data, loading, error };
 };
 
 export default useTvShows;

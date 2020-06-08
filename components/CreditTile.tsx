@@ -19,7 +19,7 @@ type Props = {
     style?: StyleProp<ViewStyle>;
 };
 
-export const itemWidth = 140;
+export const TILE_WIDTH = 140;
 
 const CreditTile: React.FC<Props> = ({
     name,
@@ -50,12 +50,12 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: gray2,
         height: 260,
-        width: itemWidth,
+        width: TILE_WIDTH,
         borderRadius: 8,
     },
     image: {
         height: 160,
-        width: itemWidth,
+        width: TILE_WIDTH,
         borderTopRightRadius: 8,
         borderTopLeftRadius: 8,
     },

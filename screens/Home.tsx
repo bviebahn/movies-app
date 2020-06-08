@@ -2,12 +2,13 @@ import React from "react";
 import useMovies from "../tmdb/useMovies";
 import { SafeAreaView, ScrollView, StyleSheet } from "react-native";
 import translate from "../i18/Locale";
-import MediaTile, { TOTAL_TILE_WIDTH } from "../components/MediaTile";
+import MediaTile, { TILE_WIDTH } from "../components/MediaTile";
 import { useNavigation } from "@react-navigation/native";
 import { StartStackNavigationProp } from "../navigators/StartStackNavigator";
 import { formatDate } from "../util/date";
 import MediaWidget from "../components/MediaWidget";
 import useTvShows from "../tmdb/useTvShows";
+import { TILE_HORIZONTAL_MARGIN } from "../constants/values";
 
 const Home: React.FC = () => {
     const { data: popularMovies } = useMovies("popular");
@@ -20,7 +21,7 @@ const Home: React.FC = () => {
                 <MediaWidget
                     title={translate("POPULAR_MOVIES")}
                     data={popularMovies}
-                    itemWidth={TOTAL_TILE_WIDTH}
+                    itemWidth={TILE_WIDTH + TILE_HORIZONTAL_MARGIN * 2}
                     renderItem={(movie) => (
                         <MediaTile
                             title={movie.title}
@@ -30,6 +31,7 @@ const Home: React.FC = () => {
                             onPress={() =>
                                 navigation.push("MovieDetails", { movie })
                             }
+                            style={styles.mediaTile}
                         />
                     )}
                     keyExtractor={(item) => `${item.id}`}
@@ -37,14 +39,17 @@ const Home: React.FC = () => {
                 <MediaWidget
                     title={translate("POPULAR_TV_SHOWS")}
                     data={popularTvShows}
-                    itemWidth={TOTAL_TILE_WIDTH}
+                    itemWidth={TILE_WIDTH + TILE_HORIZONTAL_MARGIN * 2}
                     renderItem={(tvShow) => (
                         <MediaTile
                             title={tvShow.name}
                             subtitle={formatDate(new Date(tvShow.firstAirDate))}
                             posterPath={tvShow.posterPath}
                             voteAverage={tvShow.voteAverage}
-                            onPress={() => undefined}
+                            onPress={() =>
+                                navigation.push("TvShowDetails", { tvShow })
+                            }
+                            style={styles.mediaTile}
                         />
                     )}
                     keyExtractor={(item) => `${item.id}`}
@@ -57,6 +62,10 @@ const Home: React.FC = () => {
 const styles = StyleSheet.create({
     scrollViewContainer: {
         paddingBottom: 40,
+    },
+    mediaTile: {
+        marginHorizontal: TILE_HORIZONTAL_MARGIN,
+        marginVertical: 10,
     },
 });
 

@@ -14,9 +14,7 @@ import {
 import CreditTile, {
     TILE_WIDTH as CREDIT_TILE_WIDTH,
 } from "../components/CreditTile";
-import MediaTile, {
-    TILE_WIDTH as MEDIA_TILE_WIDTH,
-} from "../components/MediaTile";
+import MediaTile, { TILE_WIDTH } from "../components/MediaTile";
 import MediaWidget from "../components/MediaWidget";
 import Rating from "../components/Rating";
 import ReviewsWidget from "../components/ReviewsWidget";
@@ -33,40 +31,41 @@ import {
     StartStackNavigationProp,
     StartStackRouteProp,
 } from "../navigators/StartStackNavigator";
-import useMovieDetails from "../tmdb/useMovieDetails";
+import useTvShowDetails from "../tmdb/useTvShowDetails";
 import { getBackdropUrl, getPosterUrl } from "../tmdb/util";
 import { formatDate } from "../util/date";
 import { convertMinutesToTimeString } from "../util/time";
 
-const MovieDetails: React.FC = () => {
-    const route = useRoute<StartStackRouteProp<"MovieDetails">>();
+const TvShowDetails: React.FC = () => {
+    const route = useRoute<StartStackRouteProp<"TvShowDetails">>();
     const navigation = useNavigation<
-        StartStackNavigationProp<"MovieDetails">
+        StartStackNavigationProp<"TvShowDetails">
     >();
     const { width: screenWidth } = useWindowDimensions();
 
     const {
-        movie: {
+        tvShow: {
             id,
             backdropPath,
             posterPath,
-            title,
-            releaseDate,
+            name,
+            firstAirDate,
+
             voteAverage,
             overview,
             originalLanguage,
         },
     } = route.params;
 
-    const { movieDetails, loading } = useMovieDetails(id);
+    const { tvShowDetails, loading } = useTvShowDetails(id);
 
-    const { runtime, tagline, credits, reviews, recommendations, genres } =
-        movieDetails || {};
+    const { credits, reviews, recommendations, genres, episodeRunTime } =
+        tvShowDetails || {};
 
     const backdropHeight = (screenWidth * 9) / 16;
 
     return (
-        <ScrollView contentContainerStyle={styles.movieDetails}>
+        <ScrollView contentContainerStyle={styles.tvShowDetails}>
             {backdropPath ? (
                 <Image
                     source={{ uri: getBackdropUrl(backdropPath) }}
@@ -90,19 +89,19 @@ const MovieDetails: React.FC = () => {
                     <Text
                         style={[
                             styles.title,
-                            title.length > 40 && styles.titleSmall,
+                            name.length > 40 && styles.titleSmall,
                         ]}>
-                        {title}
+                        {name}
                     </Text>
                     <View style={styles.dateRuntimeWrapper}>
                         <Text style={styles.infoValue}>
-                            {formatDate(new Date(releaseDate))}
+                            {formatDate(new Date(firstAirDate))}
                         </Text>
-                        {runtime ? (
+                        {episodeRunTime ? (
                             <>
                                 <View style={dot} />
                                 <Text style={styles.infoValue}>
-                                    {convertMinutesToTimeString(runtime)}
+                                    {convertMinutesToTimeString(episodeRunTime)}
                                 </Text>
                             </>
                         ) : undefined}
@@ -129,9 +128,6 @@ const MovieDetails: React.FC = () => {
                     ) : undefined}
                 </View>
             </View>
-            {tagline ? (
-                <Text style={styles.tagline}>{tagline}</Text>
-            ) : undefined}
             <View style={styles.overviewWrapper}>
                 <Text style={styles.overview}>{overview}</Text>
             </View>
@@ -158,15 +154,15 @@ const MovieDetails: React.FC = () => {
                 <MediaWidget
                     title={translate("RECOMMENDATIONS")}
                     data={recommendations}
-                    itemWidth={MEDIA_TILE_WIDTH + TILE_HORIZONTAL_MARGIN * 2}
-                    renderItem={(movie) => (
+                    itemWidth={TILE_WIDTH + TILE_HORIZONTAL_MARGIN * 2}
+                    renderItem={(tvShow) => (
                         <MediaTile
-                            title={movie.title}
-                            subtitle={formatDate(new Date(movie.releaseDate))}
-                            posterPath={movie.posterPath}
-                            voteAverage={movie.voteAverage}
+                            title={tvShow.name}
+                            subtitle={formatDate(new Date(tvShow.firstAirDate))}
+                            posterPath={tvShow.posterPath}
+                            voteAverage={tvShow.voteAverage}
                             onPress={() =>
-                                navigation.push("MovieDetails", { movie })
+                                navigation.push("TvShowDetails", { tvShow })
                             }
                             style={styles.tileMargin}
                         />
@@ -179,7 +175,7 @@ const MovieDetails: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-    movieDetails: {
+    tvShowDetails: {
         paddingBottom: 40,
     },
     backdrop: {
@@ -203,6 +199,7 @@ const styles = StyleSheet.create({
         color: textColor,
         fontSize: 24,
         fontWeight: "bold",
+        marginBottom: 5,
     },
     titleSmall: {
         fontSize: 20,
@@ -230,23 +227,14 @@ const styles = StyleSheet.create({
         marginTop: "auto",
         marginBottom: "auto",
     },
-    dateRuntimeWrapper: {
-        flexDirection: "row",
-        marginTop: 5,
-    },
-    tagline: {
-        marginBottom: 20,
-        color: textColorSecondary,
-        fontSize: 18,
-        fontWeight: "200",
-        fontStyle: "italic",
-        marginHorizontal: 40,
-        textAlign: "center",
-    },
     tileMargin: {
         marginHorizontal: TILE_HORIZONTAL_MARGIN,
         marginVertical: 10,
     },
+    dateRuntimeWrapper: {
+        flexDirection: "row",
+        marginTop: 5,
+    },
 });
 
-export default MovieDetails;
+export default TvShowDetails;

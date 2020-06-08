@@ -9,6 +9,8 @@ const translations: Translations = {
     READ_MORE: "Read more",
     RECOMMENDATIONS: "Recommendations",
     SEARCH: "Search",
+    ORIGINAL_LANGUAGE: "Original Language",
+    GENRES: "Genres",
 };
 
 export default translations;

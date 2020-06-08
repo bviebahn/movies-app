@@ -9,4 +9,6 @@ export type Translations = {
     READ_MORE: string;
     RECOMMENDATIONS: string;
     SEARCH: string;
+    ORIGINAL_LANGUAGE: string;
+    GENRES: string;
 };

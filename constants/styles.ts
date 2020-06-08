@@ -1,4 +1,4 @@
-import { textColor } from "./colors";
+import { textColor, textColorSecondary } from "./colors";
 import { StyleProp, TextStyle, ViewStyle } from "react-native";
 
 export const shadowStyle: StyleProp<ViewStyle> = {
@@ -19,4 +19,14 @@ export const headline: StyleProp<TextStyle> = {
     fontWeight: "bold",
     margin: 20,
     marginBottom: 0,
+};
+
+export const dot: StyleProp<ViewStyle> = {
+    width: 4,
+    height: 4,
+    borderRadius: 2,
+    marginHorizontal: 8,
+    marginTop: "auto",
+    marginBottom: "auto",
+    backgroundColor: textColorSecondary,
 };

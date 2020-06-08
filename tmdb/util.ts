@@ -1,4 +1,12 @@
-import { TmdbMovie, Movie, TmdbTvShow, TvShow, Genre } from "./types";
+import {
+    TmdbMovie,
+    Movie,
+    TmdbTvShow,
+    TvShow,
+    Genre,
+    TmdbCredits,
+    Credits,
+} from "./types";
 
 export function getPosterUrl(path: string) {
     return `https://image.tmdb.org/t/p/w342${path}`;
@@ -31,7 +39,6 @@ export function convertMovie(movie: TmdbMovie): Movie {
         title: movie.title,
         backdropPath: movie.backdrop_path,
         genreIds: movie.genre_ids,
-        genres: [],
         originalLanguage: movie.original_language,
         originalTitle: movie.original_title,
         posterPath: movie.poster_path,
@@ -45,7 +52,6 @@ export function convertTvShow(tv: TmdbTvShow): TvShow {
     return {
         firstAirDate: tv.first_air_date,
         genreIds: tv.genre_ids,
-        genres: [],
         id: tv.id,
         name: tv.name,
         originCountry: tv.origin_country,
@@ -57,5 +63,33 @@ export function convertTvShow(tv: TmdbTvShow): TvShow {
         voteCount: tv.vote_count,
         backdropPath: tv.backdrop_path,
         posterPath: tv.poster_path,
+    };
+}
+
+export function convertCredits(credits: TmdbCredits): Credits {
+    const interestingJobs = ["Director", "Writer", "Producer", "Creator"];
+    return {
+        id: credits.id,
+        cast: credits.cast.map((c) => ({
+            castId: c.cast_id,
+            character: c.character,
+            creditId: c.credit_id,
+            id: c.id,
+            name: c.name,
+            order: c.order,
+            gender: c.gender,
+            profilePath: c.profile_path,
+        })),
+        crew: credits.crew
+            .filter((c) => interestingJobs.includes(c.job))
+            .map((c) => ({
+                creditId: c.credit_id,
+                department: c.department,
+                id: c.id,
+                job: c.job,
+                name: c.name,
+                gender: c.gender,
+                profilePath: c.profile_path,
+            })),
     };
 }

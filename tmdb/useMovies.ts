@@ -1,8 +1,7 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { Movie } from "./types";
 import { TMDB_BASE_URL, TMDB_ACCESS_TOKEN } from "./constants";
-import useGenres from "./useGenres";
-import { convertMovie, addGenres } from "./util";
+import { convertMovie } from "./util";
 
 const useMovies = (
     type: "popular" | "latest" | "now_playing" | "top_rated" | "upcoming",
@@ -10,7 +9,6 @@ const useMovies = (
     const [data, setData] = useState<ReadonlyArray<Movie>>();
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
-    const { movieGenres } = useGenres();
 
     useEffect(() => {
         const fetchMovies = async () => {
@@ -32,12 +30,7 @@ const useMovies = (
         fetchMovies();
     }, [type]);
 
-    const dataWithGenres = useMemo(
-        () => data?.map((movie) => addGenres(movie, movieGenres)),
-        [data, movieGenres],
-    );
-
-    return { data: dataWithGenres, loading, error };
+    return { data, loading, error };
 };
 
 export default useMovies;

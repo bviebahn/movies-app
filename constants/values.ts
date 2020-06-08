@@ -1,0 +1,1 @@
+export const TILE_HORIZONTAL_MARGIN = 10;

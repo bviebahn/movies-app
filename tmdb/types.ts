@@ -20,7 +20,6 @@ export type Movie = {
     adult: boolean;
     backdropPath?: string;
     genreIds: ReadonlyArray<number>;
-    genres: ReadonlyArray<Genre>;
     originalLanguage: string;
     originalTitle: string;
     overview: string;
@@ -52,6 +51,19 @@ export type TmdbMovieDetails = TmdbMovie & {
     recommendations: { results: ReadonlyArray<TmdbMovie> };
 };
 
+export type MovieDetails = Movie & {
+    budget: number;
+    genres: ReadonlyArray<Genre>;
+    homepage?: string;
+    imdbId?: string;
+    runtime?: number;
+    status: string;
+    tagline?: string;
+    credits: Credits;
+    reviews: ReadonlyArray<Review>;
+    recommendations: ReadonlyArray<Movie>;
+};
+
 export type TmdbTvShow = {
     poster_path?: string;
     popularity: number;
@@ -78,23 +90,82 @@ export type TvShow = {
     firstAirDate: string;
     originCountry: ReadonlyArray<string>;
     genreIds: ReadonlyArray<number>;
-    genres: ReadonlyArray<Genre>;
     originalLanguage: string;
     voteCount: number;
     name: string;
     originalName: string;
 };
 
-export type MovieDetails = Movie & {
-    budget: number;
-    homepage?: string;
-    imdbId?: string;
-    runtime?: number;
+export type TmdbTvShowDetails = TmdbTvShow & {
+    created_by: ReadonlyArray<{
+        id: number;
+        credit_id: string;
+        name: string;
+        gender: number;
+        profile_path: string;
+    }>;
+    episode_run_time: ReadonlyArray<number>;
+    genres: ReadonlyArray<Genre>;
+    homepage: string;
+    in_production: boolean;
+    languages: ReadonlyArray<string>;
+    number_of_episodes: number;
+    number_of_seasons: number;
+    seasons: ReadonlyArray<{
+        air_date: string;
+        episode_count: number;
+        id: number;
+        name: string;
+        overview: string;
+        poster_path: string;
+        season_number: number;
+    }>;
     status: string;
-    tagline?: string;
+    type: string;
+    vote_average: number;
+    vote_count: number;
+    credits: TmdbCredits;
+    reviews: {
+        id: number;
+        page: number;
+        total_pages: number;
+        total_results: number;
+        results: ReadonlyArray<Review>;
+    };
+    recommendations: { results: ReadonlyArray<TmdbTvShow> };
+};
+
+export type TvShowDetails = TvShow & {
+    createdBy: ReadonlyArray<{
+        id: number;
+        creditId: string;
+        name: string;
+        gender: number;
+        profilePath: string;
+    }>;
+    episodeRunTime: number;
+    genres: ReadonlyArray<Genre>;
+    homepage: string;
+    inProduction: boolean;
+    languages: ReadonlyArray<string>;
+    numberOfEpisodes: number;
+    numberOfSeasons: number;
+    seasons: ReadonlyArray<{
+        airDate: string;
+        episodeCount: number;
+        id: number;
+        name: string;
+        overview: string;
+        posterPath: string;
+        seasonNumber: number;
+    }>;
+    status: string;
+    type: string;
+    voteAverage: number;
+    voteCount: number;
     credits: Credits;
     reviews: ReadonlyArray<Review>;
-    recommendations: ReadonlyArray<Movie>;
+    recommendations: ReadonlyArray<TvShow>;
 };
 
 export type Genre = {
