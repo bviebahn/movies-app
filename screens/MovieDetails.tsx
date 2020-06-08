@@ -1,35 +1,43 @@
+import { useNavigation, useRoute } from "@react-navigation/native";
+import { getLanguage } from "iso-countries-languages";
 import React from "react";
 import {
-    View,
+    ActivityIndicator,
     Image,
+    ScrollView,
+    StyleSheet,
     Text,
     useWindowDimensions,
-    StyleSheet,
-    ActivityIndicator,
-    ScrollView,
+    View,
 } from "react-native";
-import { useRoute } from "@react-navigation/native";
-import { StartStackRouteProp } from "../navigators/StartStackNavigator";
-import { getPosterUrl, getBackdropUrl } from "../tmdb/util";
+
+import CreditWidget from "../components/CreditWidget";
+import MediaTile, { TOTAL_TILE_WIDTH } from "../components/MediaTile";
+import MediaWidget from "../components/MediaWidget";
+import Rating from "../components/Rating";
+import ReviewsWidget from "../components/ReviewsWidget";
 import {
-    textColor,
     gray2,
-    textColorSecondary,
     primaryColor,
+    textColor,
+    textColorSecondary,
 } from "../constants/colors";
 import { shadowStyle } from "../constants/styles";
-import { formatDate } from "../util/date";
-import Rating from "../components/Rating";
-import useMovieDetails from "../tmdb/useMovieDetails";
-import { convertMinutesToTimeString } from "../util/time";
-import { getLanguage } from "iso-countries-languages";
-import CreditWidget from "../components/CreditWidget";
-import ReviewsWidget from "../components/ReviewsWidget";
-import MovieWidget from "../components/MovieWidget";
 import translate from "../i18/Locale";
+import {
+    StartStackNavigationProp,
+    StartStackRouteProp,
+} from "../navigators/StartStackNavigator";
+import useMovieDetails from "../tmdb/useMovieDetails";
+import { getBackdropUrl, getPosterUrl } from "../tmdb/util";
+import { formatDate } from "../util/date";
+import { convertMinutesToTimeString } from "../util/time";
 
 const MovieDetails: React.FC = () => {
     const route = useRoute<StartStackRouteProp<"MovieDetails">>();
+    const navigation = useNavigation<
+        StartStackNavigationProp<"MovieDetails">
+    >();
     const { width: screenWidth } = useWindowDimensions();
 
     const {
@@ -122,9 +130,22 @@ const MovieDetails: React.FC = () => {
                 <ReviewsWidget reviews={reviews} />
             ) : undefined}
             {recommendations ? (
-                <MovieWidget
-                    movies={recommendations}
+                <MediaWidget
                     title={translate("RECOMMENDATIONS")}
+                    data={recommendations}
+                    itemWidth={TOTAL_TILE_WIDTH}
+                    renderItem={(movie) => (
+                        <MediaTile
+                            title={movie.title}
+                            subtitle={formatDate(new Date(movie.releaseDate))}
+                            posterPath={movie.posterPath}
+                            voteAverage={movie.voteAverage}
+                            onPress={() =>
+                                navigation.push("MovieDetails", { movie })
+                            }
+                        />
+                    )}
+                    keyExtractor={(item) => `${item.id}`}
                 />
             ) : undefined}
         </ScrollView>

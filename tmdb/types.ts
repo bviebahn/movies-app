@@ -52,6 +52,39 @@ export type TmdbMovieDetails = TmdbMovie & {
     recommendations: { results: ReadonlyArray<TmdbMovie> };
 };
 
+export type TmdbTvShow = {
+    poster_path?: string;
+    popularity: number;
+    id: number;
+    backdrop_path?: string;
+    vote_average: number;
+    overview: string;
+    first_air_date: string;
+    origin_country: ReadonlyArray<string>;
+    genre_ids: ReadonlyArray<number>;
+    original_language: string;
+    vote_count: number;
+    name: string;
+    original_name: string;
+};
+
+export type TvShow = {
+    posterPath?: string;
+    popularity: number;
+    id: number;
+    backdropPath?: string;
+    voteAverage: number;
+    overview: string;
+    firstAirDate: string;
+    originCountry: ReadonlyArray<string>;
+    genreIds: ReadonlyArray<number>;
+    genres: ReadonlyArray<Genre>;
+    originalLanguage: string;
+    voteCount: number;
+    name: string;
+    originalName: string;
+};
+
 export type MovieDetails = Movie & {
     budget: number;
     homepage?: string;

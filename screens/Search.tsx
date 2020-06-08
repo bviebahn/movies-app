@@ -7,7 +7,7 @@ import {
     Easing,
 } from "react-native";
 import SearchBar from "react-native-search-bar";
-import { gray1, textColorSecondary } from "../constants/colors";
+import { textColorSecondary } from "../constants/colors";
 import translate from "../i18/Locale";
 
 const Search: React.FC = () => {
@@ -57,8 +57,7 @@ const Search: React.FC = () => {
                     </Animated.Text>
                     <SearchBar
                         barStyle="black"
-                        barTintColor={gray1}
-                        // hideBackground
+                        hideBackground
                         onFocus={() => setFocused(true)}
                         onBlur={() => setFocused(false)}
                     />

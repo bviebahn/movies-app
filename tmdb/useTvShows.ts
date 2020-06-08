@@ -1,20 +1,20 @@
 import { useState, useEffect, useMemo } from "react";
-import { Movie } from "./types";
+import { TvShow } from "./types";
 import { TMDB_BASE_URL, TMDB_ACCESS_TOKEN } from "./constants";
 import useGenres from "./useGenres";
-import { convertMovie, addGenres } from "./util";
+import { convertTvShow, addGenres } from "./util";
 
-const useMovies = (
-    type: "popular" | "latest" | "now_playing" | "top_rated" | "upcoming",
+const useTvShows = (
+    type: "popular" | "latest" | "airing_today" | "top_rated" | "on_the_air",
 ) => {
-    const [data, setData] = useState<ReadonlyArray<Movie>>();
+    const [data, setData] = useState<ReadonlyArray<TvShow>>();
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
-    const { movieGenres } = useGenres();
+    const { tvGenres } = useGenres();
 
     useEffect(() => {
-        const fetchMovies = async () => {
-            const response = await fetch(`${TMDB_BASE_URL}movie/${type}`, {
+        const fetchTvShows = async () => {
+            const response = await fetch(`${TMDB_BASE_URL}tv/${type}`, {
                 method: "GET",
                 headers: {
                     Authorization: `Bearer ${TMDB_ACCESS_TOKEN}`,
@@ -23,21 +23,21 @@ const useMovies = (
 
             setLoading(false);
             if (response.ok) {
-                const movies = await response.json();
-                setData(movies.results.map(convertMovie));
+                const tvShows = await response.json();
+                setData(tvShows.results.map(convertTvShow));
             } else {
                 setError(true);
             }
         };
-        fetchMovies();
+        fetchTvShows();
     }, [type]);
 
     const dataWithGenres = useMemo(
-        () => data?.map((movie) => addGenres(movie, movieGenres)),
-        [data, movieGenres],
+        () => data?.map((movie) => addGenres(movie, tvGenres)),
+        [data, tvGenres],
     );
 
     return { data: dataWithGenres, loading, error };
 };
 
-export default useMovies;
+export default useTvShows;

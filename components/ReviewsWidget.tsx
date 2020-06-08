@@ -12,7 +12,7 @@ import {
 } from "react-native";
 import Markdown from "react-native-markdown-display";
 import { textColor, gray2, primaryColor } from "../constants/colors";
-import { shadowStyle } from "../constants/styles";
+import { shadowStyle, headline } from "../constants/styles";
 import translate from "../i18/Locale";
 
 type Props = {
@@ -45,7 +45,7 @@ const ReviewsWidget: React.FC<Props> = ({ reviews }) => {
     const { width } = useWindowDimensions();
     return (
         <View>
-            <Text style={styles.title}>{translate("REVIEWS")}</Text>
+            <Text style={headline}>{translate("REVIEWS")}</Text>
             <Carousel
                 data={reviews}
                 renderItem={({ author, content }) => (
@@ -78,12 +78,6 @@ const styles = StyleSheet.create({
         margin: 10,
         backgroundColor: gray2,
         borderRadius: 8,
-    },
-    title: {
-        color: textColor,
-        fontSize: 26,
-        margin: 20,
-        marginBottom: 0,
     },
     author: {
         color: textColor,

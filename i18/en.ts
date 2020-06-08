@@ -3,7 +3,8 @@ import { Translations } from "./types";
 const translations: Translations = {
     REVIEWS: "Reviews",
     CAST: "Cast",
-    POPULAR: "Popular",
+    POPULAR_MOVIES: "Popular Movies",
+    POPULAR_TV_SHOWS: "Popular TV Shows",
     BY: ({ name }) => `by ${name}`,
     READ_MORE: "Read more",
     RECOMMENDATIONS: "Recommendations",

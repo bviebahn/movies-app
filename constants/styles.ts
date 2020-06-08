@@ -1,4 +1,7 @@
-export const shadowStyle = {
+import { textColor } from "./colors";
+import { StyleProp, TextStyle, ViewStyle } from "react-native";
+
+export const shadowStyle: StyleProp<ViewStyle> = {
     shadowColor: "#000",
     shadowOffset: {
         width: 0,
@@ -8,4 +11,12 @@ export const shadowStyle = {
     shadowRadius: 2,
 
     elevation: 5,
+};
+
+export const headline: StyleProp<TextStyle> = {
+    color: textColor,
+    fontSize: 26,
+    fontWeight: "bold",
+    margin: 20,
+    marginBottom: 0,
 };
