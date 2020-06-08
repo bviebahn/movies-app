@@ -7,4 +7,5 @@ export type Translations = {
     BY: SubstituteTranslation<{ name: string }>;
     READ_MORE: string;
     RECOMMENDATIONS: string;
+    SEARCH: string;
 };

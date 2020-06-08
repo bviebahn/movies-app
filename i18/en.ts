@@ -7,6 +7,7 @@ const translations: Translations = {
     BY: ({ name }) => `by ${name}`,
     READ_MORE: "Read more",
     RECOMMENDATIONS: "Recommendations",
+    SEARCH: "Search",
 };
 
 export default translations;
