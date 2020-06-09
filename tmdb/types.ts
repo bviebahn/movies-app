@@ -111,15 +111,7 @@ export type TmdbTvShowDetails = TmdbTvShow & {
     languages: ReadonlyArray<string>;
     number_of_episodes: number;
     number_of_seasons: number;
-    seasons: ReadonlyArray<{
-        air_date: string;
-        episode_count: number;
-        id: number;
-        name: string;
-        overview: string;
-        poster_path: string;
-        season_number: number;
-    }>;
+    seasons: ReadonlyArray<TmdbSeason>;
     status: string;
     type: string;
     vote_average: number;
@@ -150,15 +142,7 @@ export type TvShowDetails = TvShow & {
     languages: ReadonlyArray<string>;
     numberOfEpisodes: number;
     numberOfSeasons: number;
-    seasons: ReadonlyArray<{
-        airDate: string;
-        episodeCount: number;
-        id: number;
-        name: string;
-        overview: string;
-        posterPath: string;
-        seasonNumber: number;
-    }>;
+    seasons: ReadonlyArray<Season>;
     status: string;
     type: string;
     voteAverage: number;
@@ -166,6 +150,74 @@ export type TvShowDetails = TvShow & {
     credits: Credits;
     reviews: ReadonlyArray<Review>;
     recommendations: ReadonlyArray<TvShow>;
+};
+
+export type TmdbSeason = {
+    air_date: string;
+    episode_count: number;
+    id: number;
+    name: string;
+    overview: string;
+    poster_path: string;
+    season_number: number;
+};
+
+export type Season = {
+    airDate: string;
+    episodeCount: number;
+    id: number;
+    name: string;
+    overview: string;
+    posterPath: string;
+    seasonNumber: number;
+};
+
+export type TmdbSeasonDetails = {
+    air_date: string;
+    id: number;
+    name: string;
+    overview: string;
+    poster_path: string;
+    season_number: number;
+    episodes: ReadonlyArray<TmdbEpisode>;
+};
+
+export type SeasonDetails = {
+    airDate: string;
+    id: number;
+    name: string;
+    overview: string;
+    posterPath: string;
+    seasonNumber: number;
+    episodes: ReadonlyArray<Episode>;
+};
+
+export type TmdbEpisode = {
+    air_date: string;
+    episode_number: number;
+    guest_stars: ReadonlyArray<any>;
+    name: string;
+    overview: string;
+    id: number;
+    production_code?: string;
+    season_number: number;
+    still_path?: string;
+    vote_average: number;
+    vote_count: number;
+};
+
+export type Episode = {
+    airDate: string;
+    episodeNumber: number;
+    guestStars: ReadonlyArray<any>;
+    name: string;
+    overview: string;
+    id: number;
+    productionCode?: string;
+    seasonNumber: number;
+    stillPath?: string;
+    voteAverage: number;
+    voteCount: number;
 };
 
 export type Genre = {

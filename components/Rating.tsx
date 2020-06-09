@@ -17,7 +17,7 @@ function colorFromRating(rating: number) {
     return rating < 70 ? colors.average : colors.good;
 }
 
-const Rating: React.FC<{ percent: number; style: StyleProp<ViewStyle> }> = ({
+const Rating: React.FC<{ percent: number; style?: StyleProp<ViewStyle> }> = ({
     percent,
     style,
 }) => {

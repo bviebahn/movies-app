@@ -1,3 +1,4 @@
+export const gray0 = "#0F0F0F";
 export const gray1 = "#121212";
 export const gray2 = "#1e1e1e";
 export const gray3 = "#888";

@@ -1,5 +1,12 @@
 import React from "react";
-import { View, Text, ActivityIndicator, StyleSheet } from "react-native";
+import {
+    View,
+    Text,
+    ActivityIndicator,
+    StyleSheet,
+    StyleProp,
+    ViewStyle,
+} from "react-native";
 import Carousel from "./Carousel";
 import { headline } from "../constants/styles";
 
@@ -9,6 +16,7 @@ type Props<T> = {
     renderItem: (item: T) => React.ReactElement;
     itemWidth: number;
     keyExtractor: (item: T) => string;
+    style?: StyleProp<ViewStyle>;
 };
 
 const MediaWidget: <T>(p: Props<T>) => React.ReactElement<Props<T>> = ({
@@ -17,10 +25,11 @@ const MediaWidget: <T>(p: Props<T>) => React.ReactElement<Props<T>> = ({
     renderItem,
     itemWidth,
     keyExtractor,
+    style,
 }) => {
     return (
-        <View>
-            <Text style={headline}>{title}</Text>
+        <View style={style}>
+            <Text style={[headline, styles.title]}>{title}</Text>
             {data ? (
                 <Carousel
                     data={data}
@@ -36,6 +45,9 @@ const MediaWidget: <T>(p: Props<T>) => React.ReactElement<Props<T>> = ({
 };
 
 const styles = StyleSheet.create({
+    title: {
+        marginLeft: 20,
+    },
     activityIndicator: {
         marginTop: 50,
     },

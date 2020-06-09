@@ -17,6 +17,7 @@ import translate from "../i18/Locale";
 
 type Props = {
     reviews: ReadonlyArray<Review>;
+    style?: StyleProp<ViewStyle>;
 };
 
 type ReviewTileProps = {
@@ -41,11 +42,11 @@ const ReviewTile: React.FC<ReviewTileProps> = ({ author, content, style }) => {
     );
 };
 
-const ReviewsWidget: React.FC<Props> = ({ reviews }) => {
+const ReviewsWidget: React.FC<Props> = ({ reviews, style }) => {
     const { width } = useWindowDimensions();
     return (
-        <View>
-            <Text style={headline}>{translate("REVIEWS")}</Text>
+        <View style={style}>
+            <Text style={[styles.title, headline]}>{translate("REVIEWS")}</Text>
             <Carousel
                 data={reviews}
                 renderItem={({ author, content }) => (
@@ -78,6 +79,9 @@ const styles = StyleSheet.create({
         margin: 10,
         backgroundColor: gray2,
         borderRadius: 8,
+    },
+    title: {
+        marginLeft: 20,
     },
     author: {
         color: textColor,

@@ -35,6 +35,7 @@ const Home: React.FC = () => {
                         />
                     )}
                     keyExtractor={(item) => `${item.id}`}
+                    style={styles.widget}
                 />
                 <MediaWidget
                     title={translate("POPULAR_TV_SHOWS")}
@@ -53,6 +54,7 @@ const Home: React.FC = () => {
                         />
                     )}
                     keyExtractor={(item) => `${item.id}`}
+                    style={styles.widget}
                 />
             </ScrollView>
         </SafeAreaView>
@@ -66,6 +68,9 @@ const styles = StyleSheet.create({
     mediaTile: {
         marginHorizontal: TILE_HORIZONTAL_MARGIN,
         marginVertical: 10,
+    },
+    widget: {
+        marginTop: 30,
     },
 });
 

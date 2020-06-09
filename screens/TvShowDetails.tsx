@@ -11,17 +11,13 @@ import {
     View,
 } from "react-native";
 
+import InfoBox from "../components/InfoBox";
 import MediaTile from "../components/MediaTile";
 import MediaWidget from "../components/MediaWidget";
 import Rating from "../components/Rating";
 import ReviewsWidget from "../components/ReviewsWidget";
-import {
-    gray2,
-    primaryColor,
-    textColor,
-    textColorSecondary,
-} from "../constants/colors";
-import { dot, shadowStyle } from "../constants/styles";
+import { gray2, textColor, textColorSecondary } from "../constants/colors";
+import { dot, secondaryText, shadowStyle } from "../constants/styles";
 import {
     TILE_HORIZONTAL_MARGIN,
     TILE_WIDTH_M,
@@ -72,6 +68,31 @@ const TvShowDetails: React.FC = () => {
 
     const backdropHeight = (screenWidth * 9) / 16;
 
+    const infos = [
+        ...(createdBy && createdBy.length
+            ? [
+                  {
+                      key: translate("CREATOR", { n: createdBy.length }),
+                      value: createdBy
+                          .map((creator) => creator.name)
+                          .join(", "),
+                  },
+              ]
+            : []),
+        {
+            key: translate("ORIGINAL_LANGUAGE"),
+            value: getLanguage("en", originalLanguage),
+        },
+        ...(genres && genres.length
+            ? [
+                  {
+                      key: translate("GENRES"),
+                      value: genres.map((genre) => genre.name).join(", "),
+                  },
+              ]
+            : []),
+    ];
+
     return (
         <ScrollView contentContainerStyle={styles.tvShowDetails}>
             {backdropPath ? (
@@ -86,7 +107,7 @@ const TvShowDetails: React.FC = () => {
             />
             <View style={styles.mainContent}>
                 {posterPath ? (
-                    <View style={shadowStyle}>
+                    <View style={[styles.posterWrapper, shadowStyle]}>
                         <Image
                             source={{ uri: getPosterUrl(posterPath) }}
                             style={styles.poster}
@@ -102,48 +123,19 @@ const TvShowDetails: React.FC = () => {
                         {name}
                     </Text>
                     <View style={styles.dateRuntimeWrapper}>
-                        <Text style={styles.infoValue}>
+                        <Text style={secondaryText}>
                             {formatDate(new Date(firstAirDate))}
                         </Text>
                         {episodeRunTime ? (
                             <>
                                 <View style={dot} />
-                                <Text style={styles.infoValue}>
+                                <Text style={secondaryText}>
                                     {convertMinutesToTimeString(episodeRunTime)}
                                 </Text>
                             </>
                         ) : undefined}
                     </View>
-                    {createdBy && createdBy.length ? (
-                        <>
-                            <Text style={styles.infoKey}>
-                                {translate("CREATOR", { n: createdBy.length })}
-                            </Text>
-                            <Text style={styles.infoValue}>
-                                {createdBy
-                                    .map((creator) => creator.name)
-                                    .join(", ")}
-                            </Text>
-                        </>
-                    ) : undefined}
-                    <Text style={styles.infoKey}>
-                        {translate("ORIGINAL_LANGUAGE")}
-                    </Text>
-                    <Text style={styles.infoValue}>
-                        {getLanguage("en", originalLanguage)}
-                    </Text>
-
-                    {genres ? (
-                        <>
-                            <Text style={styles.infoKey}>
-                                {translate("GENRES")}
-                            </Text>
-                            <Text style={styles.infoValue}>
-                                {genres.map((genre) => genre.name).join(", ")}
-                            </Text>
-                        </>
-                    ) : undefined}
-
+                    <InfoBox data={infos} />
                     {loading ? (
                         <ActivityIndicator style={styles.activityIndicator} />
                     ) : undefined}
@@ -164,11 +156,17 @@ const TvShowDetails: React.FC = () => {
                                 "EPISODES",
                             )}`}
                             posterPath={season.posterPath}
-                            onPress={() => undefined}
+                            onPress={() =>
+                                navigation.navigate("SeasonDetails", {
+                                    tvShowId: id,
+                                    season,
+                                })
+                            }
                             style={styles.tileMargin}
                         />
                     )}
                     keyExtractor={(item) => `${item.id}`}
+                    style={styles.widget}
                 />
             ) : undefined}
             {credits && credits.cast.length ? (
@@ -187,10 +185,11 @@ const TvShowDetails: React.FC = () => {
                         />
                     )}
                     keyExtractor={(credit) => `${credit.id}`}
+                    style={styles.widget}
                 />
             ) : undefined}
             {reviews && reviews.length ? (
-                <ReviewsWidget reviews={reviews} />
+                <ReviewsWidget reviews={reviews} style={styles.widget} />
             ) : undefined}
             {recommendations ? (
                 <MediaWidget
@@ -210,6 +209,7 @@ const TvShowDetails: React.FC = () => {
                         />
                     )}
                     keyExtractor={(item) => `${item.id}`}
+                    style={styles.widget}
                 />
             ) : undefined}
         </ScrollView>
@@ -226,6 +226,9 @@ const styles = StyleSheet.create({
     mainContent: {
         flexDirection: "row",
         margin: 20,
+    },
+    posterWrapper: {
+        margin: 8,
     },
     poster: {
         width: 160,
@@ -246,18 +249,10 @@ const styles = StyleSheet.create({
     titleSmall: {
         fontSize: 20,
     },
-    infoKey: {
-        color: primaryColor,
-        marginTop: 10,
-        marginBottom: 2,
-        fontWeight: "bold",
-    },
-    infoValue: {
-        color: textColorSecondary,
-    },
     rating: { position: "absolute", right: 20 },
     overviewWrapper: {
         marginHorizontal: 20,
+        marginBottom: 20,
         borderTopColor: gray2,
         borderTopWidth: 1,
         paddingTop: 20,
@@ -276,6 +271,9 @@ const styles = StyleSheet.create({
     dateRuntimeWrapper: {
         flexDirection: "row",
         marginTop: 5,
+    },
+    widget: {
+        marginBottom: 20,
     },
 });
 

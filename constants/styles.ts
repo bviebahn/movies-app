@@ -17,8 +17,6 @@ export const headline: StyleProp<TextStyle> = {
     color: textColor,
     fontSize: 26,
     fontWeight: "bold",
-    margin: 20,
-    marginBottom: 0,
 };
 
 export const dot: StyleProp<ViewStyle> = {
@@ -29,4 +27,8 @@ export const dot: StyleProp<ViewStyle> = {
     marginTop: "auto",
     marginBottom: "auto",
     backgroundColor: textColorSecondary,
+};
+
+export const secondaryText: StyleProp<TextStyle> = {
+    color: textColorSecondary,
 };

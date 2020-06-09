@@ -4,13 +4,14 @@ import {
     StackNavigationProp,
     TransitionPresets,
 } from "@react-navigation/stack";
-import { Movie, TvShow } from "../tmdb/types";
+import { Movie, TvShow, Season } from "../tmdb/types";
 import Home from "../screens/Home";
 import MovieDetails from "../screens/MovieDetails";
 import TvShowDetails from "../screens/TvShowDetails";
 import { RouteProp } from "@react-navigation/native";
 import CloseButton from "../components/CloseButton";
 import { StyleSheet } from "react-native";
+import SeasonDetails from "../screens/SeasonDetails";
 
 type StartStackParams = {
     Home: undefined;
@@ -19,6 +20,10 @@ type StartStackParams = {
     };
     TvShowDetails: {
         tvShow: TvShow;
+    };
+    SeasonDetails: {
+        tvShowId: number;
+        season: Season;
     };
 };
 
@@ -50,6 +55,20 @@ const StartStackNavigator: React.FC = () => {
             <StartStack.Screen
                 name="TvShowDetails"
                 component={TvShowDetails}
+                options={({ navigation }) => ({
+                    ...TransitionPresets.ModalTransition,
+                    headerBackImage: () => null,
+                    headerRight: () => (
+                        <CloseButton
+                            onPress={navigation.goBack}
+                            style={styles.closeButton}
+                        />
+                    ),
+                })}
+            />
+            <StartStack.Screen
+                name="SeasonDetails"
+                component={SeasonDetails}
                 options={({ navigation }) => ({
                     ...TransitionPresets.ModalTransition,
                     headerBackImage: () => null,

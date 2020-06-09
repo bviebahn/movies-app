@@ -15,13 +15,8 @@ import MediaTile from "../components/MediaTile";
 import MediaWidget from "../components/MediaWidget";
 import Rating from "../components/Rating";
 import ReviewsWidget from "../components/ReviewsWidget";
-import {
-    gray2,
-    primaryColor,
-    textColor,
-    textColorSecondary,
-} from "../constants/colors";
-import { dot, shadowStyle } from "../constants/styles";
+import { gray2, textColor, textColorSecondary } from "../constants/colors";
+import { dot, shadowStyle, secondaryText } from "../constants/styles";
 import {
     TILE_HORIZONTAL_MARGIN,
     TILE_WIDTH_M,
@@ -36,6 +31,7 @@ import useMovieDetails from "../tmdb/useMovieDetails";
 import { getBackdropUrl, getPosterUrl } from "../tmdb/util";
 import { formatDate } from "../util/date";
 import { convertMinutesToTimeString } from "../util/time";
+import InfoBox from "../components/InfoBox";
 
 const MovieDetails: React.FC = () => {
     const route = useRoute<StartStackRouteProp<"MovieDetails">>();
@@ -64,6 +60,21 @@ const MovieDetails: React.FC = () => {
 
     const backdropHeight = (screenWidth * 9) / 16;
 
+    const infos = [
+        {
+            key: translate("ORIGINAL_LANGUAGE"),
+            value: getLanguage("en", originalLanguage),
+        },
+        ...(genres
+            ? [
+                  {
+                      key: translate("GENRES"),
+                      value: genres.map((genre) => genre.name).join(", "),
+                  },
+              ]
+            : []),
+    ];
+
     return (
         <ScrollView contentContainerStyle={styles.movieDetails}>
             {backdropPath ? (
@@ -78,7 +89,7 @@ const MovieDetails: React.FC = () => {
             />
             <View style={styles.mainContent}>
                 {posterPath ? (
-                    <View style={shadowStyle}>
+                    <View style={[styles.posterWrapper, shadowStyle]}>
                         <Image
                             source={{ uri: getPosterUrl(posterPath) }}
                             style={styles.poster}
@@ -94,35 +105,19 @@ const MovieDetails: React.FC = () => {
                         {title}
                     </Text>
                     <View style={styles.dateRuntimeWrapper}>
-                        <Text style={styles.infoValue}>
+                        <Text style={secondaryText}>
                             {formatDate(new Date(releaseDate))}
                         </Text>
                         {runtime ? (
                             <>
                                 <View style={dot} />
-                                <Text style={styles.infoValue}>
+                                <Text style={secondaryText}>
                                     {convertMinutesToTimeString(runtime)}
                                 </Text>
                             </>
                         ) : undefined}
                     </View>
-                    <Text style={styles.infoKey}>
-                        {translate("ORIGINAL_LANGUAGE")}
-                    </Text>
-                    <Text style={styles.infoValue}>
-                        {getLanguage("en", originalLanguage)}
-                    </Text>
-                    {genres ? (
-                        <>
-                            <Text style={styles.infoKey}>
-                                {translate("GENRES")}
-                            </Text>
-                            <Text style={styles.infoValue}>
-                                {genres.map((genre) => genre.name).join(", ")}
-                            </Text>
-                        </>
-                    ) : undefined}
-
+                    <InfoBox data={infos} />
                     {loading ? (
                         <ActivityIndicator style={styles.activityIndicator} />
                     ) : undefined}
@@ -190,6 +185,9 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         margin: 20,
     },
+    posterWrapper: {
+        margin: 8,
+    },
     poster: {
         width: 160,
         height: 240,
@@ -208,21 +206,13 @@ const styles = StyleSheet.create({
     titleSmall: {
         fontSize: 20,
     },
-    infoKey: {
-        color: primaryColor,
-        marginTop: 10,
-        marginBottom: 2,
-        fontWeight: "bold",
-    },
-    infoValue: {
-        color: textColorSecondary,
-    },
     rating: { position: "absolute", right: 20 },
     overviewWrapper: {
         marginHorizontal: 20,
         borderTopColor: gray2,
         borderTopWidth: 1,
         paddingTop: 20,
+        marginBottom: 20,
     },
     overview: {
         color: textColorSecondary,

@@ -13,6 +13,7 @@ import {
 import { GenreProvider } from "./tmdb/useGenres";
 import { MovieDetailsProvider } from "./tmdb/useMovieDetails";
 import { TvShowDetailsProvider } from "./tmdb/useTvShowDetails";
+import { SeasonDetailsProvider } from "./tmdb/useSeasonDetails";
 
 declare const global: { HermesInternal: null | {} };
 
@@ -21,22 +22,24 @@ const App = () => {
         <GenreProvider>
             <MovieDetailsProvider>
                 <TvShowDetailsProvider>
-                    <>
-                        <StatusBar barStyle="light-content" />
-                        <NavigationContainer
-                            theme={{
-                                dark: true,
-                                colors: {
-                                    background: gray1,
-                                    primary: primaryColor,
-                                    card: gray2,
-                                    text: textColor,
-                                    border: black,
-                                },
-                            }}>
-                            <TabNavigator />
-                        </NavigationContainer>
-                    </>
+                    <SeasonDetailsProvider>
+                        <>
+                            <StatusBar barStyle="light-content" />
+                            <NavigationContainer
+                                theme={{
+                                    dark: true,
+                                    colors: {
+                                        background: gray1,
+                                        primary: primaryColor,
+                                        card: gray2,
+                                        text: textColor,
+                                        border: black,
+                                    },
+                                }}>
+                                <TabNavigator />
+                            </NavigationContainer>
+                        </>
+                    </SeasonDetailsProvider>
                 </TvShowDetailsProvider>
             </MovieDetailsProvider>
         </GenreProvider>
