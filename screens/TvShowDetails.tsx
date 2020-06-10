@@ -3,12 +3,12 @@ import { getLanguage } from "iso-countries-languages";
 import React from "react";
 import {
     ActivityIndicator,
-    Image,
     ScrollView,
     StyleSheet,
     Text,
     useWindowDimensions,
     View,
+    Image,
 } from "react-native";
 
 import InfoBox from "../components/InfoBox";
@@ -29,9 +29,9 @@ import {
     StartStackRouteProp,
 } from "../navigators/StartStackNavigator";
 import useTvShowDetails from "../tmdb/useTvShowDetails";
-import { getBackdropUrl, getPosterUrl } from "../tmdb/util";
 import { formatDate } from "../util/date";
 import { convertMinutesToTimeString } from "../util/time";
+import useImageUrl from "../tmdb/useImageUrl";
 
 const TvShowDetails: React.FC = () => {
     const route = useRoute<StartStackRouteProp<"TvShowDetails">>();
@@ -39,6 +39,7 @@ const TvShowDetails: React.FC = () => {
         StartStackNavigationProp<"TvShowDetails">
     >();
     const { width: screenWidth } = useWindowDimensions();
+    const getImageUrl = useImageUrl();
 
     const {
         tvShow: {
@@ -97,7 +98,9 @@ const TvShowDetails: React.FC = () => {
         <ScrollView contentContainerStyle={styles.tvShowDetails}>
             {backdropPath ? (
                 <Image
-                    source={{ uri: getBackdropUrl(backdropPath) }}
+                    source={{
+                        uri: getImageUrl(backdropPath, "backdrop", "medium"),
+                    }}
                     style={[styles.backdrop, { height: backdropHeight }]}
                 />
             ) : undefined}
@@ -109,7 +112,13 @@ const TvShowDetails: React.FC = () => {
                 {posterPath ? (
                     <View style={[styles.posterWrapper, shadowStyle]}>
                         <Image
-                            source={{ uri: getPosterUrl(posterPath) }}
+                            source={{
+                                uri: getImageUrl(
+                                    posterPath,
+                                    "poster",
+                                    "medium",
+                                ),
+                            }}
                             style={styles.poster}
                         />
                     </View>
@@ -155,7 +164,11 @@ const TvShowDetails: React.FC = () => {
                             subtitle={`${season.episodeCount} ${translate(
                                 "EPISODES",
                             )}`}
-                            posterPath={season.posterPath}
+                            imageUrl={getImageUrl(
+                                season.posterPath,
+                                "poster",
+                                "medium",
+                            )}
                             onPress={() =>
                                 navigation.navigate("SeasonDetails", {
                                     tvShowId: id,
@@ -178,7 +191,15 @@ const TvShowDetails: React.FC = () => {
                         <MediaTile
                             title={credit.name}
                             subtitle={credit.character}
-                            posterPath={credit.profilePath}
+                            imageUrl={
+                                credit.profilePath
+                                    ? getImageUrl(
+                                          credit.profilePath,
+                                          "profile",
+                                          "medium",
+                                      )
+                                    : undefined
+                            }
                             onPress={() => undefined}
                             style={styles.tileMargin}
                             size="small"
@@ -200,7 +221,15 @@ const TvShowDetails: React.FC = () => {
                         <MediaTile
                             title={tvShow.name}
                             subtitle={formatDate(new Date(tvShow.firstAirDate))}
-                            posterPath={tvShow.posterPath}
+                            imageUrl={
+                                tvShow.posterPath
+                                    ? getImageUrl(
+                                          tvShow.posterPath,
+                                          "poster",
+                                          "medium",
+                                      )
+                                    : undefined
+                            }
                             voteAverage={tvShow.voteAverage}
                             onPress={() =>
                                 navigation.push("TvShowDetails", { tvShow })

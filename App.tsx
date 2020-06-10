@@ -1,49 +1,79 @@
 import "react-native-gesture-handler";
+
+import { NavigationContainer } from "@react-navigation/native";
 import React from "react";
 import { StatusBar } from "react-native";
-import { NavigationContainer } from "@react-navigation/native";
-import TabNavigator from "./navigators/TabNavigator";
+
 import {
-    gray1,
-    primaryColor,
-    gray2,
-    textColor,
     black,
+    gray1,
+    gray2,
+    primaryColor,
+    textColor,
 } from "./constants/colors";
+import TabNavigator from "./navigators/TabNavigator";
+import { ConfigurationProvider } from "./tmdb/useConfiguration";
 import { GenreProvider } from "./tmdb/useGenres";
 import { MovieDetailsProvider } from "./tmdb/useMovieDetails";
-import { TvShowDetailsProvider } from "./tmdb/useTvShowDetails";
 import { SeasonDetailsProvider } from "./tmdb/useSeasonDetails";
+import { TvShowDetailsProvider } from "./tmdb/useTvShowDetails";
 
 declare const global: { HermesInternal: null | {} };
 
+type ComposeProps = {
+    components: Array<
+        React.JSXElementConstructor<React.PropsWithChildren<any>>
+    >;
+    children: React.ReactNode;
+};
+
+function Compose(props: ComposeProps) {
+    const { components, children } = props;
+
+    return (
+        <>
+            {components.reduceRight(
+                (acc, Comp) => (
+                    <Comp>{acc}</Comp>
+                ),
+                children,
+            )}
+        </>
+    );
+}
+
 const App = () => {
     return (
-        <GenreProvider>
-            <MovieDetailsProvider>
-                <TvShowDetailsProvider>
-                    <SeasonDetailsProvider>
-                        <>
-                            <StatusBar barStyle="light-content" />
-                            <NavigationContainer
-                                theme={{
-                                    dark: true,
-                                    colors: {
-                                        background: gray1,
-                                        primary: primaryColor,
-                                        card: gray2,
-                                        text: textColor,
-                                        border: black,
-                                    },
-                                }}>
-                                <TabNavigator />
-                            </NavigationContainer>
-                        </>
-                    </SeasonDetailsProvider>
-                </TvShowDetailsProvider>
-            </MovieDetailsProvider>
-        </GenreProvider>
+        <>
+            <StatusBar barStyle="light-content" />
+            <NavigationContainer
+                theme={{
+                    dark: true,
+                    colors: {
+                        background: gray1,
+                        primary: primaryColor,
+                        card: gray2,
+                        text: textColor,
+                        border: black,
+                    },
+                }}>
+                <TabNavigator />
+            </NavigationContainer>
+        </>
     );
 };
 
-export default App;
+const ComposedApp = () => (
+    <Compose
+        components={[
+            ConfigurationProvider,
+            GenreProvider,
+            MovieDetailsProvider,
+            TvShowDetailsProvider,
+            SeasonDetailsProvider,
+        ]}>
+        <App />
+    </Compose>
+);
+
+export default ComposedApp;

@@ -1,4 +1,4 @@
-import { useRoute, useNavigation } from "@react-navigation/native";
+import { useRoute } from "@react-navigation/native";
 import React, { useRef } from "react";
 import { Animated, FlatList, StyleSheet, Text, View } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
@@ -11,19 +11,13 @@ import {
 } from "../constants/colors";
 import { headline, secondaryText } from "../constants/styles";
 import translate from "../i18/Locale";
-import {
-    StartStackRouteProp,
-    StartStackNavigationProp,
-} from "../navigators/StartStackNavigator";
+import { StartStackRouteProp } from "../navigators/StartStackNavigator";
 import useSeasonDetails from "../tmdb/useSeasonDetails";
-import { getPosterUrl } from "../tmdb/util";
 import { formatDate } from "../util/date";
+import useImageUrl from "../tmdb/useImageUrl";
 
 const SeasonDetails: React.FC = () => {
     const route = useRoute<StartStackRouteProp<"SeasonDetails">>();
-    const navigation = useNavigation<
-        StartStackNavigationProp<"SeasonDetails">
-    >();
     const {
         tvShowId,
         season: { airDate, name, overview, posterPath, seasonNumber },
@@ -32,12 +26,13 @@ const SeasonDetails: React.FC = () => {
     const { episodes } = seasonDetails || {};
 
     const parallaxAnim = useRef(new Animated.Value(0));
+    const getImageUrl = useImageUrl();
 
     const topContent = (
         <View style={styles.topInfoWrapper}>
             {posterPath ? (
                 <Animated.Image
-                    source={{ uri: getPosterUrl(posterPath) }}
+                    source={{ uri: getImageUrl(posterPath, "poster", "large") }}
                     style={[
                         styles.poster,
                         {
@@ -85,17 +80,7 @@ const SeasonDetails: React.FC = () => {
         <View>
             <FlatList
                 data={episodes}
-                renderItem={({ item }) => (
-                    <EpisodeListItem
-                        episode={item}
-                        onPress={() =>
-                            navigation.push("EpisodeDetails", {
-                                episodeNumber: item.episodeNumber,
-                                episodes: episodes || [],
-                            })
-                        }
-                    />
-                )}
+                renderItem={({ item }) => <EpisodeListItem episode={item} />}
                 keyExtractor={(item) => `${item.id}`}
                 ListHeaderComponent={topContent}
                 scrollEventThrottle={16}

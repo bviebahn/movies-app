@@ -8,14 +8,6 @@ import {
     Credits,
 } from "./types";
 
-export function getPosterUrl(path: string) {
-    return `https://image.tmdb.org/t/p/w342${path}`;
-}
-
-export function getBackdropUrl(path: string) {
-    return `https://image.tmdb.org/t/p/w780${path}`;
-}
-
 export function addGenres<T extends { genreIds: ReadonlyArray<number> }>(
     obj: T,
     genres: ReadonlyArray<Genre>,

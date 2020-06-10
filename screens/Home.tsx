@@ -9,11 +9,13 @@ import { formatDate } from "../util/date";
 import MediaWidget from "../components/MediaWidget";
 import useTvShows from "../tmdb/useTvShows";
 import { TILE_HORIZONTAL_MARGIN, TILE_WIDTH_M } from "../constants/values";
+import useImageUrl from "../tmdb/useImageUrl";
 
 const Home: React.FC = () => {
     const { data: popularMovies } = useMovies("popular");
     const { data: popularTvShows } = useTvShows("popular");
     const navigation = useNavigation<StartStackNavigationProp<"Home">>();
+    const getImageUrl = useImageUrl();
 
     return (
         <SafeAreaView>
@@ -26,7 +28,15 @@ const Home: React.FC = () => {
                         <MediaTile
                             title={movie.title}
                             subtitle={formatDate(new Date(movie.releaseDate))}
-                            posterPath={movie.posterPath}
+                            imageUrl={
+                                movie.posterPath
+                                    ? getImageUrl(
+                                          movie.posterPath,
+                                          "poster",
+                                          "medium",
+                                      )
+                                    : undefined
+                            }
                             voteAverage={movie.voteAverage}
                             onPress={() =>
                                 navigation.push("MovieDetails", { movie })
@@ -45,7 +55,15 @@ const Home: React.FC = () => {
                         <MediaTile
                             title={tvShow.name}
                             subtitle={formatDate(new Date(tvShow.firstAirDate))}
-                            posterPath={tvShow.posterPath}
+                            imageUrl={
+                                tvShow.posterPath
+                                    ? getImageUrl(
+                                          tvShow.posterPath,
+                                          "poster",
+                                          "medium",
+                                      )
+                                    : undefined
+                            }
                             voteAverage={tvShow.voteAverage}
                             onPress={() =>
                                 navigation.push("TvShowDetails", { tvShow })

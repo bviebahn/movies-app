@@ -17,12 +17,11 @@ import {
     textColorSecondary,
 } from "../constants/colors";
 import { shadowStyle } from "../constants/styles";
-import { getPosterUrl } from "../tmdb/util";
-import Rating from "./Rating";
 import { TILE_WIDTH_M, TILE_WIDTH_S } from "../constants/values";
+import Rating from "./Rating";
 
 type Props = {
-    posterPath?: string;
+    imageUrl?: string;
     title: string;
     subtitle: string;
     voteAverage?: number;
@@ -32,7 +31,7 @@ type Props = {
 };
 
 const MediaTile: React.FC<Props> = ({
-    posterPath,
+    imageUrl,
     title,
     subtitle,
     voteAverage,
@@ -55,9 +54,9 @@ const MediaTile: React.FC<Props> = ({
                 },
                 style,
             ]}>
-            {posterPath ? (
+            {imageUrl ? (
                 <Image
-                    source={{ uri: getPosterUrl(posterPath) }}
+                    source={{ uri: imageUrl }}
                     style={[styles.image, { height: imageHeight }]}
                 />
             ) : (

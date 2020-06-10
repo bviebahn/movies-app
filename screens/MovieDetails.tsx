@@ -11,12 +11,13 @@ import {
     View,
 } from "react-native";
 
+import InfoBox from "../components/InfoBox";
 import MediaTile from "../components/MediaTile";
 import MediaWidget from "../components/MediaWidget";
 import Rating from "../components/Rating";
 import ReviewsWidget from "../components/ReviewsWidget";
 import { gray2, textColor, textColorSecondary } from "../constants/colors";
-import { dot, shadowStyle, secondaryText } from "../constants/styles";
+import { dot, secondaryText, shadowStyle } from "../constants/styles";
 import {
     TILE_HORIZONTAL_MARGIN,
     TILE_WIDTH_M,
@@ -27,11 +28,10 @@ import {
     StartStackNavigationProp,
     StartStackRouteProp,
 } from "../navigators/StartStackNavigator";
+import useImageUrl from "../tmdb/useImageUrl";
 import useMovieDetails from "../tmdb/useMovieDetails";
-import { getBackdropUrl, getPosterUrl } from "../tmdb/util";
 import { formatDate } from "../util/date";
 import { convertMinutesToTimeString } from "../util/time";
-import InfoBox from "../components/InfoBox";
 
 const MovieDetails: React.FC = () => {
     const route = useRoute<StartStackRouteProp<"MovieDetails">>();
@@ -54,6 +54,7 @@ const MovieDetails: React.FC = () => {
     } = route.params;
 
     const { movieDetails, loading } = useMovieDetails(id);
+    const getImageUrl = useImageUrl();
 
     const { runtime, tagline, credits, reviews, recommendations, genres } =
         movieDetails || {};
@@ -79,7 +80,9 @@ const MovieDetails: React.FC = () => {
         <ScrollView contentContainerStyle={styles.movieDetails}>
             {backdropPath ? (
                 <Image
-                    source={{ uri: getBackdropUrl(backdropPath) }}
+                    source={{
+                        uri: getImageUrl(backdropPath, "backdrop", "medium"),
+                    }}
                     style={[styles.backdrop, { height: backdropHeight }]}
                 />
             ) : undefined}
@@ -91,7 +94,13 @@ const MovieDetails: React.FC = () => {
                 {posterPath ? (
                     <View style={[styles.posterWrapper, shadowStyle]}>
                         <Image
-                            source={{ uri: getPosterUrl(posterPath) }}
+                            source={{
+                                uri: getImageUrl(
+                                    posterPath,
+                                    "poster",
+                                    "medium",
+                                ),
+                            }}
                             style={styles.poster}
                         />
                     </View>
@@ -138,7 +147,15 @@ const MovieDetails: React.FC = () => {
                         <MediaTile
                             title={credit.name}
                             subtitle={credit.character}
-                            posterPath={credit.profilePath}
+                            imageUrl={
+                                credit.profilePath
+                                    ? getImageUrl(
+                                          credit.profilePath,
+                                          "profile",
+                                          "medium",
+                                      )
+                                    : undefined
+                            }
                             onPress={() => undefined}
                             size="small"
                             style={styles.tileMargin}
@@ -160,7 +177,15 @@ const MovieDetails: React.FC = () => {
                         <MediaTile
                             title={movie.title}
                             subtitle={formatDate(new Date(movie.releaseDate))}
-                            posterPath={movie.posterPath}
+                            imageUrl={
+                                movie.posterPath
+                                    ? getImageUrl(
+                                          movie.posterPath,
+                                          "poster",
+                                          "medium",
+                                      )
+                                    : undefined
+                            }
                             voteAverage={movie.voteAverage}
                             onPress={() =>
                                 navigation.push("MovieDetails", { movie })

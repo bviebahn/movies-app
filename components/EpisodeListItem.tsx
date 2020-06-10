@@ -1,11 +1,6 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
-import {
-    gray0,
-    textColorSecondary,
-    gray3,
-    primaryColor,
-} from "../constants/colors";
+import { gray0, textColorSecondary, gray3 } from "../constants/colors";
 import Rating from "./Rating";
 
 type Props = {

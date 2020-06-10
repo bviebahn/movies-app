@@ -277,3 +277,30 @@ export type Review = {
     content: string;
     url: string;
 };
+
+export type TmdbConfiguration = {
+    images: {
+        base_url: string;
+        secure_base_url: string;
+        backdrop_sizes: ReadonlyArray<string>;
+        logo_sizes: ReadonlyArray<string>;
+        poster_sizes: ReadonlyArray<string>;
+        profile_sizes: ReadonlyArray<string>;
+        still_sizes: ReadonlyArray<string>;
+    };
+};
+
+export type Configuration = {
+    images: {
+        baseUrl: string;
+        secureBaseUrl: string;
+        backdropSizes: ReadonlyArray<string>;
+        logoSizes: ReadonlyArray<string>;
+        posterSizes: ReadonlyArray<string>;
+        profileSizes: ReadonlyArray<string>;
+        stillSizes: ReadonlyArray<string>;
+    };
+};
+
+export type ImageType = "backdrop" | "logo" | "poster" | "profile" | "still";
+export type ImageSize = "small" | "medium" | "large" | "original";
