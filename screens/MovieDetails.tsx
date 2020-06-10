@@ -145,10 +145,11 @@ const MovieDetails: React.FC = () => {
                         />
                     )}
                     keyExtractor={(credit) => `${credit.id}`}
+                    style={styles.widget}
                 />
             ) : undefined}
             {reviews && reviews.length ? (
-                <ReviewsWidget reviews={reviews} />
+                <ReviewsWidget reviews={reviews} style={styles.widget} />
             ) : undefined}
             {recommendations ? (
                 <MediaWidget
@@ -168,6 +169,7 @@ const MovieDetails: React.FC = () => {
                         />
                     )}
                     keyExtractor={(item) => `${item.id}`}
+                    style={styles.widget}
                 />
             ) : undefined}
         </ScrollView>
@@ -237,6 +239,9 @@ const styles = StyleSheet.create({
     tileMargin: {
         marginHorizontal: TILE_HORIZONTAL_MARGIN,
         marginVertical: 10,
+    },
+    widget: {
+        marginBottom: 20,
     },
 });
 
