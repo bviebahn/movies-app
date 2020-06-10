@@ -31,7 +31,7 @@ const Rating: React.FC<{ percent: number; style?: StyleProp<ViewStyle> }> = ({
             progressTintColor={color[1]}
             backgroundColor={gray1}
             style={style}>
-            <Text style={styles.text}>{percent}</Text>
+            <Text style={styles.text}>{Math.floor(percent)}</Text>
         </CircularProgress>
     );
 };

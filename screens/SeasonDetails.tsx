@@ -1,25 +1,29 @@
-import { useRoute } from "@react-navigation/native";
+import { useRoute, useNavigation } from "@react-navigation/native";
 import React, { useRef } from "react";
 import { Animated, FlatList, StyleSheet, Text, View } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 
-import Rating from "../components/Rating";
+import EpisodeListItem from "../components/EpisodeListItem";
 import {
-    gray0,
-    gray3,
     primaryColor,
     textColor,
     textColorSecondary,
 } from "../constants/colors";
 import { headline, secondaryText } from "../constants/styles";
 import translate from "../i18/Locale";
-import { StartStackRouteProp } from "../navigators/StartStackNavigator";
+import {
+    StartStackRouteProp,
+    StartStackNavigationProp,
+} from "../navigators/StartStackNavigator";
 import useSeasonDetails from "../tmdb/useSeasonDetails";
 import { getPosterUrl } from "../tmdb/util";
 import { formatDate } from "../util/date";
 
 const SeasonDetails: React.FC = () => {
     const route = useRoute<StartStackRouteProp<"SeasonDetails">>();
+    const navigation = useNavigation<
+        StartStackNavigationProp<"SeasonDetails">
+    >();
     const {
         tvShowId,
         season: { airDate, name, overview, posterPath, seasonNumber },
@@ -31,6 +35,26 @@ const SeasonDetails: React.FC = () => {
 
     const topContent = (
         <View style={styles.topInfoWrapper}>
+            {posterPath ? (
+                <Animated.Image
+                    source={{ uri: getPosterUrl(posterPath) }}
+                    style={[
+                        styles.poster,
+                        {
+                            transform: [
+                                {
+                                    translateY: parallaxAnim.current.interpolate(
+                                        {
+                                            inputRange: [0, 1],
+                                            outputRange: [0, 0.4],
+                                        },
+                                    ),
+                                },
+                            ],
+                        },
+                    ]}
+                />
+            ) : undefined}
             <LinearGradient
                 colors={["#00000000", "#000000DD", "#000000"]}
                 locations={[0, 0.6, 0.95]}
@@ -59,46 +83,18 @@ const SeasonDetails: React.FC = () => {
 
     return (
         <View>
-            {posterPath ? (
-                <Animated.Image
-                    source={{ uri: getPosterUrl(posterPath) }}
-                    style={[
-                        styles.poster,
-                        {
-                            transform: [
-                                {
-                                    translateY: parallaxAnim.current.interpolate(
-                                        {
-                                            inputRange: [0, 1],
-                                            outputRange: [0, -0.4],
-                                        },
-                                    ),
-                                },
-                            ],
-                        },
-                    ]}
-                />
-            ) : undefined}
             <FlatList
                 data={episodes}
                 renderItem={({ item }) => (
-                    <View style={styles.episodeItem}>
-                        <View style={styles.episodeLeft}>
-                            <Text
-                                style={
-                                    styles.episodeTitle
-                                }>{`${item.episodeNumber}. ${item.name}`}</Text>
-                            <Text
-                                style={styles.episodeOverview}
-                                numberOfLines={5}>
-                                {item.overview}
-                            </Text>
-                        </View>
-                        <Rating
-                            percent={Math.floor(item.voteAverage * 10)}
-                            style={styles.rating}
-                        />
-                    </View>
+                    <EpisodeListItem
+                        episode={item}
+                        onPress={() =>
+                            navigation.push("EpisodeDetails", {
+                                episodeNumber: item.episodeNumber,
+                                episodes: episodes || [],
+                            })
+                        }
+                    />
                 )}
                 keyExtractor={(item) => `${item.id}`}
                 ListHeaderComponent={topContent}
@@ -128,11 +124,13 @@ const styles = StyleSheet.create({
         marginLeft: 20,
     },
     poster: {
-        width: "100%",
-        height: 600,
+        // width: "100%",
+        // height: "100%",
         position: "absolute",
         top: 0,
         left: 0,
+        bottom: 0,
+        right: 0,
     },
     posterGradient: {
         position: "absolute",
@@ -168,27 +166,6 @@ const styles = StyleSheet.create({
         padding: 20,
         paddingBottom: 10,
     },
-    episodeItem: {
-        backgroundColor: gray0,
-        paddingHorizontal: 20,
-        paddingVertical: 10,
-        flex: 1,
-        flexDirection: "row",
-        borderBottomColor: "#000",
-        borderBottomWidth: 1,
-    },
-    episodeLeft: { flexShrink: 1, marginRight: 10 },
-    episodeTitle: {
-        fontSize: 16,
-        fontWeight: "bold",
-        color: textColorSecondary,
-        marginBottom: 5,
-    },
-    episodeOverview: {
-        color: gray3,
-        flexShrink: 1,
-    },
-    rating: { marginLeft: "auto" },
 });
 
 export default SeasonDetails;
