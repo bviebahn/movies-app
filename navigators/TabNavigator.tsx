@@ -1,8 +1,9 @@
-import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import React from "react";
 import Icon from "react-native-vector-icons/FontAwesome";
-import Search from "../screens/Search";
+
 import { gray1, primaryColor } from "../constants/colors";
+import SearchStackNavigator from "./SearchStackNavigator";
 import StartStackNavigator from "./StartStackNavigator";
 
 type TabParams = {
@@ -39,7 +40,7 @@ const TabNavigator: React.FC = () => (
             style: { backgroundColor: gray1 },
         }}>
         <Tab.Screen name="Start" component={StartStackNavigator} />
-        <Tab.Screen name="Search" component={Search} />
+        <Tab.Screen name="Search" component={SearchStackNavigator} />
     </Tab.Navigator>
 );
 

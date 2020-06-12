@@ -122,8 +122,6 @@ export const TvShowDetailsProvider: React.FC<{ children: React.ReactNode }> = ({
 
         if (response.ok) {
             const result = await response.json();
-            console.log("result", result);
-
             dispatch({
                 type: "LOAD_DETAILS_FINISH",
                 payload: convertTvShowDetails(result),

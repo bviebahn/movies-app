@@ -17,6 +17,7 @@ import { GenreProvider } from "./tmdb/useGenres";
 import { MovieDetailsProvider } from "./tmdb/useMovieDetails";
 import { SeasonDetailsProvider } from "./tmdb/useSeasonDetails";
 import { TvShowDetailsProvider } from "./tmdb/useTvShowDetails";
+import { SearchProvider } from "./tmdb/useSearch";
 
 declare const global: { HermesInternal: null | {} };
 
@@ -71,6 +72,7 @@ const ComposedApp = () => (
             MovieDetailsProvider,
             TvShowDetailsProvider,
             SeasonDetailsProvider,
+            SearchProvider,
         ]}>
         <App />
     </Compose>

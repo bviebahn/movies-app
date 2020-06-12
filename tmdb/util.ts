@@ -6,6 +6,10 @@ import {
     Genre,
     TmdbCredits,
     Credits,
+    TmdbSearchResult,
+    SearchResult,
+    TmdbPerson,
+    Person,
 } from "./types";
 
 export function addGenres<T extends { genreIds: ReadonlyArray<number> }>(
@@ -83,5 +87,37 @@ export function convertCredits(credits: TmdbCredits): Credits {
                 gender: c.gender,
                 profilePath: c.profile_path,
             })),
+    };
+}
+
+export function convertPerson(person: TmdbPerson): Person {
+    return {
+        adult: person.adult,
+        id: person.id,
+        knownFor: person.known_for.map((i) =>
+            i.media_type === "movie"
+                ? { ...convertMovie(i), mediaType: "movie" }
+                : { ...convertTvShow(i), mediaType: "tv" },
+        ),
+        name: person.name,
+        popularity: person.popularity,
+        profilePath: person.profile_path,
+    };
+}
+
+export function convertSearchResult(result: TmdbSearchResult): SearchResult {
+    return {
+        totalResults: result.total_results,
+        results: result.results.map((r) => {
+            if (r.media_type === "movie") {
+                return { ...convertMovie(r), mediaType: "movie" };
+            }
+
+            if (r.media_type === "tv") {
+                return { ...convertTvShow(r), mediaType: "tv" };
+            }
+
+            return { ...convertPerson(r), mediaType: "person" };
+        }),
     };
 }

@@ -302,5 +302,48 @@ export type Configuration = {
     };
 };
 
+export type TmdbPerson = {
+    profile_path?: string;
+    adult: boolean;
+    id: number;
+    known_for: ReadonlyArray<
+        | (TmdbMovie & { media_type: "movie" })
+        | (TmdbTvShow & { media_type: "tv" })
+    >;
+    name: string;
+    popularity: number;
+};
+
+export type Person = {
+    profilePath?: string;
+    adult: boolean;
+    id: number;
+    knownFor: ReadonlyArray<
+        (Movie & { mediaType: "movie" }) | (TvShow & { mediaType: "tv" })
+    >;
+    name: string;
+    popularity: number;
+};
+
 export type ImageType = "backdrop" | "logo" | "poster" | "profile" | "still";
 export type ImageSize = "small" | "medium" | "large" | "original";
+
+export type SearchResult = {
+    results: ReadonlyArray<
+        | (Movie & { mediaType: "movie" })
+        | (TvShow & { mediaType: "tv" })
+        | (Person & { mediaType: "person" })
+    >;
+    totalResults: number;
+};
+
+export type TmdbSearchResult = {
+    page: number;
+    total_results: number;
+    total_pages: number;
+    results: ReadonlyArray<
+        | (TmdbMovie & { media_type: "movie" })
+        | (TmdbTvShow & { media_type: "tv" })
+        | (TmdbPerson & { media_type: "person" })
+    >;
+};

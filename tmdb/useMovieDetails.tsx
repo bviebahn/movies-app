@@ -14,8 +14,6 @@ type State = {
 };
 
 function convertMovieDetails(details: TmdbMovieDetails): MovieDetails {
-    console.log("details", details);
-
     return {
         id: details.id,
         adult: details.adult,
@@ -106,8 +104,6 @@ export const MovieDetailsProvider: React.FC<{ children: React.ReactNode }> = ({
 
         if (response.ok) {
             const result = await response.json();
-            console.log("result", result);
-
             dispatch({
                 type: "LOAD_DETAILS_FINISH",
                 payload: convertMovieDetails(result),

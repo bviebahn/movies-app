@@ -5,15 +5,15 @@ import {
 } from "@react-navigation/stack";
 import React from "react";
 
-import Home from "../screens/Home";
 import MovieDetails from "../screens/MovieDetails";
+import Search from "../screens/Search";
 import SeasonDetails from "../screens/SeasonDetails";
 import TvShowDetails from "../screens/TvShowDetails";
 import { Movie, Season, TvShow } from "../tmdb/types";
 import { cardNavigationOptions } from "./navigationOptions";
 
-type StartStackParams = {
-    Home: undefined;
+type SearchStackParams = {
+    Search: undefined;
     MovieDetails: {
         movie: Movie;
     };
@@ -26,43 +26,43 @@ type StartStackParams = {
     };
 };
 
-const StartStack = createStackNavigator<StartStackParams>();
+const SearchStack = createStackNavigator<SearchStackParams>();
 
-const StartStackNavigator: React.FC = () => {
+const SearchStackNavigator: React.FC = () => {
     return (
-        <StartStack.Navigator
+        <SearchStack.Navigator
             screenOptions={{
                 headerTransparent: true,
                 headerTitle: () => null,
                 headerBackTitleVisible: false,
             }}
-            initialRouteName="Home">
-            <StartStack.Screen name="Home" component={Home} />
-            <StartStack.Screen
+            initialRouteName="Search">
+            <SearchStack.Screen name="Search" component={Search} />
+            <SearchStack.Screen
                 name="MovieDetails"
                 component={MovieDetails}
                 options={cardNavigationOptions}
             />
-            <StartStack.Screen
+            <SearchStack.Screen
                 name="TvShowDetails"
                 component={TvShowDetails}
                 options={cardNavigationOptions}
             />
-            <StartStack.Screen
+            <SearchStack.Screen
                 name="SeasonDetails"
                 component={SeasonDetails}
                 options={cardNavigationOptions}
             />
-        </StartStack.Navigator>
+        </SearchStack.Navigator>
     );
 };
 
-export type StartStackNavigationProp<
-    Screen extends keyof StartStackParams
-> = StackNavigationProp<StartStackParams, Screen>;
+export type SearchStackNavigationProp<
+    Screen extends keyof SearchStackParams
+> = StackNavigationProp<SearchStackParams, Screen>;
 
-export type StartStackRouteProp<
-    Screen extends keyof StartStackParams
-> = RouteProp<StartStackParams, Screen>;
+export type SearchStackRouteProp<
+    Screen extends keyof SearchStackParams
+> = RouteProp<SearchStackParams, Screen>;
 
-export default StartStackNavigator;
+export default SearchStackNavigator;

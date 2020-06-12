@@ -106,8 +106,6 @@ export const SeasonDetailsProvider: React.FC<{ children: React.ReactNode }> = ({
 
         if (response.ok) {
             const result = await response.json();
-            console.log("seasondetails", result);
-
             dispatch({
                 type: "LOAD_DETAILS_FINISH",
                 payload: {
