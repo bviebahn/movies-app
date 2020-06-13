@@ -30,21 +30,18 @@ const Rating: React.FC<{ percent: number; style?: StyleProp<ViewStyle> }> = ({
             progressColor={color[0]}
             progressTintColor={color[1]}
             backgroundColor={gray1}
-            style={style}>
+            style={[style, styles.circle]}>
             <Text style={styles.text}>{Math.floor(percent)}</Text>
         </CircularProgress>
     );
 };
 
 const styles = StyleSheet.create({
+    circle: { justifyContent: "center", alignItems: "center" },
     text: {
         position: "absolute",
         color: textColor,
-        alignItems: "center",
-        justifyContent: "center",
         overflow: "hidden",
-        left: 11,
-        top: 11,
         fontWeight: "bold",
     },
 });

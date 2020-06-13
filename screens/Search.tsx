@@ -10,6 +10,8 @@ import {
     Text,
     View,
     TouchableOpacity,
+    NativeSyntheticEvent,
+    NativeScrollEvent,
 } from "react-native";
 import SearchBar from "react-native-search-bar";
 
@@ -23,6 +25,8 @@ import useDebounce, { useDebouncedValue } from "../util/useDebounce";
 import Rating from "../components/Rating";
 import { useNavigation } from "@react-navigation/native";
 import { SearchStackNavigationProp } from "../navigators/SearchStackNavigator";
+import useGenres from "../tmdb/useGenres";
+import ChipSelector from "../components/ChipSelector";
 
 const SearchListItem: React.FC<{ item: SearchResultItem }> = ({ item }) => {
     const title = item.mediaType === "movie" ? item.title : item.name;
@@ -90,17 +94,22 @@ const SearchListItem: React.FC<{ item: SearchResultItem }> = ({ item }) => {
 };
 
 const Search: React.FC = () => {
-    const [focused, setFocused] = useState(false);
+    const [screenTitleHidden, setScreenTitleHidden] = useState(false);
     const [query, setQuery] = useState<string>();
     const anim = useRef(new Animated.Value(1));
+    const [scrollOffset, setScrollOffset] = useState(0);
 
     const debouncedQuery = useDebouncedValue(query, 500);
     const { data, loading, fetchMore } = useSearch(debouncedQuery);
 
     const fetchMoreDebounced = useDebounce(fetchMore, 1000);
 
+    const { movieGenres, tvGenres } = useGenres();
+    console.log("movieGenres", movieGenres);
+    console.log("tvGenres", tvGenres);
+
     useEffect(() => {
-        if (focused) {
+        if (screenTitleHidden) {
             Animated.timing(anim.current, {
                 toValue: 0,
                 duration: 300,
@@ -115,7 +124,16 @@ const Search: React.FC = () => {
                 useNativeDriver: true,
             }).start();
         }
-    }, [focused]);
+    }, [screenTitleHidden]);
+
+    const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+        const newScrollOffset = event.nativeEvent.contentOffset.y;
+        const diff = Math.abs(scrollOffset - newScrollOffset);
+        if (diff > 100) {
+            setScreenTitleHidden(newScrollOffset > scrollOffset);
+            setScrollOffset(newScrollOffset);
+        }
+    };
 
     return (
         <SafeAreaView style={styles.search}>
@@ -148,9 +166,9 @@ const Search: React.FC = () => {
                         barStyle="black"
                         hideBackground
                         textColor={textColorSecondary}
+                        keyboardAppearance="dark"
                         onChangeText={setQuery}
-                        onFocus={() => setFocused(true)}
-                        onBlur={() => setFocused(false)}
+                        onFocus={() => setScreenTitleHidden(true)}
                     />
                 </View>
                 {data ? (
@@ -165,8 +183,26 @@ const Search: React.FC = () => {
                         ListFooterComponentStyle={styles.listFooter}
                         keyboardShouldPersistTaps="never"
                         keyboardDismissMode="on-drag"
+                        onScroll={handleScroll}
                     />
-                ) : undefined}
+                ) : (
+                    <>
+                        <Text style={styles.genresTitle}>
+                            {translate("MOVIE_GENRES")}
+                        </Text>
+                        <ChipSelector
+                            data={movieGenres.map((genre) => genre.name)}
+                            onPressItem={() => undefined}
+                        />
+                        <Text style={styles.genresTitle}>
+                            {translate("TV_GENRES")}
+                        </Text>
+                        <ChipSelector
+                            data={tvGenres.map((genre) => genre.name)}
+                            onPressItem={() => undefined}
+                        />
+                    </>
+                )}
                 {loading && !data ? (
                     <ActivityIndicator style={styles.activityIndicator} />
                 ) : undefined}
@@ -217,6 +253,14 @@ const styles = StyleSheet.create({
         marginVertical: 20,
     },
     rating: { marginLeft: "auto" },
+    genresTitle: {
+        color: textColorSecondary,
+        marginLeft: 20,
+        marginBottom: 10,
+        marginTop: 20,
+        fontSize: 20,
+        fontWeight: "bold",
+    },
 });
 
 export default Search;

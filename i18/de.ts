@@ -14,6 +14,8 @@ const translations: Translations = {
     SEASONS: "Staffeln",
     EPISODES: "Folgen",
     CREATOR: ({ n }) => (n > 1 ? "Creators" : "Creator"),
+    MOVIE_GENRES: "Film Genres",
+    TV_GENRES: "TV Genres",
 };
 
 export default translations;

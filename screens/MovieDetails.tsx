@@ -168,7 +168,7 @@ const MovieDetails: React.FC = () => {
             {reviews && reviews.length ? (
                 <ReviewsWidget reviews={reviews} style={styles.widget} />
             ) : undefined}
-            {recommendations ? (
+            {recommendations && recommendations.length ? (
                 <MediaWidget
                     title={translate("RECOMMENDATIONS")}
                     data={recommendations}
