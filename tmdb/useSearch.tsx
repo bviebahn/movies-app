@@ -1,14 +1,14 @@
-import React, { useReducer, useContext, useEffect, useState } from "react";
-import { TMDB_BASE_URL, TMDB_ACCESS_TOKEN } from "./constants";
+import React, { useContext, useEffect, useReducer, useState } from "react";
+
 import {
-    TmdbMovie,
-    TmdbTvShow,
-    TmdbPerson,
-    Person,
-    TvShow,
     Movie,
+    Person,
+    TmdbMovie,
+    TmdbPerson,
+    TmdbTvShow,
+    TvShow,
 } from "./types";
-import { convertSearchResult } from "./util";
+import { convertSearchResult, fetchTmdb } from "./util";
 
 type TmdbSearchResult = {
     page: number;
@@ -87,14 +87,8 @@ function reducer(state: SearchState, action: Action): SearchState {
 }
 
 async function fetchSearch(queryParam: string, page: number = 1) {
-    const response = await fetch(
-        `${TMDB_BASE_URL}search/multi?query=${queryParam}&page=${page}`,
-        {
-            method: "GET",
-            headers: {
-                Authorization: `Bearer ${TMDB_ACCESS_TOKEN}`,
-            },
-        },
+    const response = await fetchTmdb(
+        `search/multi?query=${queryParam}&page=${page}`,
     );
 
     if (response.ok) {

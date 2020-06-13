@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+
 import { TvShow } from "./types";
-import { TMDB_BASE_URL, TMDB_ACCESS_TOKEN } from "./constants";
-import { convertTvShow } from "./util";
+import { convertTvShow, fetchTmdb } from "./util";
 
 const useTvShows = (
     type: "popular" | "latest" | "airing_today" | "top_rated" | "on_the_air",
@@ -12,12 +12,7 @@ const useTvShows = (
 
     useEffect(() => {
         const fetchTvShows = async () => {
-            const response = await fetch(`${TMDB_BASE_URL}tv/${type}`, {
-                method: "GET",
-                headers: {
-                    Authorization: `Bearer ${TMDB_ACCESS_TOKEN}`,
-                },
-            });
+            const response = await fetchTmdb(`tv/${type}`);
 
             setLoading(false);
             if (response.ok) {

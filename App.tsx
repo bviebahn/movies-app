@@ -15,9 +15,10 @@ import TabNavigator from "./navigators/TabNavigator";
 import { ConfigurationProvider } from "./tmdb/useConfiguration";
 import { GenreProvider } from "./tmdb/useGenres";
 import { MovieDetailsProvider } from "./tmdb/useMovieDetails";
+import { SearchProvider } from "./tmdb/useSearch";
 import { SeasonDetailsProvider } from "./tmdb/useSeasonDetails";
 import { TvShowDetailsProvider } from "./tmdb/useTvShowDetails";
-import { SearchProvider } from "./tmdb/useSearch";
+import { UserProvider } from "./tmdb/useUser";
 
 declare const global: { HermesInternal: null | {} };
 
@@ -73,6 +74,7 @@ const ComposedApp = () => (
             TvShowDetailsProvider,
             SeasonDetailsProvider,
             SearchProvider,
+            UserProvider,
         ]}>
         <App />
     </Compose>

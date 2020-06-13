@@ -1,8 +1,7 @@
 import React, { useContext, useReducer } from "react";
 
-import { TMDB_ACCESS_TOKEN, TMDB_BASE_URL } from "./constants";
 import { TmdbTvShowDetails, TvShowDetails } from "./types";
-import { convertCredits, convertTvShow } from "./util";
+import { convertCredits, convertTvShow, fetchTmdb } from "./util";
 
 type TvShowDetailsResult = {
     tvShowDetails?: TvShowDetails;
@@ -110,14 +109,8 @@ export const TvShowDetailsProvider: React.FC<{ children: React.ReactNode }> = ({
 
     const fetchTvShowDetails = async (id: number) => {
         dispatch({ type: "LOAD_DETAILS_START", payload: id });
-        const response = await fetch(
-            `${TMDB_BASE_URL}tv/${id}?append_to_response=credits,reviews,recommendations`,
-            {
-                method: "GET",
-                headers: {
-                    Authorization: `Bearer ${TMDB_ACCESS_TOKEN}`,
-                },
-            },
+        const response = await fetchTmdb(
+            `tv/${id}?append_to_response=credits,reviews,recommendations`,
         );
 
         if (response.ok) {

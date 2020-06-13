@@ -347,3 +347,29 @@ export type TmdbSearchResult = {
         | (TmdbPerson & { media_type: "person" })
     >;
 };
+
+export type TmdbAccount = {
+    avatar: {
+        gravatar: {
+            hash: string;
+        };
+    };
+    id: number;
+    iso_639_1: string;
+    iso_3166_1: string;
+    include_adult: boolean;
+    username: string;
+};
+
+export type Account = {
+    avatar: {
+        gravatar: {
+            hash: string;
+        };
+    };
+    id: number;
+    languageCode: string;
+    countryCode: string;
+    includeAdult: boolean;
+    username: string;
+};

@@ -5,10 +5,12 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import { gray1, primaryColor } from "../constants/colors";
 import SearchStackNavigator from "./SearchStackNavigator";
 import StartStackNavigator from "./StartStackNavigator";
+import ProfileStackNavigator from "./ProfileStackNavigator";
 
 type TabParams = {
     Start: undefined;
     Search: undefined;
+    Profile: undefined;
 };
 
 const TabIcon: React.FC<{ route: keyof TabParams; focused: boolean }> = ({
@@ -21,8 +23,8 @@ const TabIcon: React.FC<{ route: keyof TabParams; focused: boolean }> = ({
             return <Icon name="home" size={24} color={color} />;
         case "Search":
             return <Icon name="search" size={20} color={color} />;
-        default:
-            return null;
+        case "Profile":
+            return <Icon name="user-circle" size={24} color={color} />;
     }
 };
 
@@ -41,6 +43,7 @@ const TabNavigator: React.FC = () => (
         }}>
         <Tab.Screen name="Start" component={StartStackNavigator} />
         <Tab.Screen name="Search" component={SearchStackNavigator} />
+        <Tab.Screen name="Profile" component={ProfileStackNavigator} />
     </Tab.Navigator>
 );
 

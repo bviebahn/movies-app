@@ -16,4 +16,5 @@ export type Translations = {
     CREATOR: SubstituteTranslation<{ n: number }>;
     MOVIE_GENRES: string;
     TV_GENRES: string;
+    SIGNIN_TEXT: string;
 };

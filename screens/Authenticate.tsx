@@ -1,0 +1,22 @@
+import React from "react";
+import { useRoute } from "@react-navigation/native";
+import { ProfileStackRouteProp } from "../navigators/ProfileStackNavigator";
+import WebView from "react-native-webview";
+
+const Authenticate: React.FC = () => {
+    const route = useRoute<ProfileStackRouteProp<"Authenticate">>();
+    console.log(
+        "site",
+        `https://www.themoviedb.org/authenticate/${route.params.requestToken}`,
+    );
+
+    return (
+        <WebView
+            source={{
+                uri: `https://www.themoviedb.org/authenticate/${route.params.requestToken}`,
+            }}
+        />
+    );
+};
+
+export default Authenticate;

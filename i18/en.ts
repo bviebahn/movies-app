@@ -16,6 +16,8 @@ const translations: Translations = {
     CREATOR: ({ n }) => (n > 1 ? "Creators" : "Creator"),
     MOVIE_GENRES: "Movie Genres",
     TV_GENRES: "TV Genres",
+    SIGNIN_TEXT:
+        "Sign in with your TMDb-Account for more features. Don't have one? It's free!",
 };
 
 export default translations;

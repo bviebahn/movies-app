@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+
 import { Movie } from "./types";
-import { TMDB_BASE_URL, TMDB_ACCESS_TOKEN } from "./constants";
-import { convertMovie } from "./util";
+import { convertMovie, fetchTmdb } from "./util";
 
 const useMovies = (
     type: "popular" | "latest" | "now_playing" | "top_rated" | "upcoming",
@@ -12,12 +12,7 @@ const useMovies = (
 
     useEffect(() => {
         const fetchMovies = async () => {
-            const response = await fetch(`${TMDB_BASE_URL}movie/${type}`, {
-                method: "GET",
-                headers: {
-                    Authorization: `Bearer ${TMDB_ACCESS_TOKEN}`,
-                },
-            });
+            const response = await fetchTmdb(`movie/${type}`);
 
             setLoading(false);
             if (response.ok) {

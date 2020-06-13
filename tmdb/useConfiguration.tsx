@@ -1,8 +1,8 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 
 import { read, write } from "../util/asyncStorage";
-import { TMDB_ACCESS_TOKEN, TMDB_BASE_URL } from "./constants";
 import { Configuration, TmdbConfiguration } from "./types";
+import { fetchTmdb } from "./util";
 
 type ContextType = { configuration?: Configuration };
 
@@ -33,12 +33,7 @@ export const ConfigurationProvider: React.FC<{ children: React.ReactNode }> = ({
     const [state, setState] = useState<Configuration>();
     useEffect(() => {
         const fetchConfig = async () => {
-            const response = await fetch(`${TMDB_BASE_URL}configuration`, {
-                method: "GET",
-                headers: {
-                    Authorization: `Bearer ${TMDB_ACCESS_TOKEN}`,
-                },
-            });
+            const response = await fetchTmdb("configuration");
 
             if (response.ok) {
                 const result: TmdbConfiguration = await response.json();

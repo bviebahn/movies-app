@@ -1,7 +1,7 @@
 import React, { useContext, useReducer } from "react";
 
-import { TMDB_ACCESS_TOKEN, TMDB_BASE_URL } from "./constants";
 import { SeasonDetails, TmdbSeasonDetails } from "./types";
+import { fetchTmdb } from "./util";
 
 type SeasonDetailsResult = {
     seasonDetails?: SeasonDetails;
@@ -94,15 +94,7 @@ export const SeasonDetailsProvider: React.FC<{ children: React.ReactNode }> = ({
             type: "LOAD_DETAILS_START",
             payload: uniqueId,
         });
-        const response = await fetch(
-            `${TMDB_BASE_URL}tv/${id}/season/${seasonNumber}`,
-            {
-                method: "GET",
-                headers: {
-                    Authorization: `Bearer ${TMDB_ACCESS_TOKEN}`,
-                },
-            },
-        );
+        const response = await fetchTmdb(`tv/${id}/season/${seasonNumber}`);
 
         if (response.ok) {
             const result = await response.json();

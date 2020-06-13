@@ -10,7 +10,22 @@ import {
     SearchResult,
     TmdbPerson,
     Person,
+    TmdbAccount,
+    Account,
 } from "./types";
+import { TMDB_BASE_URL, TMDB_ACCESS_TOKEN } from "./constants";
+
+export function fetchTmdb(path: string, method: string = "GET", body?: any) {
+    console.log("body", JSON.stringify(body));
+
+    return fetch(`${TMDB_BASE_URL}${path}`, {
+        method: method,
+        headers: {
+            Authorization: `Bearer ${TMDB_ACCESS_TOKEN}`,
+        },
+        body: JSON.stringify(body),
+    });
+}
 
 export function addGenres<T extends { genreIds: ReadonlyArray<number> }>(
     obj: T,
@@ -120,4 +135,19 @@ export function convertSearchResult(result: TmdbSearchResult): SearchResult {
             return { ...convertPerson(r), mediaType: "person" };
         }),
     };
+}
+
+export function convertAccount(result: TmdbAccount): Account {
+    return {
+        avatar: result.avatar,
+        countryCode: result.iso_3166_1,
+        languageCode: result.iso_639_1,
+        id: result.id,
+        includeAdult: result.include_adult,
+        username: result.username,
+    };
+}
+
+export function getGravatarImageUrl(hash: string) {
+    return `https://secure.gravatar.com/avatar/${hash}.jpg?s=64&d=mp`;
 }
