@@ -5,8 +5,24 @@ import { Account, TmdbAccount } from "./types";
 
 type UserContextType = {
     user?: Account;
+    sessionId?: string;
     createRequestToken: () => Promise<string | undefined>;
     createSessionId: (requestToken: string) => Promise<string | undefined>;
+    markAsFavorite: (
+        mediaType: "movie" | "tv",
+        mediaId: number,
+        favorite: boolean,
+    ) => Promise<boolean>;
+    addToWatchlist: (
+        mediaType: "movie" | "tv",
+        mediaId: number,
+        favorite: boolean,
+    ) => Promise<boolean>;
+    rate: (
+        mediaType: "movie" | "tv",
+        mediaId: number,
+        rating?: number,
+    ) => Promise<boolean>;
 };
 
 const UserContext = React.createContext<UserContextType | undefined>(undefined);
@@ -37,7 +53,8 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
 
                 if (userDetailsResponse.ok) {
                     const result: TmdbAccount = await userDetailsResponse.json();
-                    setUser(convertAccount(result));
+                    const account = convertAccount(result);
+                    setUser(account);
                 }
             })();
         }
@@ -60,7 +77,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
 
     const createSessionId = async (requestToken: string) => {
         const sessionIdResponse = await fetchTmdb(
-            `/authentication/session/new?request_token=${requestToken}`,
+            `authentication/session/new?request_token=${requestToken}`,
             "POST",
         );
 
@@ -76,9 +93,69 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
         return undefined;
     };
 
+    const markAsFavorite = async (
+        mediaType: "movie" | "tv",
+        mediaId: number,
+        favorite: boolean,
+    ) => {
+        if (user) {
+            const response = await fetchTmdb(
+                `account/${user.id}/favorite?session_id=${sessionId}`,
+                "POST",
+                { media_type: mediaType, media_id: mediaId, favorite },
+            );
+            return response.ok;
+        }
+        return false;
+    };
+
+    const addToWatchlist = async (
+        mediaType: "movie" | "tv",
+        mediaId: number,
+        watchlist: boolean,
+    ) => {
+        if (user) {
+            const response = await fetchTmdb(
+                `account/${user.id}/watchlist?session_id=${sessionId}`,
+                "POST",
+                { media_type: mediaType, media_id: mediaId, watchlist },
+            );
+            return response.ok;
+        }
+        return false;
+    };
+
+    const rate = async (
+        mediaType: "movie" | "tv",
+        mediaId: number,
+        rating?: number,
+    ) => {
+        console.log("useUser rate", user);
+
+        if (user) {
+            const response = await fetchTmdb(
+                `${mediaType}/${mediaId}/rating?session_id=${sessionId}`,
+                rating ? "POST" : "DELETE",
+                { value: rating },
+            );
+            console.log(await response.json());
+
+            return response.ok;
+        }
+        return false;
+    };
+
     return (
         <UserContext.Provider
-            value={{ user, createRequestToken, createSessionId }}>
+            value={{
+                user,
+                sessionId,
+                createRequestToken,
+                createSessionId,
+                markAsFavorite,
+                addToWatchlist,
+                rate,
+            }}>
             {children}
         </UserContext.Provider>
     );

@@ -27,7 +27,14 @@ const ProfileStackNavigator: React.FC = () => {
             }}
             initialRouteName="Profile">
             <ProfileStack.Screen name="Profile" component={Profile} />
-            <ProfileStack.Screen name="Authenticate" component={Authenticate} />
+            <ProfileStack.Screen
+                name="Authenticate"
+                component={Authenticate}
+                options={{
+                    headerTransparent: false,
+                    headerBackTitleVisible: true,
+                }}
+            />
         </ProfileStack.Navigator>
     );
 };

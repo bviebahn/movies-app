@@ -56,6 +56,13 @@ function convertTvShowDetails(details: TmdbTvShowDetails): TvShowDetails {
         credits: convertCredits(details.credits),
         reviews: details.reviews.results,
         recommendations: details.recommendations.results.map(convertTvShow),
+        accountStates: {
+            favorite: !!details.account_states?.favorite,
+            rated: details.account_states?.rated
+                ? details.account_states.rated.value
+                : 0,
+            watchlist: !!details.account_states?.watchlist,
+        },
     };
 }
 

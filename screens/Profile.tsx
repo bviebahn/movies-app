@@ -66,7 +66,11 @@ const Profile: React.FC = () => {
                     </>
                 )}
             </View>
-            <Text style={styles.signinText}>{translate("SIGNIN_TEXT")}</Text>
+            {!user ? (
+                <Text style={styles.signinText}>
+                    {translate("SIGNIN_TEXT")}
+                </Text>
+            ) : undefined}
         </View>
     );
 };

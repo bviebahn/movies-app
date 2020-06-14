@@ -1,6 +1,6 @@
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { getLanguage } from "iso-countries-languages";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
     ActivityIndicator,
     Image,
@@ -11,12 +11,13 @@ import {
     View,
 } from "react-native";
 
+import ActionsWidget from "../components/ActionsWidget";
 import InfoBox from "../components/InfoBox";
 import MediaTile from "../components/MediaTile";
 import MediaWidget from "../components/MediaWidget";
 import Rating from "../components/Rating";
 import ReviewsWidget from "../components/ReviewsWidget";
-import { gray2, textColor, textColorSecondary } from "../constants/colors";
+import { textColor, textColorSecondary } from "../constants/colors";
 import { dot, secondaryText, shadowStyle } from "../constants/styles";
 import {
     TILE_HORIZONTAL_MARGIN,
@@ -30,8 +31,12 @@ import {
 } from "../navigators/StartStackNavigator";
 import useImageUrl from "../tmdb/useImageUrl";
 import useMovieDetails from "../tmdb/useMovieDetails";
+import useUser from "../tmdb/useUser";
 import { formatDate } from "../util/date";
 import { convertMinutesToTimeString } from "../util/time";
+import FeedbackMessage from "../components/FeedbackMessage";
+import useTimeout from "../util/useTimeout";
+import useDebounce from "../util/useDebounce";
 
 const MovieDetails: React.FC = () => {
     const route = useRoute<StartStackRouteProp<"MovieDetails">>();
@@ -53,11 +58,20 @@ const MovieDetails: React.FC = () => {
         },
     } = route.params;
 
-    const { movieDetails, loading } = useMovieDetails(id);
+    const { movieDetails, loading, updateCache } = useMovieDetails(id);
     const getImageUrl = useImageUrl();
 
-    const { runtime, tagline, credits, reviews, recommendations, genres } =
-        movieDetails || {};
+    const {
+        runtime,
+        tagline,
+        credits,
+        reviews,
+        recommendations,
+        genres,
+        accountStates,
+    } = movieDetails || {};
+
+    const { favorite, rated, watchlist } = accountStates || {};
 
     const backdropHeight = (screenWidth * 9) / 16;
 
@@ -75,6 +89,81 @@ const MovieDetails: React.FC = () => {
               ]
             : []),
     ];
+
+    const [feedback, setFeedback] = useState<{
+        icon?: string;
+        title: string;
+        message: string;
+        visible: boolean;
+    }>({ title: "", message: "", visible: false });
+
+    const showFeedback = (
+        icon: string,
+        feedbackTitle: string,
+        message: string,
+    ) => {
+        setFeedback({ icon, title: feedbackTitle, message, visible: true });
+        hideFeedback();
+    };
+
+    const hideFeedback = useDebounce(
+        () => setFeedback((prev) => ({ ...prev, visible: false })),
+        2000,
+    );
+
+    const { user, markAsFavorite, addToWatchlist, rate } = useUser();
+
+    const handleAddToList = () => {};
+
+    const handleMarkAsFavorite = async () => {
+        showFeedback("star", "Submitted", "thanks");
+        if (user && movieDetails && false) {
+            const revertCacheUpdate = updateCache({
+                ...movieDetails,
+                accountStates: {
+                    ...movieDetails.accountStates,
+                    favorite: !favorite,
+                },
+            });
+            const success = await markAsFavorite("movie", id, !favorite);
+            if (!success) {
+                revertCacheUpdate();
+            }
+        }
+    };
+
+    const handleAddToWatchist = async () => {
+        if (user && movieDetails) {
+            const revertCacheUpdate = updateCache({
+                ...movieDetails,
+                accountStates: {
+                    ...movieDetails.accountStates,
+                    watchlist: !watchlist,
+                },
+            });
+            const success = await addToWatchlist("movie", id, !watchlist);
+            if (!success) {
+                revertCacheUpdate();
+            }
+        }
+    };
+
+    const handleRate = async (rating?: number) => {
+        if (user && movieDetails) {
+            const revertCacheUpdate = updateCache({
+                ...movieDetails,
+                accountStates: {
+                    ...movieDetails.accountStates,
+                    rated: rating || 0,
+                },
+            });
+            const success = await rate("movie", id, rating);
+
+            if (!success) {
+                revertCacheUpdate();
+            }
+        }
+    };
 
     return (
         <ScrollView contentContainerStyle={styles.movieDetails}>
@@ -132,9 +221,21 @@ const MovieDetails: React.FC = () => {
                     ) : undefined}
                 </View>
             </View>
+            {movieDetails ? (
+                <ActionsWidget
+                    isFavorite={!!favorite}
+                    isOnWatchlist={!!watchlist}
+                    rating={rated || 0}
+                    onAddToList={handleAddToList}
+                    onMarkAsFavorite={handleMarkAsFavorite}
+                    onAddToWatchlist={handleAddToWatchist}
+                    onRate={handleRate}
+                />
+            ) : undefined}
             {tagline ? (
                 <Text style={styles.tagline}>{tagline}</Text>
             ) : undefined}
+
             <View style={styles.overviewWrapper}>
                 <Text style={styles.overview}>{overview}</Text>
             </View>
@@ -197,6 +298,12 @@ const MovieDetails: React.FC = () => {
                     style={styles.widget}
                 />
             ) : undefined}
+            <FeedbackMessage
+                isVisible={feedback.visible}
+                iconName={feedback.icon}
+                title={feedback.title}
+                message={feedback.message}
+            />
         </ScrollView>
     );
 };
@@ -210,7 +317,8 @@ const styles = StyleSheet.create({
     },
     mainContent: {
         flexDirection: "row",
-        margin: 20,
+        padding: 20,
+        paddingBottom: 0,
     },
     posterWrapper: {
         margin: 8,
@@ -235,11 +343,7 @@ const styles = StyleSheet.create({
     },
     rating: { position: "absolute", right: 20 },
     overviewWrapper: {
-        marginHorizontal: 20,
-        borderTopColor: gray2,
-        borderTopWidth: 1,
-        paddingTop: 20,
-        marginBottom: 20,
+        margin: 20,
     },
     overview: {
         color: textColorSecondary,
@@ -253,7 +357,7 @@ const styles = StyleSheet.create({
         marginTop: 5,
     },
     tagline: {
-        marginBottom: 20,
+        marginTop: 10,
         color: textColorSecondary,
         fontSize: 18,
         fontWeight: "200",

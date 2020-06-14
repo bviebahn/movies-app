@@ -1,6 +1,6 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { primaryColor } from "../constants/colors";
+import { primaryColorLight } from "../constants/colors";
 import { secondaryText } from "../constants/styles";
 
 type Props = {
@@ -23,7 +23,7 @@ const InfoBox: React.FC<Props> = ({ data }) => (
 
 const styles = StyleSheet.create({
     infoKey: {
-        color: primaryColor,
+        color: primaryColorLight,
         marginTop: 10,
         marginBottom: 2,
         fontWeight: "bold",

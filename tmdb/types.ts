@@ -49,6 +49,11 @@ export type TmdbMovieDetails = TmdbMovie & {
         results: ReadonlyArray<Review>;
     };
     recommendations: { results: ReadonlyArray<TmdbMovie> };
+    account_states?: {
+        favorite: boolean;
+        rated: false | { value: number };
+        watchlist: boolean;
+    };
 };
 
 export type MovieDetails = Movie & {
@@ -62,6 +67,11 @@ export type MovieDetails = Movie & {
     credits: Credits;
     reviews: ReadonlyArray<Review>;
     recommendations: ReadonlyArray<Movie>;
+    accountStates: {
+        favorite: boolean;
+        rated: number;
+        watchlist: boolean;
+    };
 };
 
 export type TmdbTvShow = {
@@ -125,6 +135,11 @@ export type TmdbTvShowDetails = TmdbTvShow & {
         results: ReadonlyArray<Review>;
     };
     recommendations: { results: ReadonlyArray<TmdbTvShow> };
+    account_states?: {
+        favorite: boolean;
+        rated: false | { value: number };
+        watchlist: boolean;
+    };
 };
 
 export type TvShowDetails = TvShow & {
@@ -150,6 +165,11 @@ export type TvShowDetails = TvShow & {
     credits: Credits;
     reviews: ReadonlyArray<Review>;
     recommendations: ReadonlyArray<TvShow>;
+    accountStates: {
+        favorite: boolean;
+        rated: number;
+        watchlist: boolean;
+    };
 };
 
 export type TmdbSeason = {
@@ -158,7 +178,7 @@ export type TmdbSeason = {
     id: number;
     name: string;
     overview: string;
-    poster_path: string;
+    poster_path?: string;
     season_number: number;
 };
 
@@ -168,7 +188,7 @@ export type Season = {
     id: number;
     name: string;
     overview: string;
-    posterPath: string;
+    posterPath?: string;
     seasonNumber: number;
 };
 
@@ -177,7 +197,7 @@ export type TmdbSeasonDetails = {
     id: number;
     name: string;
     overview: string;
-    poster_path: string;
+    poster_path?: string;
     season_number: number;
     episodes: ReadonlyArray<TmdbEpisode>;
 };

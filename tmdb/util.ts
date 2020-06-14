@@ -16,12 +16,11 @@ import {
 import { TMDB_BASE_URL, TMDB_ACCESS_TOKEN } from "./constants";
 
 export function fetchTmdb(path: string, method: string = "GET", body?: any) {
-    console.log("body", JSON.stringify(body));
-
     return fetch(`${TMDB_BASE_URL}${path}`, {
         method: method,
         headers: {
             Authorization: `Bearer ${TMDB_ACCESS_TOKEN}`,
+            "Content-Type": "application/json",
         },
         body: JSON.stringify(body),
     });

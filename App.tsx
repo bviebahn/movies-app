@@ -70,11 +70,11 @@ const ComposedApp = () => (
         components={[
             ConfigurationProvider,
             GenreProvider,
+            UserProvider,
             MovieDetailsProvider,
             TvShowDetailsProvider,
             SeasonDetailsProvider,
             SearchProvider,
-            UserProvider,
         ]}>
         <App />
     </Compose>

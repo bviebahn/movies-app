@@ -164,11 +164,15 @@ const TvShowDetails: React.FC = () => {
                             subtitle={`${season.episodeCount} ${translate(
                                 "EPISODES",
                             )}`}
-                            imageUrl={getImageUrl(
-                                season.posterPath,
-                                "poster",
-                                "medium",
-                            )}
+                            imageUrl={
+                                season.posterPath
+                                    ? getImageUrl(
+                                          season.posterPath,
+                                          "poster",
+                                          "medium",
+                                      )
+                                    : undefined
+                            }
                             onPress={() =>
                                 navigation.navigate("SeasonDetails", {
                                     tvShowId: id,
