@@ -10,7 +10,7 @@ export const shadowStyle: StyleProp<ViewStyle> = {
     shadowOpacity: 0.5,
     shadowRadius: 2,
 
-    elevation: 5,
+    elevation: 2,
 };
 
 export const headline: StyleProp<TextStyle> = {
