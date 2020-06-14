@@ -207,7 +207,7 @@ export type SeasonDetails = {
     id: number;
     name: string;
     overview: string;
-    posterPath: string;
+    posterPath?: string;
     seasonNumber: number;
     episodes: ReadonlyArray<Episode>;
 };

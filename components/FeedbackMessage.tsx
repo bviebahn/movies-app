@@ -3,12 +3,13 @@ import { StyleSheet, Text, View } from "react-native";
 import Modal from "react-native-modal";
 import Icon from "react-native-vector-icons/FontAwesome";
 
-import { gray0, gray2, gray3 } from "../constants/colors";
+import { gray0, gray3 } from "../constants/colors";
+import Blur from "./Blur";
 
 type Props = {
     iconName?: string;
     title: string;
-    message: string;
+    message?: string;
     time?: number;
     isVisible: boolean;
 };
@@ -26,11 +27,14 @@ const FeedbackMessage: React.FC<Props> = ({
             animationIn="pulse"
             animationOut="fadeOut">
             <View style={styles.content}>
+                <Blur style={styles.blur} />
                 {iconName ? (
                     <Icon name={iconName} size={64} color={gray0} />
                 ) : undefined}
                 <Text style={styles.title}>{title}</Text>
-                <Text style={styles.message}>{message}</Text>
+                {message ? (
+                    <Text style={styles.message}>{message}</Text>
+                ) : undefined}
             </View>
         </Modal>
     );
@@ -38,7 +42,6 @@ const FeedbackMessage: React.FC<Props> = ({
 
 const styles = StyleSheet.create({
     content: {
-        backgroundColor: gray2,
         paddingVertical: 40,
         paddingHorizontal: 10,
         width: 200,
@@ -55,6 +58,14 @@ const styles = StyleSheet.create({
     },
     message: {
         color: gray3,
+    },
+    blur: {
+        position: "absolute",
+        top: 0,
+        left: 0,
+        bottom: 0,
+        right: 0,
+        borderRadius: 8,
     },
 });
 

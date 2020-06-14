@@ -18,6 +18,7 @@ const translations: Translations = {
     TV_GENRES: "TV Genres",
     SIGNIN_TEXT:
         "Sign in with your TMDb-Account for more features. Don't have one? It's free!",
+    SUBMITTED: "Submitted",
 };
 
 export default translations;

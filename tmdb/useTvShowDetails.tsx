@@ -2,6 +2,7 @@ import React, { useContext, useReducer } from "react";
 
 import { TmdbTvShowDetails, TvShowDetails } from "./types";
 import { convertCredits, convertTvShow, fetchTmdb } from "./util";
+import useUser from "./useUser";
 
 type TvShowDetailsResult = {
     tvShowDetails?: TvShowDetails;
@@ -66,8 +67,12 @@ function convertTvShowDetails(details: TmdbTvShowDetails): TvShowDetails {
     };
 }
 
+/** updates cache and returns function that reverts to state before update */
+type UpdateCacheFunction = (details: TvShowDetails) => () => void;
+
 type ContextType = {
     useTvShowDetails: (id: number) => TvShowDetailsResult;
+    updateCache: UpdateCacheFunction;
 };
 
 const TvShowDetailsContext = React.createContext<ContextType | undefined>(
@@ -77,7 +82,11 @@ const TvShowDetailsContext = React.createContext<ContextType | undefined>(
 type Action =
     | { type: "LOAD_DETAILS_START"; payload: number }
     | { type: "LOAD_DETAILS_FINISH"; payload: TvShowDetails }
-    | { type: "LOAD_DETAILS_ERROR"; payload: number };
+    | { type: "LOAD_DETAILS_ERROR"; payload: number }
+    | {
+          type: "UPDATE_CACHE";
+          payload: { id: number; details: TvShowDetails | undefined };
+      };
 
 function reducer(state: State, action: Action): State {
     switch (action.type) {
@@ -106,6 +115,15 @@ function reducer(state: State, action: Action): State {
                     error: true,
                 },
             };
+        case "UPDATE_CACHE":
+            return {
+                ...state,
+                [action.payload.id]: {
+                    tvShowDetails: action.payload.details,
+                    loading: false,
+                    error: false,
+                },
+            };
     }
 }
 
@@ -113,11 +131,14 @@ export const TvShowDetailsProvider: React.FC<{ children: React.ReactNode }> = ({
     children,
 }) => {
     const [state, dispatch] = useReducer(reducer, {});
+    const { sessionId } = useUser();
 
     const fetchTvShowDetails = async (id: number) => {
         dispatch({ type: "LOAD_DETAILS_START", payload: id });
         const response = await fetchTmdb(
-            `tv/${id}?append_to_response=credits,reviews,recommendations`,
+            `tv/${id}?append_to_response=credits,reviews,recommendations${
+                sessionId ? `,account_states&session_id=${sessionId}` : ""
+            }`,
         );
 
         if (response.ok) {
@@ -147,21 +168,40 @@ export const TvShowDetailsProvider: React.FC<{ children: React.ReactNode }> = ({
         };
     };
 
+    const updateCache: UpdateCacheFunction = (details) => {
+        const id = details.id;
+        const oldDetails = state[id].tvShowDetails;
+        dispatch({
+            type: "UPDATE_CACHE",
+            payload: { id: details.id, details },
+        });
+        return () =>
+            dispatch({
+                type: "UPDATE_CACHE",
+                payload: { id, details: oldDetails },
+            });
+    };
+
     return (
-        <TvShowDetailsContext.Provider value={{ useTvShowDetails }}>
+        <TvShowDetailsContext.Provider
+            value={{ useTvShowDetails, updateCache }}>
             {children}
         </TvShowDetailsContext.Provider>
     );
 };
 
-const useTvShowDetails = (id: number): TvShowDetailsResult => {
+const useTvShowDetails = (
+    id: number,
+): TvShowDetailsResult & { updateCache: UpdateCacheFunction } => {
     const context = useContext(TvShowDetailsContext);
     if (!context) {
         throw new Error(
             "useTvShowDetails must be used within a TvShowDetailsProvider",
         );
     }
-    return context.useTvShowDetails(id);
+    const details = context.useTvShowDetails(id);
+
+    return { ...details, updateCache: context.updateCache };
 };
 
 export default useTvShowDetails;

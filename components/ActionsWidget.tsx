@@ -1,12 +1,10 @@
-import React, { useState, useEffect } from "react";
-import { View, TouchableOpacity, StyleSheet } from "react-native";
+import React, { useEffect, useState } from "react";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
-import {
-    primaryColorDark,
-    textColorSecondary,
-    gray2,
-} from "../constants/colors";
+
+import { primaryColorDark, textColorSecondary } from "../constants/colors";
 import { shadowStyle } from "../constants/styles";
+import Blur from "./Blur";
 import StarRating from "./StarRating";
 
 type ButtonProps = {
@@ -51,6 +49,11 @@ const ActionsWidget: React.FC<ActionsWidgetProps> = ({
         setRatingVisible((prev) => !prev);
     };
 
+    const handleRate = (value?: number) => {
+        onRate(value);
+        setRatingVisible(false);
+    };
+
     return (
         <View style={styles.actionsWidget}>
             <Button
@@ -75,8 +78,9 @@ const ActionsWidget: React.FC<ActionsWidgetProps> = ({
             />
             {ratingVisible ? (
                 <View style={[styles.starRatingWrapper, shadowStyle]}>
+                    <Blur style={styles.blur} />
                     <TouchableOpacity
-                        onPress={() => onRate(undefined)}
+                        onPress={() => handleRate(undefined)}
                         disabled={!rating}>
                         <Icon
                             name="times-circle"
@@ -90,7 +94,7 @@ const ActionsWidget: React.FC<ActionsWidgetProps> = ({
                         style={styles.starRating}
                     />
                     <TouchableOpacity
-                        onPress={() => onRate(ratingValue)}
+                        onPress={() => handleRate(ratingValue)}
                         disabled={ratingValue === rating}>
                         <Icon
                             name="check-circle"
@@ -127,12 +131,19 @@ const styles = StyleSheet.create({
         position: "absolute",
         padding: 10,
         paddingHorizontal: 20,
-        backgroundColor: gray2,
-        borderRadius: 32,
+        borderRadius: 24,
         bottom: 80,
     },
     starRating: {
         marginHorizontal: 10,
+    },
+    blur: {
+        position: "absolute",
+        top: 0,
+        left: 0,
+        bottom: 0,
+        right: 0,
+        borderRadius: 24,
     },
 });
 

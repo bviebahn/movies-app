@@ -12,17 +12,17 @@ type UserContextType = {
         mediaType: "movie" | "tv",
         mediaId: number,
         favorite: boolean,
-    ) => Promise<boolean>;
+    ) => Promise<{ success: boolean; favorite: boolean }>;
     addToWatchlist: (
         mediaType: "movie" | "tv",
         mediaId: number,
         favorite: boolean,
-    ) => Promise<boolean>;
+    ) => Promise<{ success: boolean; watchlist: boolean }>;
     rate: (
         mediaType: "movie" | "tv",
         mediaId: number,
         rating?: number,
-    ) => Promise<boolean>;
+    ) => Promise<{ success: boolean; rating?: number }>;
 };
 
 const UserContext = React.createContext<UserContextType | undefined>(undefined);
@@ -104,9 +104,11 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
                 "POST",
                 { media_type: mediaType, media_id: mediaId, favorite },
             );
-            return response.ok;
+            if (response.ok) {
+                return { success: true, favorite };
+            }
         }
-        return false;
+        return { success: false, favorite: !favorite };
     };
 
     const addToWatchlist = async (
@@ -120,9 +122,11 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
                 "POST",
                 { media_type: mediaType, media_id: mediaId, watchlist },
             );
-            return response.ok;
+            if (response.ok) {
+                return { success: true, watchlist };
+            }
         }
-        return false;
+        return { success: false, watchlist: !watchlist };
     };
 
     const rate = async (
@@ -130,19 +134,21 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
         mediaId: number,
         rating?: number,
     ) => {
-        console.log("useUser rate", user);
-
         if (user) {
             const response = await fetchTmdb(
                 `${mediaType}/${mediaId}/rating?session_id=${sessionId}`,
                 rating ? "POST" : "DELETE",
                 { value: rating },
             );
-            console.log(await response.json());
 
-            return response.ok;
+            if (response.ok) {
+                return {
+                    success: true,
+                    rating,
+                };
+            }
         }
-        return false;
+        return { success: false };
     };
 
     return (

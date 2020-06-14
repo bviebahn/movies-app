@@ -17,4 +17,5 @@ export type Translations = {
     MOVIE_GENRES: string;
     TV_GENRES: string;
     SIGNIN_TEXT: string;
+    SUBMITTED: string;
 };

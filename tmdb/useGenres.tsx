@@ -3,7 +3,6 @@ import React, { useContext, useEffect, useState } from "react";
 import { Genre } from "./types";
 import { fetchTmdb } from "./util";
 
-// TODO: don't need? genres are in details
 const GenreContext = React.createContext<{
     movieGenres: ReadonlyArray<Genre>;
     tvGenres: ReadonlyArray<Genre>;

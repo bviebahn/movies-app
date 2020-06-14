@@ -1,22 +1,24 @@
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { getLanguage } from "iso-countries-languages";
-import React from "react";
+import React, { useState } from "react";
 import {
     ActivityIndicator,
+    Image,
     ScrollView,
     StyleSheet,
     Text,
     useWindowDimensions,
     View,
-    Image,
 } from "react-native";
 
+import ActionsWidget from "../components/ActionsWidget";
+import FeedbackMessage from "../components/FeedbackMessage";
 import InfoBox from "../components/InfoBox";
 import MediaTile from "../components/MediaTile";
 import MediaWidget from "../components/MediaWidget";
 import Rating from "../components/Rating";
 import ReviewsWidget from "../components/ReviewsWidget";
-import { gray2, textColor, textColorSecondary } from "../constants/colors";
+import { textColor, textColorSecondary } from "../constants/colors";
 import { dot, secondaryText, shadowStyle } from "../constants/styles";
 import {
     TILE_HORIZONTAL_MARGIN,
@@ -28,10 +30,12 @@ import {
     StartStackNavigationProp,
     StartStackRouteProp,
 } from "../navigators/StartStackNavigator";
+import useImageUrl from "../tmdb/useImageUrl";
 import useTvShowDetails from "../tmdb/useTvShowDetails";
+import useUser from "../tmdb/useUser";
 import { formatDate } from "../util/date";
 import { convertMinutesToTimeString } from "../util/time";
-import useImageUrl from "../tmdb/useImageUrl";
+import useDebounce from "../util/useDebounce";
 
 const TvShowDetails: React.FC = () => {
     const route = useRoute<StartStackRouteProp<"TvShowDetails">>();
@@ -55,7 +59,7 @@ const TvShowDetails: React.FC = () => {
         },
     } = route.params;
 
-    const { tvShowDetails, loading } = useTvShowDetails(id);
+    const { tvShowDetails, loading, updateCache } = useTvShowDetails(id);
 
     const {
         credits,
@@ -65,7 +69,10 @@ const TvShowDetails: React.FC = () => {
         episodeRunTime,
         seasons,
         createdBy,
+        accountStates,
     } = tvShowDetails || {};
+
+    const { favorite, rated, watchlist } = accountStates || {};
 
     const backdropHeight = (screenWidth * 9) / 16;
 
@@ -93,6 +100,103 @@ const TvShowDetails: React.FC = () => {
               ]
             : []),
     ];
+
+    const [feedback, setFeedback] = useState<{
+        icon?: string;
+        title: string;
+        message?: string;
+        visible: boolean;
+    }>({ title: "", visible: false });
+
+    const showFeedback = (
+        icon: string,
+        feedbackTitle: string,
+        message?: string,
+    ) => {
+        setFeedback({ icon, title: feedbackTitle, message, visible: true });
+        hideFeedback();
+    };
+
+    const hideFeedback = useDebounce(() => {
+        setFeedback((prev) => ({ ...prev, visible: false }));
+    }, 2000);
+
+    const { user, markAsFavorite, addToWatchlist, rate } = useUser();
+
+    const handleAddToList = () => {};
+
+    const handleMarkAsFavorite = async () => {
+        if (user && tvShowDetails) {
+            const revertCacheUpdate = updateCache({
+                ...tvShowDetails,
+                accountStates: {
+                    ...tvShowDetails.accountStates,
+                    favorite: !favorite,
+                },
+            });
+
+            const { success, favorite: newFavorite } = await markAsFavorite(
+                "tv",
+                id,
+                !favorite,
+            );
+            if (success) {
+                showFeedback(
+                    newFavorite ? "heart" : "heart-o",
+                    translate("SUBMITTED"),
+                );
+            } else {
+                revertCacheUpdate();
+            }
+        }
+    };
+
+    const handleAddToWatchist = async () => {
+        if (user && tvShowDetails) {
+            const revertCacheUpdate = updateCache({
+                ...tvShowDetails,
+                accountStates: {
+                    ...tvShowDetails.accountStates,
+                    watchlist: !watchlist,
+                },
+            });
+            const { success, watchlist: newWatchlist } = await addToWatchlist(
+                "tv",
+                id,
+                !watchlist,
+            );
+            if (success) {
+                showFeedback(
+                    newWatchlist ? "bookmark" : "bookmark-o",
+                    translate("SUBMITTED"),
+                );
+            } else {
+                revertCacheUpdate();
+            }
+        }
+    };
+
+    const handleRate = async (rating?: number) => {
+        if (user && tvShowDetails) {
+            const revertCacheUpdate = updateCache({
+                ...tvShowDetails,
+                accountStates: {
+                    ...tvShowDetails.accountStates,
+                    rated: rating || 0,
+                },
+            });
+            const { success, rating: newRating } = await rate("tv", id, rating);
+
+            if (success) {
+                showFeedback(
+                    newRating ? "star" : "star-o",
+                    translate("SUBMITTED"),
+                );
+            } else {
+                revertCacheUpdate();
+            }
+        }
+    };
 
     return (
         <ScrollView contentContainerStyle={styles.tvShowDetails}>
@@ -150,6 +254,17 @@ const TvShowDetails: React.FC = () => {
                     ) : undefined}
                 </View>
             </View>
+            {tvShowDetails ? (
+                <ActionsWidget
+                    isFavorite={!!favorite}
+                    isOnWatchlist={!!watchlist}
+                    rating={rated || 0}
+                    onAddToList={handleAddToList}
+                    onMarkAsFavorite={handleMarkAsFavorite}
+                    onAddToWatchlist={handleAddToWatchist}
+                    onRate={handleRate}
+                />
+            ) : undefined}
             <View style={styles.overviewWrapper}>
                 <Text style={styles.overview}>{overview}</Text>
             </View>
@@ -245,6 +360,12 @@ const TvShowDetails: React.FC = () => {
                     style={styles.widget}
                 />
             ) : undefined}
+            <FeedbackMessage
+                isVisible={feedback.visible}
+                iconName={feedback.icon}
+                title={feedback.title}
+                message={feedback.message}
+            />
         </ScrollView>
     );
 };
@@ -286,8 +407,6 @@ const styles = StyleSheet.create({
     overviewWrapper: {
         marginHorizontal: 20,
         marginBottom: 20,
-        borderTopColor: gray2,
-        borderTopWidth: 1,
         paddingTop: 20,
     },
     overview: {

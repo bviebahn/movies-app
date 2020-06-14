@@ -1,6 +1,6 @@
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { getLanguage } from "iso-countries-languages";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
     ActivityIndicator,
     Image,
@@ -35,7 +35,6 @@ import useUser from "../tmdb/useUser";
 import { formatDate } from "../util/date";
 import { convertMinutesToTimeString } from "../util/time";
 import FeedbackMessage from "../components/FeedbackMessage";
-import useTimeout from "../util/useTimeout";
 import useDebounce from "../util/useDebounce";
 
 const MovieDetails: React.FC = () => {
@@ -93,31 +92,29 @@ const MovieDetails: React.FC = () => {
     const [feedback, setFeedback] = useState<{
         icon?: string;
         title: string;
-        message: string;
+        message?: string;
         visible: boolean;
-    }>({ title: "", message: "", visible: false });
+    }>({ title: "", visible: false });
 
     const showFeedback = (
         icon: string,
         feedbackTitle: string,
-        message: string,
+        message?: string,
     ) => {
         setFeedback({ icon, title: feedbackTitle, message, visible: true });
         hideFeedback();
     };
 
-    const hideFeedback = useDebounce(
-        () => setFeedback((prev) => ({ ...prev, visible: false })),
-        2000,
-    );
+    const hideFeedback = useDebounce(() => {
+        setFeedback((prev) => ({ ...prev, visible: false }));
+    }, 2000);
 
     const { user, markAsFavorite, addToWatchlist, rate } = useUser();
 
     const handleAddToList = () => {};
 
     const handleMarkAsFavorite = async () => {
-        showFeedback("star", "Submitted", "thanks");
-        if (user && movieDetails && false) {
+        if (user && movieDetails) {
             const revertCacheUpdate = updateCache({
                 ...movieDetails,
                 accountStates: {
@@ -125,8 +122,18 @@ const MovieDetails: React.FC = () => {
                     favorite: !favorite,
                 },
             });
-            const success = await markAsFavorite("movie", id, !favorite);
-            if (!success) {
+
+            const { success, favorite: newFavorite } = await markAsFavorite(
+                "movie",
+                id,
+                !favorite,
+            );
+            if (success) {
+                showFeedback(
+                    newFavorite ? "heart" : "heart-o",
+                    translate("SUBMITTED"),
+                );
+            } else {
                 revertCacheUpdate();
             }
         }
@@ -141,8 +148,17 @@ const MovieDetails: React.FC = () => {
                     watchlist: !watchlist,
                 },
             });
-            const success = await addToWatchlist("movie", id, !watchlist);
-            if (!success) {
+            const { success, watchlist: newWatchlist } = await addToWatchlist(
+                "movie",
+                id,
+                !watchlist,
+            );
+            if (success) {
+                showFeedback(
+                    newWatchlist ? "bookmark" : "bookmark-o",
+                    translate("SUBMITTED"),
+                );
+            } else {
                 revertCacheUpdate();
             }
         }
@@ -157,9 +173,18 @@ const MovieDetails: React.FC = () => {
                     rated: rating || 0,
                 },
             });
-            const success = await rate("movie", id, rating);
+            const { success, rating: newRating } = await rate(
+                "movie",
+                id,
+                rating,
+            );
 
-            if (!success) {
+            if (success) {
+                showFeedback(
+                    newRating ? "star" : "star-o",
+                    translate("SUBMITTED"),
+                );
+            } else {
                 revertCacheUpdate();
             }
         }

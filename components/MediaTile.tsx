@@ -94,6 +94,7 @@ const styles = StyleSheet.create({
     },
     placeholderImage: {
         width: "100%",
+        flexGrow: 1,
         justifyContent: "center",
         alignItems: "center",
     },

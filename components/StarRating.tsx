@@ -17,7 +17,7 @@ type StarRatingProps = {
 
 const StarRating: React.FC<StarRatingProps> = ({
     rating,
-    minRating = 0.5,
+    minRating = 1,
     onChange,
     style,
 }) => {
@@ -35,7 +35,7 @@ const StarRating: React.FC<StarRatingProps> = ({
                     const x = gestureEvent.moveX - layout.current.x;
                     const newRating = Math.max(
                         minRating,
-                        Math.ceil((x / layout.current.width) * 10) / 2,
+                        Math.ceil((x / layout.current.width) * 10),
                     );
                     onChange(newRating);
                 }
@@ -45,7 +45,7 @@ const StarRating: React.FC<StarRatingProps> = ({
                     const x = gestureEvent.x0 - layout.current.x;
                     const newRating = Math.max(
                         minRating,
-                        Math.ceil((x / layout.current.width) * 10) / 2,
+                        Math.ceil((x / layout.current.width) * 10),
                     );
                     onChange(newRating);
                 }
@@ -68,11 +68,11 @@ const StarRating: React.FC<StarRatingProps> = ({
             }}>
             {[...Array(5)].map((_, i) => {
                 const icon = (() => {
-                    if (rating - i > 0.5) {
+                    if (rating - i * 2 >= 2) {
                         return <StarFull size={32} color="#fdd835" />;
                     }
 
-                    return rating - i > 0 ? (
+                    return rating - i * 2 >= 1 ? (
                         <StarHalf size={32} color="#fdd835" />
                     ) : (
                         <StarBorder size={32} color="#fff176" />
