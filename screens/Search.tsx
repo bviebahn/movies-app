@@ -104,8 +104,6 @@ const Search: React.FC = () => {
     const fetchMoreDebounced = useDebounce(fetchMore, 1000);
 
     const { movieGenres, tvGenres } = useGenres();
-    console.log("movieGenres", movieGenres);
-    console.log("tvGenres", tvGenres);
 
     useEffect(() => {
         if (screenTitleHidden) {

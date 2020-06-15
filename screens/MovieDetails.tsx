@@ -1,6 +1,6 @@
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { getLanguage } from "iso-countries-languages";
-import React from "react";
+import React, { useRef } from "react";
 import {
     ActivityIndicator,
     Image,
@@ -9,6 +9,7 @@ import {
     Text,
     useWindowDimensions,
     View,
+    Animated,
 } from "react-native";
 
 import ActionsWidget from "../components/ActionsWidget";
@@ -17,7 +18,7 @@ import MediaTile from "../components/MediaTile";
 import MediaWidget from "../components/MediaWidget";
 import Rating from "../components/Rating";
 import ReviewsWidget from "../components/ReviewsWidget";
-import { textColor, textColorSecondary } from "../constants/colors";
+import { textColor, textColorSecondary, gray1 } from "../constants/colors";
 import { dot, secondaryText, shadowStyle } from "../constants/styles";
 import {
     TILE_HORIZONTAL_MARGIN,
@@ -42,6 +43,7 @@ const MovieDetails: React.FC = () => {
         StartStackNavigationProp<"MovieDetails">
     >();
     const { width: screenWidth } = useWindowDimensions();
+    const parallaxAnim = useRef(new Animated.Value(0));
 
     const {
         movie: {
@@ -180,19 +182,45 @@ const MovieDetails: React.FC = () => {
     };
 
     return (
-        <ScrollView contentContainerStyle={styles.movieDetails}>
+        <ScrollView
+            contentContainerStyle={styles.movieDetails}
+            scrollEventThrottle={16}
+            onScroll={Animated.event(
+                [
+                    {
+                        nativeEvent: {
+                            contentOffset: {
+                                y: parallaxAnim.current,
+                            },
+                        },
+                    },
+                ],
+                { useNativeDriver: false },
+            )}>
             {backdropPath ? (
-                <Image
+                <Animated.Image
                     source={{
                         uri: getImageUrl(backdropPath, "backdrop", "medium"),
                     }}
-                    style={[styles.backdrop, { height: backdropHeight }]}
+                    style={[
+                        styles.backdrop,
+                        {
+                            height: backdropHeight,
+                            transform: [
+                                {
+                                    translateY: parallaxAnim.current.interpolate(
+                                        {
+                                            inputRange: [0, 1],
+                                            outputRange: [0, 0.4],
+                                        },
+                                    ),
+                                },
+                            ],
+                        },
+                    ]}
                 />
             ) : undefined}
-            <Rating
-                percent={voteAverage * 10}
-                style={[styles.rating, { top: backdropHeight - 20 }]}
-            />
+
             <View style={styles.mainContent}>
                 {posterPath ? (
                     <View style={[styles.posterWrapper, shadowStyle]}>
@@ -235,6 +263,10 @@ const MovieDetails: React.FC = () => {
                     ) : undefined}
                 </View>
             </View>
+            <Rating
+                percent={voteAverage * 10}
+                style={[styles.rating, { top: backdropHeight - 20 }]}
+            />
             {movieDetails ? (
                 <ActionsWidget
                     isFavorite={!!favorite}
@@ -325,6 +357,7 @@ const styles = StyleSheet.create({
     },
     mainContent: {
         flexDirection: "row",
+        backgroundColor: gray1,
         padding: 20,
         paddingBottom: 0,
     },
