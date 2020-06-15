@@ -58,7 +58,6 @@ const SearchListItem: React.FC<{ item: SearchResultItem }> = ({ item }) => {
         } else if (item.mediaType === "tv") {
             navigation.push("TvShowDetails", { tvShow: item });
         }
-        // TODO: person detail
     };
 
     return (
