@@ -1,6 +1,6 @@
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { getLanguage } from "iso-countries-languages";
-import React, { useState } from "react";
+import React from "react";
 import {
     ActivityIndicator,
     Image,
@@ -34,8 +34,7 @@ import useMovieDetails from "../tmdb/useMovieDetails";
 import useUser from "../tmdb/useUser";
 import { formatDate } from "../util/date";
 import { convertMinutesToTimeString } from "../util/time";
-import FeedbackMessage from "../components/FeedbackMessage";
-import useDebounce from "../util/useDebounce";
+import useFeedbackMessage from "../util/useFeedback";
 
 const MovieDetails: React.FC = () => {
     const route = useRoute<StartStackRouteProp<"MovieDetails">>();
@@ -89,27 +88,8 @@ const MovieDetails: React.FC = () => {
             : []),
     ];
 
-    const [feedback, setFeedback] = useState<{
-        icon?: string;
-        title: string;
-        message?: string;
-        visible: boolean;
-    }>({ title: "", visible: false });
-
-    const showFeedback = (
-        icon: string,
-        feedbackTitle: string,
-        message?: string,
-    ) => {
-        setFeedback({ icon, title: feedbackTitle, message, visible: true });
-        hideFeedback();
-    };
-
-    const hideFeedback = useDebounce(() => {
-        setFeedback((prev) => ({ ...prev, visible: false }));
-    }, 2000);
-
     const { user, markAsFavorite, addToWatchlist, rate } = useUser();
+    const showFeedback = useFeedbackMessage();
 
     const handleAddToList = () => {};
 
@@ -130,8 +110,11 @@ const MovieDetails: React.FC = () => {
             );
             if (success) {
                 showFeedback(
-                    newFavorite ? "heart" : "heart-o",
-                    translate("SUBMITTED"),
+                    {
+                        iconName: newFavorite ? "heart" : "heart-o",
+                        title: translate("SUBMITTED"),
+                    },
+                    2000,
                 );
             } else {
                 revertCacheUpdate();
@@ -155,8 +138,11 @@ const MovieDetails: React.FC = () => {
             );
             if (success) {
                 showFeedback(
-                    newWatchlist ? "bookmark" : "bookmark-o",
-                    translate("SUBMITTED"),
+                    {
+                        iconName: newWatchlist ? "bookmark" : "bookmark-o",
+                        title: translate("SUBMITTED"),
+                    },
+                    2000,
                 );
             } else {
                 revertCacheUpdate();
@@ -181,8 +167,11 @@ const MovieDetails: React.FC = () => {
 
             if (success) {
                 showFeedback(
-                    newRating ? "star" : "star-o",
-                    translate("SUBMITTED"),
+                    {
+                        iconName: newRating ? "star" : "star-o",
+                        title: translate("SUBMITTED"),
+                    },
+                    2000,
                 );
             } else {
                 revertCacheUpdate();
@@ -323,12 +312,6 @@ const MovieDetails: React.FC = () => {
                     style={styles.widget}
                 />
             ) : undefined}
-            <FeedbackMessage
-                isVisible={feedback.visible}
-                iconName={feedback.icon}
-                title={feedback.title}
-                message={feedback.message}
-            />
         </ScrollView>
     );
 };

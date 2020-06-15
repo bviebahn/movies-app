@@ -1,9 +1,20 @@
 import { useNavigation } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+    Image,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
+    ActivityIndicator,
+} from "react-native";
 import { useSafeArea } from "react-native-safe-area-context";
 
-import { textColorSecondary } from "../constants/colors";
+import {
+    textColorSecondary,
+    tmdbPrimaryColor,
+    tmdbSecondaryColor,
+} from "../constants/colors";
 import translate from "../i18/Locale";
 import { ProfileStackNavigationProp } from "../navigators/ProfileStackNavigator";
 import LogoFull from "../tmdb/LogoFull";
@@ -12,7 +23,13 @@ import { getGravatarImageUrl } from "../tmdb/util";
 
 const Profile: React.FC = () => {
     const navigation = useNavigation<ProfileStackNavigationProp<"Profile">>();
-    const { user, createRequestToken, createSessionId } = useUser();
+    const {
+        user,
+        loading,
+        createRequestToken,
+        createSessionId,
+        logout,
+    } = useUser();
     const [requestToken, setRequestToken] = useState<string>();
     const { top } = useSafeArea();
 
@@ -38,7 +55,6 @@ const Profile: React.FC = () => {
             });
         }
     };
-    console.log(user);
 
     return (
         <View>
@@ -56,15 +72,20 @@ const Profile: React.FC = () => {
                         <Text style={styles.username}>{user.username}</Text>
                     </>
                 ) : (
-                    <>
-                        <LogoFull size={48} />
-                        <TouchableOpacity
-                            onPress={handleLogin}
-                            style={styles.singinButton}>
-                            <Text style={styles.signinButtonText}>Sign in</Text>
-                        </TouchableOpacity>
-                    </>
+                    <LogoFull size={48} />
                 )}
+                <TouchableOpacity
+                    onPress={user ? logout : handleLogin}
+                    disabled={loading}
+                    style={styles.singinButton}>
+                    {loading ? (
+                        <ActivityIndicator color={tmdbPrimaryColor} />
+                    ) : (
+                        <Text style={styles.signinButtonText}>
+                            {user ? translate("LOGOUT") : translate("LOGIN")}
+                        </Text>
+                    )}
+                </TouchableOpacity>
             </View>
             {!user ? (
                 <Text style={styles.signinText}>
@@ -79,7 +100,7 @@ const styles = StyleSheet.create({
     userRow: {
         flexDirection: "row",
         padding: 20,
-        backgroundColor: "#0d253f",
+        backgroundColor: tmdbPrimaryColor,
         alignItems: "center",
     },
     avatar: {
@@ -100,10 +121,10 @@ const styles = StyleSheet.create({
         paddingTop: 0,
         flexShrink: 1,
         fontWeight: "bold",
-        backgroundColor: "#0d253f",
+        backgroundColor: tmdbPrimaryColor,
     },
     singinButton: {
-        backgroundColor: "#01b4e4",
+        backgroundColor: tmdbSecondaryColor,
         borderRadius: 16,
         justifyContent: "center",
         marginLeft: "auto",
@@ -113,7 +134,7 @@ const styles = StyleSheet.create({
     signinButtonText: {
         fontSize: 16,
         fontWeight: "bold",
-        color: "#0d253f",
+        color: tmdbPrimaryColor,
     },
 });
 

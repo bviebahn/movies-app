@@ -11,3 +11,6 @@ export const primaryColorLight = "#536DFE";
 
 export const textColor = "#fff";
 export const textColorSecondary = "#ddd";
+
+export const tmdbPrimaryColor = "#0d253f";
+export const tmdbSecondaryColor = "#01b4e4";

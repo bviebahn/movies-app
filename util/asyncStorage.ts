@@ -18,3 +18,11 @@ export async function write(key: string, value: string) {
         return null;
     }
 }
+
+export async function remove(key: string) {
+    try {
+        await AsyncStorage.removeItem(key);
+    } catch (e) {
+        console.error("Error removing from AsyncStorage", key, e);
+    }
+}

@@ -1,13 +1,15 @@
 import React, { useEffect, useState, useContext } from "react";
-import { read, write } from "../util/asyncStorage";
+import { read, write, remove } from "../util/asyncStorage";
 import { fetchTmdb, convertAccount } from "./util";
 import { Account, TmdbAccount } from "./types";
 
 type UserContextType = {
     user?: Account;
+    loading: boolean;
     sessionId?: string;
     createRequestToken: () => Promise<string | undefined>;
     createSessionId: (requestToken: string) => Promise<string | undefined>;
+    logout: () => Promise<boolean>;
     markAsFavorite: (
         mediaType: "movie" | "tv",
         mediaId: number,
@@ -34,6 +36,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
     const [sessionId, setSessionId] = useState<string>();
     const [user, setUser] = useState<Account>();
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         (async () => {
@@ -47,6 +50,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
     useEffect(() => {
         if (sessionId) {
             (async () => {
+                setLoading(true);
                 const userDetailsResponse = await fetchTmdb(
                     `account?session_id=${sessionId}`,
                 );
@@ -56,6 +60,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
                     const account = convertAccount(result);
                     setUser(account);
                 }
+                setLoading(false);
             })();
         }
     }, [sessionId]);
@@ -76,6 +81,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
     };
 
     const createSessionId = async (requestToken: string) => {
+        setLoading(true);
         const sessionIdResponse = await fetchTmdb(
             `authentication/session/new?request_token=${requestToken}`,
             "POST",
@@ -91,6 +97,26 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
         }
 
         return undefined;
+    };
+
+    const logout = async () => {
+        if (!sessionId) {
+            return false;
+        }
+        setLoading(true);
+        const response = await fetchTmdb(
+            `authentication/session?session_id=${sessionId}`,
+            "DELETE",
+        );
+
+        const success = response.ok;
+        if (success) {
+            setSessionId(undefined);
+            setUser(undefined);
+            await remove(SESSION_ID_KEY);
+        }
+        setLoading(false);
+        return success;
     };
 
     const markAsFavorite = async (
@@ -155,9 +181,11 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
         <UserContext.Provider
             value={{
                 user,
+                loading,
                 sessionId,
                 createRequestToken,
                 createSessionId,
+                logout,
                 markAsFavorite,
                 addToWatchlist,
                 rate,

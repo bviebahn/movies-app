@@ -18,4 +18,6 @@ export type Translations = {
     TV_GENRES: string;
     SIGNIN_TEXT: string;
     SUBMITTED: string;
+    LOGIN: string;
+    LOGOUT: string;
 };

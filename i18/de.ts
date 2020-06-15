@@ -19,6 +19,8 @@ const translations: Translations = {
     SIGNIN_TEXT:
         "Melde dich mit deinem TMDb-Account an für mehr Funktionen. Du hast keinen? Es ist kostenlos!",
     SUBMITTED: "Gesendet",
+    LOGIN: "Anmelden",
+    LOGOUT: "Abmelden",
 };
 
 export default translations;
