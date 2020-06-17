@@ -14,3 +14,15 @@ export const textColorSecondary = "#ddd";
 
 export const tmdbPrimaryColor = "#0d253f";
 export const tmdbSecondaryColor = "#01b4e4";
+
+export const yellow = "#fdd835";
+export const yellowLight = "#fff176";
+
+export const favoriteRed = "#ad1457";
+export const favoriteRedDark = "#2e0517";
+export const watchlistGreen = "#00838f";
+export const watchlistGreenDark = "#002f33";
+export const ratedYellow = "#f9a825";
+export const ratedYellowDark = "#321f01";
+
+export const lightRed = "#db2360";

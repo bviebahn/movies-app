@@ -31,6 +31,15 @@ const UserContext = React.createContext<UserContextType | undefined>(undefined);
 
 const SESSION_ID_KEY = "SESSION_ID";
 
+type State = {
+    sessionId?: string;
+    account?: Account;
+    loading: boolean;
+    // list?: {
+    //     [key: "favorite"]
+    // }
+};
+
 export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
     children,
 }) => {
@@ -52,7 +61,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
             (async () => {
                 setLoading(true);
                 const userDetailsResponse = await fetchTmdb(
-                    `account?session_id=${sessionId}`,
+                    `/account?session_id=${sessionId}`,
                 );
 
                 if (userDetailsResponse.ok) {
@@ -83,8 +92,8 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
     const createSessionId = async (requestToken: string) => {
         setLoading(true);
         const sessionIdResponse = await fetchTmdb(
-            `authentication/session/new?request_token=${requestToken}`,
-            "POST",
+            `/authentication/session/new?request_token=${requestToken}`,
+            { method: "POST" },
         );
 
         if (sessionIdResponse.ok) {
@@ -105,8 +114,8 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
         }
         setLoading(true);
         const response = await fetchTmdb(
-            `authentication/session?session_id=${sessionId}`,
-            "DELETE",
+            `/authentication/session?session_id=${sessionId}`,
+            { method: "DELETE" },
         );
 
         const success = response.ok;
@@ -126,9 +135,15 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
     ) => {
         if (user) {
             const response = await fetchTmdb(
-                `account/${user.id}/favorite?session_id=${sessionId}`,
-                "POST",
-                { media_type: mediaType, media_id: mediaId, favorite },
+                `/account/${user.id}/favorite?session_id=${sessionId}`,
+                {
+                    method: "POST",
+                    body: {
+                        media_type: mediaType,
+                        media_id: mediaId,
+                        favorite,
+                    },
+                },
             );
             if (response.ok) {
                 return { success: true, favorite };
@@ -144,9 +159,15 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
     ) => {
         if (user) {
             const response = await fetchTmdb(
-                `account/${user.id}/watchlist?session_id=${sessionId}`,
-                "POST",
-                { media_type: mediaType, media_id: mediaId, watchlist },
+                `/account/${user.id}/watchlist?session_id=${sessionId}`,
+                {
+                    method: "POST",
+                    body: {
+                        media_type: mediaType,
+                        media_id: mediaId,
+                        watchlist,
+                    },
+                },
             );
             if (response.ok) {
                 return { success: true, watchlist };
@@ -162,9 +183,8 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
     ) => {
         if (user) {
             const response = await fetchTmdb(
-                `${mediaType}/${mediaId}/rating?session_id=${sessionId}`,
-                rating ? "POST" : "DELETE",
-                { value: rating },
+                `/${mediaType}/${mediaId}/rating?session_id=${sessionId}`,
+                { method: rating ? "POST" : "DELETE", body: { value: rating } },
             );
 
             if (response.ok) {

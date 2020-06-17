@@ -12,7 +12,7 @@ const useTvShows = (
 
     useEffect(() => {
         const fetchTvShows = async () => {
-            const response = await fetchTmdb(`tv/${type}`);
+            const response = await fetchTmdb(`/tv/${type}`);
 
             setLoading(false);
             if (response.ok) {

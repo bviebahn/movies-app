@@ -7,6 +7,7 @@ import {
     ViewStyle,
 } from "react-native";
 import Svg, { G, Path, Rect } from "react-native-svg";
+import { yellowLight, yellow } from "../constants/colors";
 
 type StarRatingProps = {
     rating: number;
@@ -69,13 +70,13 @@ const StarRating: React.FC<StarRatingProps> = ({
             {[...Array(5)].map((_, i) => {
                 const icon = (() => {
                     if (rating - i * 2 >= 2) {
-                        return <StarFull size={32} color="#fdd835" />;
+                        return <StarFull size={32} color={yellow} />;
                     }
 
                     return rating - i * 2 >= 1 ? (
-                        <StarHalf size={32} color="#fdd835" />
+                        <StarHalf size={32} color={yellow} />
                     ) : (
-                        <StarBorder size={32} color="#fff176" />
+                        <StarBorder size={32} color={yellowLight} />
                     );
                 })();
                 return (

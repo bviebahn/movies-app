@@ -15,14 +15,19 @@ import {
 } from "./types";
 import { TMDB_BASE_URL, TMDB_ACCESS_TOKEN } from "./constants";
 
-export function fetchTmdb(path: string, method: string = "GET", body?: any) {
-    return fetch(`${TMDB_BASE_URL}${path}`, {
+export function fetchTmdb(
+    path: string,
+    options?: { method?: string; version?: number; body?: any },
+) {
+    const method = options?.method || "GET";
+    const version = options?.version || 3;
+    return fetch(`${TMDB_BASE_URL}${version}${path}`, {
         method: method,
         headers: {
             Authorization: `Bearer ${TMDB_ACCESS_TOKEN}`,
             "Content-Type": "application/json",
         },
-        body: JSON.stringify(body),
+        ...(options?.body ? { body: JSON.stringify(options.body) } : {}),
     });
 }
 

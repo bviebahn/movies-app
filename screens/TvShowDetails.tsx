@@ -1,15 +1,15 @@
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { getLanguage } from "iso-countries-languages";
-import React, { useRef } from "react";
+import React from "react";
 import {
     ActivityIndicator,
+    Animated,
     Image,
     ScrollView,
     StyleSheet,
     Text,
     useWindowDimensions,
     View,
-    Animated,
 } from "react-native";
 
 import ActionsWidget from "../components/ActionsWidget";
@@ -18,7 +18,7 @@ import MediaTile from "../components/MediaTile";
 import MediaWidget from "../components/MediaWidget";
 import Rating from "../components/Rating";
 import ReviewsWidget from "../components/ReviewsWidget";
-import { textColor, textColorSecondary, gray1 } from "../constants/colors";
+import { gray1, textColor, textColorSecondary } from "../constants/colors";
 import { dot, secondaryText, shadowStyle } from "../constants/styles";
 import {
     TILE_HORIZONTAL_MARGIN,
@@ -31,11 +31,14 @@ import {
     StartStackRouteProp,
 } from "../navigators/StartStackNavigator";
 import useImageUrl from "../tmdb/useImageUrl";
-import useTvShowDetails from "../tmdb/useTvShowDetails";
+import useTvShowDetails, {
+    TvShowDetailsProvider,
+} from "../tmdb/useTvShowDetails";
 import useUser from "../tmdb/useUser";
 import { formatDate } from "../util/date";
 import { convertMinutesToTimeString } from "../util/time";
 import useFeedbackMessage from "../util/useFeedback";
+import useParallax from "../util/useParallax";
 
 const TvShowDetails: React.FC = () => {
     const route = useRoute<StartStackRouteProp<"TvShowDetails">>();
@@ -44,7 +47,7 @@ const TvShowDetails: React.FC = () => {
     >();
     const { width: screenWidth } = useWindowDimensions();
     const getImageUrl = useImageUrl();
-    const parallaxAnim = useRef(new Animated.Value(0));
+    const { style: parallaxStyle, scrollHandler } = useParallax(0.4);
 
     const {
         tvShow: {
@@ -193,18 +196,7 @@ const TvShowDetails: React.FC = () => {
         <ScrollView
             contentContainerStyle={styles.tvShowDetails}
             scrollEventThrottle={16}
-            onScroll={Animated.event(
-                [
-                    {
-                        nativeEvent: {
-                            contentOffset: {
-                                y: parallaxAnim.current,
-                            },
-                        },
-                    },
-                ],
-                { useNativeDriver: false },
-            )}>
+            onScroll={scrollHandler}>
             {backdropPath ? (
                 <Animated.Image
                     source={{
@@ -214,17 +206,8 @@ const TvShowDetails: React.FC = () => {
                         styles.backdrop,
                         {
                             height: backdropHeight,
-                            transform: [
-                                {
-                                    translateY: parallaxAnim.current.interpolate(
-                                        {
-                                            inputRange: [0, 1],
-                                            outputRange: [0, 0.4],
-                                        },
-                                    ),
-                                },
-                            ],
                         },
+                        parallaxStyle,
                     ]}
                 />
             ) : undefined}
@@ -445,4 +428,10 @@ const styles = StyleSheet.create({
     },
 });
 
-export default TvShowDetails;
+const TvShowDetailsWrapped: React.FC = () => (
+    <TvShowDetailsProvider>
+        <TvShowDetails />
+    </TvShowDetailsProvider>
+);
+
+export default TvShowDetailsWrapped;

@@ -1,5 +1,5 @@
 import { useRoute } from "@react-navigation/native";
-import React, { useRef } from "react";
+import React from "react";
 import { Animated, FlatList, StyleSheet, Text, View } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 
@@ -12,9 +12,12 @@ import {
 import { headline, secondaryText } from "../constants/styles";
 import translate from "../i18/Locale";
 import { StartStackRouteProp } from "../navigators/StartStackNavigator";
-import useSeasonDetails from "../tmdb/useSeasonDetails";
+import useSeasonDetails, {
+    SeasonDetailsProvider,
+} from "../tmdb/useSeasonDetails";
 import { formatDate } from "../util/date";
 import useImageUrl from "../tmdb/useImageUrl";
+import useParallax from "../util/useParallax";
 
 const SeasonDetails: React.FC = () => {
     const route = useRoute<StartStackRouteProp<"SeasonDetails">>();
@@ -25,7 +28,7 @@ const SeasonDetails: React.FC = () => {
     const { seasonDetails } = useSeasonDetails(tvShowId, seasonNumber);
     const { episodes } = seasonDetails || {};
 
-    const parallaxAnim = useRef(new Animated.Value(0));
+    const { style: parallaxStyle, scrollHandler } = useParallax(0.4);
     const getImageUrl = useImageUrl();
 
     const topContent = (
@@ -33,21 +36,7 @@ const SeasonDetails: React.FC = () => {
             {posterPath ? (
                 <Animated.Image
                     source={{ uri: getImageUrl(posterPath, "poster", "large") }}
-                    style={[
-                        styles.poster,
-                        {
-                            transform: [
-                                {
-                                    translateY: parallaxAnim.current.interpolate(
-                                        {
-                                            inputRange: [0, 1],
-                                            outputRange: [0, 0.4],
-                                        },
-                                    ),
-                                },
-                            ],
-                        },
-                    ]}
+                    style={[styles.poster, parallaxStyle]}
                 />
             ) : undefined}
             <LinearGradient
@@ -84,18 +73,7 @@ const SeasonDetails: React.FC = () => {
                 keyExtractor={(item) => `${item.id}`}
                 ListHeaderComponent={topContent}
                 scrollEventThrottle={16}
-                onScroll={Animated.event(
-                    [
-                        {
-                            nativeEvent: {
-                                contentOffset: {
-                                    y: parallaxAnim.current,
-                                },
-                            },
-                        },
-                    ],
-                    { useNativeDriver: false },
-                )}
+                onScroll={scrollHandler}
             />
         </View>
     );
@@ -109,8 +87,6 @@ const styles = StyleSheet.create({
         marginLeft: 20,
     },
     poster: {
-        // width: "100%",
-        // height: "100%",
         position: "absolute",
         top: 0,
         left: 0,
@@ -153,4 +129,10 @@ const styles = StyleSheet.create({
     },
 });
 
-export default SeasonDetails;
+const SeasonDetailsWrapped: React.FC = () => (
+    <SeasonDetailsProvider>
+        <SeasonDetails />
+    </SeasonDetailsProvider>
+);
+
+export default SeasonDetailsWrapped;

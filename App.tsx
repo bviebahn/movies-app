@@ -14,10 +14,6 @@ import {
 import TabNavigator from "./navigators/TabNavigator";
 import { ConfigurationProvider } from "./tmdb/useConfiguration";
 import { GenreProvider } from "./tmdb/useGenres";
-import { MovieDetailsProvider } from "./tmdb/useMovieDetails";
-import { SearchProvider } from "./tmdb/useSearch";
-import { SeasonDetailsProvider } from "./tmdb/useSeasonDetails";
-import { TvShowDetailsProvider } from "./tmdb/useTvShowDetails";
 import { UserProvider } from "./tmdb/useUser";
 import { FeedbackProvider } from "./util/useFeedback";
 
@@ -72,10 +68,6 @@ const ComposedApp = () => (
             ConfigurationProvider,
             GenreProvider,
             UserProvider,
-            MovieDetailsProvider,
-            TvShowDetailsProvider,
-            SeasonDetailsProvider,
-            SearchProvider,
             FeedbackProvider,
         ]}>
         <App />

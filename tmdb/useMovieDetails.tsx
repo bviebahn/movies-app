@@ -119,7 +119,7 @@ export const MovieDetailsProvider: React.FC<{ children: React.ReactNode }> = ({
     const fetchMovieDetails = async (id: number) => {
         dispatch({ type: "LOAD_DETAILS_START", payload: id });
         const response = await fetchTmdb(
-            `movie/${id}?append_to_response=credits,reviews,recommendations${
+            `/movie/${id}?append_to_response=credits,reviews,recommendations${
                 sessionId ? `,account_states&session_id=${sessionId}` : ""
             }`,
         );

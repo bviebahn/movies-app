@@ -136,7 +136,7 @@ export const TvShowDetailsProvider: React.FC<{ children: React.ReactNode }> = ({
     const fetchTvShowDetails = async (id: number) => {
         dispatch({ type: "LOAD_DETAILS_START", payload: id });
         const response = await fetchTmdb(
-            `tv/${id}?append_to_response=credits,reviews,recommendations${
+            `/tv/${id}?append_to_response=credits,reviews,recommendations${
                 sessionId ? `,account_states&session_id=${sessionId}` : ""
             }`,
         );

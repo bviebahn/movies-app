@@ -21,6 +21,11 @@ const translations: Translations = {
     SUBMITTED: "Submitted",
     LOGIN: "Login",
     LOGOUT: "Logout",
+    FAVORITES: "Favorites",
+    WATCHLIST: "Watchlist",
+    RATED: "Rated",
+    MOVIES: "Movies",
+    TV_SHOWS: "TV Shows",
 };
 
 export default translations;

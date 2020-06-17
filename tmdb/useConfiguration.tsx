@@ -33,7 +33,7 @@ export const ConfigurationProvider: React.FC<{ children: React.ReactNode }> = ({
     const [state, setState] = useState<Configuration>();
     useEffect(() => {
         const fetchConfig = async () => {
-            const response = await fetchTmdb("configuration");
+            const response = await fetchTmdb("/configuration");
 
             if (response.ok) {
                 const result: TmdbConfiguration = await response.json();

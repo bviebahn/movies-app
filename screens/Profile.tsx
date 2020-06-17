@@ -1,19 +1,21 @@
 import { useNavigation } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
-import {
-    Image,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
-    ActivityIndicator,
-} from "react-native";
+import { ActivityIndicator, Image, StyleSheet, Text, View } from "react-native";
+import { RectButton } from "react-native-gesture-handler";
 import { useSafeArea } from "react-native-safe-area-context";
 
+import ListTile from "../components/ListTile";
 import {
+    favoriteRed,
+    favoriteRedDark,
+    lightRed,
+    ratedYellow,
+    ratedYellowDark,
     textColorSecondary,
     tmdbPrimaryColor,
     tmdbSecondaryColor,
+    watchlistGreen,
+    watchlistGreenDark,
 } from "../constants/colors";
 import translate from "../i18/Locale";
 import { ProfileStackNavigationProp } from "../navigators/ProfileStackNavigator";
@@ -74,10 +76,14 @@ const Profile: React.FC = () => {
                 ) : (
                     <LogoFull size={48} />
                 )}
-                <TouchableOpacity
+                <RectButton
                     onPress={user ? logout : handleLogin}
-                    disabled={loading}
-                    style={styles.singinButton}>
+                    enabled={!loading}
+                    rippleColor={tmdbPrimaryColor}
+                    style={[
+                        styles.singinButton,
+                        ...(user ? [{ backgroundColor: lightRed }] : []),
+                    ]}>
                     {loading ? (
                         <ActivityIndicator color={tmdbPrimaryColor} />
                     ) : (
@@ -85,13 +91,34 @@ const Profile: React.FC = () => {
                             {user ? translate("LOGOUT") : translate("LOGIN")}
                         </Text>
                     )}
-                </TouchableOpacity>
+                </RectButton>
             </View>
             {!user ? (
                 <Text style={styles.signinText}>
                     {translate("SIGNIN_TEXT")}
                 </Text>
             ) : undefined}
+            <ListTile
+                iconName="heart"
+                iconColor={favoriteRed}
+                title={translate("FAVORITES")}
+                backgroundColor={favoriteRedDark}
+                onPress={() => undefined}
+            />
+            <ListTile
+                iconName="bookmark"
+                iconColor={watchlistGreen}
+                title={translate("WATCHLIST")}
+                backgroundColor={watchlistGreenDark}
+                onPress={() => undefined}
+            />
+            <ListTile
+                iconName="star"
+                iconColor={ratedYellow}
+                title={translate("RATED")}
+                backgroundColor={ratedYellowDark}
+                onPress={() => undefined}
+            />
         </View>
     );
 };
@@ -109,13 +136,14 @@ const styles = StyleSheet.create({
         borderRadius: 24,
     },
     username: {
-        marginLeft: 10,
+        marginHorizontal: 10,
         fontSize: 24,
         fontWeight: "bold",
         color: textColorSecondary,
+        flexShrink: 1,
     },
     signinText: {
-        color: textColorSecondary,
+        color: tmdbSecondaryColor,
         fontSize: 14,
         padding: 20,
         paddingTop: 0,

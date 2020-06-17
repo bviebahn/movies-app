@@ -20,4 +20,9 @@ export type Translations = {
     SUBMITTED: string;
     LOGIN: string;
     LOGOUT: string;
+    FAVORITES: string;
+    WATCHLIST: string;
+    RATED: string;
+    MOVIES: string;
+    TV_SHOWS: string;
 };

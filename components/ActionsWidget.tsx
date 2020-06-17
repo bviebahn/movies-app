@@ -2,7 +2,13 @@ import React, { useEffect, useState } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 
-import { primaryColorDark, textColorSecondary } from "../constants/colors";
+import {
+    primaryColorDark,
+    textColorSecondary,
+    favoriteRed,
+    watchlistGreen,
+    ratedYellow,
+} from "../constants/colors";
 import { shadowStyle } from "../constants/styles";
 import Blur from "./Blur";
 import StarRating from "./StarRating";
@@ -64,17 +70,17 @@ const ActionsWidget: React.FC<ActionsWidgetProps> = ({
             <Button
                 icon="heart"
                 onPress={onMarkAsFavorite}
-                color={isFavorite ? "#ad1457" : textColorSecondary}
+                color={isFavorite ? favoriteRed : textColorSecondary}
             />
             <Button
                 icon="bookmark"
                 onPress={onAddToWatchlist}
-                color={isOnWatchlist ? "#00838f" : textColorSecondary}
+                color={isOnWatchlist ? watchlistGreen : textColorSecondary}
             />
             <Button
                 icon="star"
                 onPress={toggleRating}
-                color={rating ? "#f9a825" : textColorSecondary}
+                color={rating ? ratedYellow : textColorSecondary}
             />
             {ratingVisible ? (
                 <View style={[styles.starRatingWrapper, shadowStyle]}>

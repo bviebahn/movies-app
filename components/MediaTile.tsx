@@ -4,10 +4,10 @@ import {
     StyleProp,
     StyleSheet,
     Text,
-    TouchableOpacity,
     View,
     ViewStyle,
 } from "react-native";
+import { BorderlessButton } from "react-native-gesture-handler";
 import Icon from "react-native-vector-icons/FontAwesome";
 
 import {
@@ -43,37 +43,44 @@ const MediaTile: React.FC<Props> = ({
     const imageHeight = width * 1.5;
 
     return (
-        <TouchableOpacity
-            onPress={onPress}
-            style={[
-                styles.mediaTile,
-                shadowStyle,
-                {
-                    width,
-                    height: width * 2 + 20,
-                },
-                style,
-            ]}>
-            {imageUrl ? (
-                <Image
-                    source={{ uri: imageUrl }}
-                    style={[styles.image, { height: imageHeight }]}
-                />
-            ) : (
-                <View style={styles.placeholderImage}>
-                    <Icon name="image" size={64} color={textColorSecondary} />
+        <View>
+            <BorderlessButton
+                onPress={onPress}
+                rippleColor="#000"
+                style={[
+                    styles.mediaTile,
+                    shadowStyle,
+                    {
+                        width,
+                        height: width * 2 + 20,
+                    },
+                    style,
+                ]}>
+                {imageUrl ? (
+                    <Image
+                        source={{ uri: imageUrl }}
+                        style={[styles.image, { height: imageHeight }]}
+                    />
+                ) : (
+                    <View style={styles.placeholderImage}>
+                        <Icon
+                            name="image"
+                            size={64}
+                            color={textColorSecondary}
+                        />
+                    </View>
+                )}
+                {voteAverage ? (
+                    <Rating percent={voteAverage * 10} style={styles.rating} />
+                ) : undefined}
+                <View style={styles.infoContainer}>
+                    <Text numberOfLines={2} style={styles.title}>
+                        {title}
+                    </Text>
+                    <Text style={styles.subtitle}>{subtitle}</Text>
                 </View>
-            )}
-            {voteAverage ? (
-                <Rating percent={voteAverage * 10} style={styles.rating} />
-            ) : undefined}
-            <View style={styles.infoContainer}>
-                <Text numberOfLines={2} style={styles.title}>
-                    {title}
-                </Text>
-                <Text style={styles.subtitle}>{subtitle}</Text>
-            </View>
-        </TouchableOpacity>
+            </BorderlessButton>
+        </View>
     );
 };
 

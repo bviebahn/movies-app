@@ -21,6 +21,11 @@ const translations: Translations = {
     SUBMITTED: "Gesendet",
     LOGIN: "Anmelden",
     LOGOUT: "Abmelden",
+    FAVORITES: "Favoriten",
+    WATCHLIST: "Watchlist", // TODO: ?
+    RATED: "Bewertet",
+    MOVIES: "Filme",
+    TV_SHOWS: "Serien",
 };
 
 export default translations;

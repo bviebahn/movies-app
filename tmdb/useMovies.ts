@@ -12,7 +12,7 @@ const useMovies = (
 
     useEffect(() => {
         const fetchMovies = async () => {
-            const response = await fetchTmdb(`movie/${type}`);
+            const response = await fetchTmdb(`/movie/${type}`);
 
             setLoading(false);
             if (response.ok) {

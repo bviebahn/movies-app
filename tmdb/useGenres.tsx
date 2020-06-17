@@ -20,7 +20,7 @@ export const GenreProvider: React.FC<{ children: React.ReactNode }> = ({
     useEffect(() => {
         let cancelled = false;
         const fetchMovieGenres = async () => {
-            const response = await fetchTmdb("genre/movie/list");
+            const response = await fetchTmdb("/genre/movie/list");
 
             if (response.ok && !cancelled) {
                 const result = await response.json();
@@ -28,7 +28,7 @@ export const GenreProvider: React.FC<{ children: React.ReactNode }> = ({
             }
         };
         const fetchTVGenres = async () => {
-            const response = await fetchTmdb("genre/tv/list");
+            const response = await fetchTmdb("/genre/tv/list");
 
             if (response.ok && !cancelled) {
                 const result = await response.json();

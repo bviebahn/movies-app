@@ -1,6 +1,6 @@
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { getLanguage } from "iso-countries-languages";
-import React, { useRef } from "react";
+import React from "react";
 import {
     ActivityIndicator,
     Image,
@@ -31,11 +31,12 @@ import {
     StartStackRouteProp,
 } from "../navigators/StartStackNavigator";
 import useImageUrl from "../tmdb/useImageUrl";
-import useMovieDetails from "../tmdb/useMovieDetails";
+import useMovieDetails, { MovieDetailsProvider } from "../tmdb/useMovieDetails";
 import useUser from "../tmdb/useUser";
 import { formatDate } from "../util/date";
 import { convertMinutesToTimeString } from "../util/time";
 import useFeedbackMessage from "../util/useFeedback";
+import useParallax from "../util/useParallax";
 
 const MovieDetails: React.FC = () => {
     const route = useRoute<StartStackRouteProp<"MovieDetails">>();
@@ -43,7 +44,6 @@ const MovieDetails: React.FC = () => {
         StartStackNavigationProp<"MovieDetails">
     >();
     const { width: screenWidth } = useWindowDimensions();
-    const parallaxAnim = useRef(new Animated.Value(0));
 
     const {
         movie: {
@@ -92,6 +92,7 @@ const MovieDetails: React.FC = () => {
 
     const { user, markAsFavorite, addToWatchlist, rate } = useUser();
     const showFeedback = useFeedbackMessage();
+    const { style: parallaxStyle, scrollHandler } = useParallax(0.4);
 
     const handleAddToList = () => {};
 
@@ -185,18 +186,7 @@ const MovieDetails: React.FC = () => {
         <ScrollView
             contentContainerStyle={styles.movieDetails}
             scrollEventThrottle={16}
-            onScroll={Animated.event(
-                [
-                    {
-                        nativeEvent: {
-                            contentOffset: {
-                                y: parallaxAnim.current,
-                            },
-                        },
-                    },
-                ],
-                { useNativeDriver: false },
-            )}>
+            onScroll={scrollHandler}>
             {backdropPath ? (
                 <Animated.Image
                     source={{
@@ -206,17 +196,8 @@ const MovieDetails: React.FC = () => {
                         styles.backdrop,
                         {
                             height: backdropHeight,
-                            transform: [
-                                {
-                                    translateY: parallaxAnim.current.interpolate(
-                                        {
-                                            inputRange: [0, 1],
-                                            outputRange: [0, 0.4],
-                                        },
-                                    ),
-                                },
-                            ],
                         },
+                        parallaxStyle,
                     ]}
                 />
             ) : undefined}
@@ -415,4 +396,10 @@ const styles = StyleSheet.create({
     },
 });
 
-export default MovieDetails;
+const MovieDetailsWrapped: React.FC = () => (
+    <MovieDetailsProvider>
+        <MovieDetails />
+    </MovieDetailsProvider>
+);
+
+export default MovieDetailsWrapped;

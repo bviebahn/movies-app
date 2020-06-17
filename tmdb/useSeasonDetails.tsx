@@ -94,7 +94,7 @@ export const SeasonDetailsProvider: React.FC<{ children: React.ReactNode }> = ({
             type: "LOAD_DETAILS_START",
             payload: uniqueId,
         });
-        const response = await fetchTmdb(`tv/${id}/season/${seasonNumber}`);
+        const response = await fetchTmdb(`/tv/${id}/season/${seasonNumber}`);
 
         if (response.ok) {
             const result = await response.json();

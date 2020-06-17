@@ -88,7 +88,7 @@ function reducer(state: SearchState, action: Action): SearchState {
 
 async function fetchSearch(queryParam: string, page: number = 1) {
     const response = await fetchTmdb(
-        `search/multi?query=${queryParam}&page=${page}`,
+        `/search/multi?query=${queryParam}&page=${page}`,
     );
 
     if (response.ok) {

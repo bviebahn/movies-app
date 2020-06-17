@@ -19,7 +19,7 @@ import { gray0, gray3, textColorSecondary } from "../constants/colors";
 import { shadowStyle } from "../constants/styles";
 import translate from "../i18/Locale";
 import useImageUrl from "../tmdb/useImageUrl";
-import useSearch, { SearchResultItem } from "../tmdb/useSearch";
+import useSearch, { SearchResultItem, SearchProvider } from "../tmdb/useSearch";
 import { formatDate } from "../util/date";
 import useDebounce, { useDebouncedValue } from "../util/useDebounce";
 import Rating from "../components/Rating";
@@ -260,4 +260,10 @@ const styles = StyleSheet.create({
     },
 });
 
-export default Search;
+const SearchWrapped: React.FC = () => (
+    <SearchProvider>
+        <Search />
+    </SearchProvider>
+);
+
+export default SearchWrapped;
