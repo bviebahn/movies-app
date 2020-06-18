@@ -1,9 +1,8 @@
-import { useEffect, useState } from "react";
+import { useQuery } from "react-query";
 
 import { read, write } from "../util/asyncStorage";
 import { Configuration, TmdbConfiguration } from "./types";
 import { fetchTmdb } from "./util";
-import { useQuery } from "react-query";
 
 const LAST_FETCHED_STORAGE_KEY = "LAST_CONFIGURATION_FETCH";
 const CONFIG_STORAGE_KEY = "CONFIGURATION";
@@ -22,7 +21,29 @@ function convertConfiguration(config: TmdbConfiguration): Configuration {
     };
 }
 
+async function readConfigFromStorage(): Promise<Configuration | undefined> {
+    const lastFetched = parseInt(
+        (await read(LAST_FETCHED_STORAGE_KEY)) || "0",
+        10,
+    );
+    if (Date.now() > lastFetched + 7 * 24 * 60 * 60 * 1000) {
+        return undefined;
+    } else {
+        const c = await read(CONFIG_STORAGE_KEY);
+
+        if (!c) {
+            return undefined;
+        } else {
+            return JSON.parse(c);
+        }
+    }
+}
+
 async function fetchConfiguration() {
+    const storageConfig = await readConfigFromStorage();
+    if (storageConfig) {
+        return storageConfig;
+    }
     const response = await fetchTmdb("/configuration");
     if (response.ok) {
         const result: TmdbConfiguration = await response.json();
@@ -33,40 +54,13 @@ async function fetchConfiguration() {
 }
 
 function useConfiguration() {
-    const [state, setState] = useState<Configuration>();
-    const { refetch } = useQuery("configuration", fetchConfiguration, {
-        manual: true,
+    return useQuery("configuration", fetchConfiguration, {
         cacheTime: Infinity,
         onSuccess: (config) => {
-            setState(config);
             write(LAST_FETCHED_STORAGE_KEY, Date.now().toString(10));
             write(CONFIG_STORAGE_KEY, JSON.stringify(config));
         },
     });
-    useEffect(() => {
-        (async () => {
-            console.log("reading from storage0");
-            const lastFetched = parseInt(
-                (await read(LAST_FETCHED_STORAGE_KEY)) || "0",
-                10,
-            );
-            if (Date.now() > lastFetched + 7 * 24 * 60 * 60 * 1000) {
-                refetch();
-            } else {
-                console.log("reading from storage1");
-
-                const c = await read(CONFIG_STORAGE_KEY);
-
-                if (!c) {
-                    refetch();
-                } else {
-                    setState(JSON.parse(c));
-                }
-            }
-        })();
-    }, [refetch]);
-
-    return state;
 }
 
 export default useConfiguration;

@@ -107,7 +107,6 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
 
     useEffect(() => {
         if (sessionId) {
-            console.log("fetching user");
             refetch();
         }
     }, [sessionId, refetch]);
