@@ -2,7 +2,7 @@ import useConfiguration from "./useConfiguration";
 import { ImageType, ImageSize } from "./types";
 
 function useImageUrl() {
-    const { configuration } = useConfiguration();
+    const configuration = useConfiguration();
 
     function getImageUrl(path: string, type: ImageType, size: ImageSize) {
         if (!configuration) {

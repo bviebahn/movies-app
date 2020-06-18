@@ -19,7 +19,7 @@ import { gray0, gray3, textColorSecondary } from "../constants/colors";
 import { shadowStyle } from "../constants/styles";
 import translate from "../i18/Locale";
 import useImageUrl from "../tmdb/useImageUrl";
-import useSearch, { SearchResultItem, SearchProvider } from "../tmdb/useSearch";
+import useSearch from "../tmdb/useSearch";
 import { formatDate } from "../util/date";
 import useDebounce, { useDebouncedValue } from "../util/useDebounce";
 import Rating from "../components/Rating";
@@ -27,6 +27,7 @@ import { useNavigation } from "@react-navigation/native";
 import { SearchStackNavigationProp } from "../navigators/SearchStackNavigator";
 import useGenres from "../tmdb/useGenres";
 import ChipSelector from "../components/ChipSelector";
+import { SearchResult, SearchResultItem } from "../tmdb/types";
 
 const SearchListItem: React.FC<{ item: SearchResultItem }> = ({ item }) => {
     const title = item.mediaType === "movie" ? item.title : item.name;
@@ -92,6 +93,33 @@ const SearchListItem: React.FC<{ item: SearchResultItem }> = ({ item }) => {
     );
 };
 
+const SearchResults: React.FC<{
+    query: string;
+    handleScroll: (event: NativeSyntheticEvent<NativeScrollEvent>) => void;
+}> = ({ query, handleScroll }) => {
+    const { data, isFetchingMore, fetchMore } = useSearch(query);
+    const fetchMoreDebounced = useDebounce(fetchMore, 1000);
+
+    return data ? (
+        <FlatList
+            data={data.reduce<SearchResult["results"]>(
+                (prev, curr) => [...prev, ...curr.results],
+                [],
+            )}
+            renderItem={({ item }) => <SearchListItem item={item} />}
+            keyExtractor={(item) => `${item.mediaType}:${item.id}`}
+            onEndReached={() => fetchMoreDebounced()}
+            ListFooterComponent={
+                isFetchingMore ? <ActivityIndicator /> : undefined
+            }
+            ListFooterComponentStyle={styles.listFooter}
+            keyboardShouldPersistTaps="never"
+            keyboardDismissMode="on-drag"
+            onScroll={handleScroll}
+        />
+    ) : null;
+};
+
 const Search: React.FC = () => {
     const [screenTitleHidden, setScreenTitleHidden] = useState(false);
     const [query, setQuery] = useState<string>();
@@ -99,11 +127,9 @@ const Search: React.FC = () => {
     const [scrollOffset, setScrollOffset] = useState(0);
 
     const debouncedQuery = useDebouncedValue(query, 500);
-    const { data, loading, fetchMore } = useSearch(debouncedQuery);
 
-    const fetchMoreDebounced = useDebounce(fetchMore, 1000);
-
-    const { movieGenres, tvGenres } = useGenres();
+    const { data: movieGenres } = useGenres("movie");
+    const { data: tvGenres } = useGenres("tv");
 
     useEffect(() => {
         if (screenTitleHidden) {
@@ -168,19 +194,10 @@ const Search: React.FC = () => {
                         onFocus={() => setScreenTitleHidden(true)}
                     />
                 </View>
-                {data ? (
-                    <FlatList
-                        data={data.results}
-                        renderItem={({ item }) => (
-                            <SearchListItem item={item} />
-                        )}
-                        keyExtractor={(item) => `${item.mediaType}:${item.id}`}
-                        onEndReached={fetchMoreDebounced}
-                        ListFooterComponent={<ActivityIndicator />}
-                        ListFooterComponentStyle={styles.listFooter}
-                        keyboardShouldPersistTaps="never"
-                        keyboardDismissMode="on-drag"
-                        onScroll={handleScroll}
+                {debouncedQuery ? (
+                    <SearchResults
+                        query={debouncedQuery}
+                        handleScroll={handleScroll}
                     />
                 ) : (
                     <>
@@ -188,21 +205,20 @@ const Search: React.FC = () => {
                             {translate("MOVIE_GENRES")}
                         </Text>
                         <ChipSelector
-                            data={movieGenres.map((genre) => genre.name)}
+                            data={(movieGenres || []).map(
+                                (genre) => genre.name,
+                            )}
                             onPressItem={() => undefined}
                         />
                         <Text style={styles.genresTitle}>
                             {translate("TV_GENRES")}
                         </Text>
                         <ChipSelector
-                            data={tvGenres.map((genre) => genre.name)}
+                            data={(tvGenres || []).map((genre) => genre.name)}
                             onPressItem={() => undefined}
                         />
                     </>
                 )}
-                {loading && !data ? (
-                    <ActivityIndicator style={styles.activityIndicator} />
-                ) : undefined}
             </Animated.View>
         </SafeAreaView>
     );
@@ -260,10 +276,4 @@ const styles = StyleSheet.create({
     },
 });
 
-const SearchWrapped: React.FC = () => (
-    <SearchProvider>
-        <Search />
-    </SearchProvider>
-);
-
-export default SearchWrapped;
+export default Search;

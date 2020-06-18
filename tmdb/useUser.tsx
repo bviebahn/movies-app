@@ -1,51 +1,100 @@
-import React, { useEffect, useState, useContext } from "react";
-import { read, write, remove } from "../util/asyncStorage";
-import { fetchTmdb, convertAccount } from "./util";
+import React, { useContext, useEffect, useState } from "react";
+import { useQuery } from "react-query";
+
+import { read, write } from "../util/asyncStorage";
 import { Account, TmdbAccount } from "./types";
+import { convertAccount, fetchTmdb } from "./util";
 
 type UserContextType = {
     user?: Account;
-    loading: boolean;
     sessionId?: string;
-    createRequestToken: () => Promise<string | undefined>;
-    createSessionId: (requestToken: string) => Promise<string | undefined>;
+    accessToken?: string;
+    loading: boolean;
+    auth: (requestToken: string) => Promise<void>;
     logout: () => Promise<boolean>;
-    markAsFavorite: (
-        mediaType: "movie" | "tv",
-        mediaId: number,
-        favorite: boolean,
-    ) => Promise<{ success: boolean; favorite: boolean }>;
-    addToWatchlist: (
-        mediaType: "movie" | "tv",
-        mediaId: number,
-        favorite: boolean,
-    ) => Promise<{ success: boolean; watchlist: boolean }>;
-    rate: (
-        mediaType: "movie" | "tv",
-        mediaId: number,
-        rating?: number,
-    ) => Promise<{ success: boolean; rating?: number }>;
 };
 
 const UserContext = React.createContext<UserContextType | undefined>(undefined);
 
+const ACCESS_TOKEN_KEY = "ACCESS_TOKEN";
 const SESSION_ID_KEY = "SESSION_ID";
 
-type State = {
-    sessionId?: string;
-    account?: Account;
-    loading: boolean;
-    // list?: {
-    //     [key: "favorite"]
-    // }
-};
+async function fetchUser(_key: "user", sessionId?: string) {
+    if (!sessionId) {
+        throw new Error("sessionId missing in fetchUser");
+    }
+    const response = await fetchTmdb(`/account?session_id=${sessionId}`);
+
+    if (response.ok) {
+        const result: TmdbAccount = await response.json();
+        return convertAccount(result);
+    }
+
+    throw new Error("Error fetching User");
+}
+
+export async function createRequestToken() {
+    const response = await fetchTmdb("/auth/request_token", {
+        method: "POST",
+        version: 4,
+    });
+
+    if (response.ok) {
+        const result = await response.json();
+
+        if (result.success) {
+            return result.request_token as string;
+        }
+    }
+    throw new Error("Error creating requestToken");
+}
+
+async function createAccessToken(requestToken: string) {
+    const response = await fetchTmdb(
+        `/auth/access_token?request_token=${requestToken}`,
+        { method: "POST", version: 4 },
+    );
+
+    if (response.ok) {
+        const result = await response.json();
+        if (result.success) {
+            return result.access_token as string;
+        }
+    }
+    throw new Error("Error creating accessToken");
+}
+
+async function createSessionId(accessToken: string) {
+    // TODO: accessToken in body?
+    const response = await fetchTmdb(
+        `/authentication/session/convert/4?access_token=${accessToken}`,
+        { method: "POST" },
+    );
+
+    if (response.ok) {
+        const result = await response.json();
+        console.log("createSessionId", result);
+        if (result.success) {
+            return result.session_id as string;
+        }
+    }
+    throw new Error("Error creating sessionId");
+}
 
 export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
     children,
 }) => {
+    // v4 access token
+    const [accessToken, setAccessToken] = useState<string>();
+    // v3 sessionId
     const [sessionId, setSessionId] = useState<string>();
-    const [user, setUser] = useState<Account>();
-    const [loading, setLoading] = useState(false);
+    const { data: user, status, refetch } = useQuery(
+        ["user", sessionId],
+        fetchUser,
+        {
+            manual: true,
+        },
+    );
 
     useEffect(() => {
         (async () => {
@@ -58,169 +107,71 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
 
     useEffect(() => {
         if (sessionId) {
-            (async () => {
-                setLoading(true);
-                const userDetailsResponse = await fetchTmdb(
-                    `/account?session_id=${sessionId}`,
-                );
-
-                if (userDetailsResponse.ok) {
-                    const result: TmdbAccount = await userDetailsResponse.json();
-                    const account = convertAccount(result);
-                    setUser(account);
-                }
-                setLoading(false);
-            })();
+            console.log("fetching user");
+            refetch();
         }
-    }, [sessionId]);
+    }, [sessionId, refetch]);
 
-    const createRequestToken = async () => {
-        const requestTokenResponse = await fetchTmdb(
-            "/authentication/token/new",
-        );
+    async function auth(requestToken: string) {
+        const newAccessToken = await createAccessToken(requestToken);
+        console.log("newAccessToken", newAccessToken);
 
-        if (requestTokenResponse.ok) {
-            const result = await requestTokenResponse.json();
+        setAccessToken(newAccessToken);
+        const newSessionId = await createSessionId(newAccessToken);
+        console.log("newSessionId", newSessionId);
 
-            if (result.success) {
-                return result.request_token as string;
-            }
-        }
-        return undefined;
-    };
-
-    const createSessionId = async (requestToken: string) => {
-        setLoading(true);
-        const sessionIdResponse = await fetchTmdb(
-            `/authentication/session/new?request_token=${requestToken}`,
-            { method: "POST" },
-        );
-
-        if (sessionIdResponse.ok) {
-            const result = await sessionIdResponse.json();
-            if (result.success) {
-                setSessionId(result.session_id);
-                await write(SESSION_ID_KEY, result.session_id);
-                return result.session_id as string;
-            }
-        }
-
-        return undefined;
-    };
+        setSessionId(newSessionId);
+        await Promise.all([
+            write(ACCESS_TOKEN_KEY, newAccessToken),
+            write(SESSION_ID_KEY, newSessionId),
+        ]);
+    }
 
     const logout = async () => {
-        if (!sessionId) {
-            return false;
-        }
-        setLoading(true);
-        const response = await fetchTmdb(
-            `/authentication/session?session_id=${sessionId}`,
-            { method: "DELETE" },
-        );
-
-        const success = response.ok;
-        if (success) {
-            setSessionId(undefined);
-            setUser(undefined);
-            await remove(SESSION_ID_KEY);
-        }
-        setLoading(false);
-        return success;
-    };
-
-    const markAsFavorite = async (
-        mediaType: "movie" | "tv",
-        mediaId: number,
-        favorite: boolean,
-    ) => {
-        if (user) {
-            const response = await fetchTmdb(
-                `/account/${user.id}/favorite?session_id=${sessionId}`,
-                {
-                    method: "POST",
-                    body: {
-                        media_type: mediaType,
-                        media_id: mediaId,
-                        favorite,
-                    },
-                },
-            );
-            if (response.ok) {
-                return { success: true, favorite };
-            }
-        }
-        return { success: false, favorite: !favorite };
-    };
-
-    const addToWatchlist = async (
-        mediaType: "movie" | "tv",
-        mediaId: number,
-        watchlist: boolean,
-    ) => {
-        if (user) {
-            const response = await fetchTmdb(
-                `/account/${user.id}/watchlist?session_id=${sessionId}`,
-                {
-                    method: "POST",
-                    body: {
-                        media_type: mediaType,
-                        media_id: mediaId,
-                        watchlist,
-                    },
-                },
-            );
-            if (response.ok) {
-                return { success: true, watchlist };
-            }
-        }
-        return { success: false, watchlist: !watchlist };
-    };
-
-    const rate = async (
-        mediaType: "movie" | "tv",
-        mediaId: number,
-        rating?: number,
-    ) => {
-        if (user) {
-            const response = await fetchTmdb(
-                `/${mediaType}/${mediaId}/rating?session_id=${sessionId}`,
-                { method: rating ? "POST" : "DELETE", body: { value: rating } },
-            );
-
-            if (response.ok) {
-                return {
-                    success: true,
-                    rating,
-                };
-            }
-        }
-        return { success: false };
+        // TODO:
+        // if (!accessToken) {
+        //     console.log("no accessToken");
+        //     return false;
+        // }
+        // const response = await fetchTmdb(`/auth/access_token`, {
+        //     method: "DELETE",
+        //     version: 4,
+        //     accessToken,
+        //     body: { access_token: accessToken },
+        // });
+        // console.log("resp", response);
+        // const success = response.ok;
+        // if (success) {
+        //     console.log("success delete accessToken");
+        //     setSessionId(undefined); TODO:
+        //     setAccessToken(undefined);
+        //     await remove(SESSION_ID_KEY);
+        // }
+        // return success;
+        return true;
     };
 
     return (
         <UserContext.Provider
             value={{
-                user,
-                loading,
+                user: sessionId ? user : undefined,
+                loading: status === "loading",
+                accessToken,
                 sessionId,
-                createRequestToken,
-                createSessionId,
+                auth,
                 logout,
-                markAsFavorite,
-                addToWatchlist,
-                rate,
             }}>
             {children}
         </UserContext.Provider>
     );
 };
 
-const useUser = () => {
+function useUser() {
     const context = useContext(UserContext);
     if (!context) {
         throw new Error("useUser must be used within a UserProvider");
     }
     return context;
-};
+}
 
 export default useUser;

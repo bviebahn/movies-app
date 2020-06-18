@@ -31,12 +31,13 @@ import {
     StartStackRouteProp,
 } from "../navigators/StartStackNavigator";
 import useImageUrl from "../tmdb/useImageUrl";
-import useMovieDetails, { MovieDetailsProvider } from "../tmdb/useMovieDetails";
-import useUser from "../tmdb/useUser";
+import useMovieDetails from "../tmdb/useMovieDetails";
 import { formatDate } from "../util/date";
 import { convertMinutesToTimeString } from "../util/time";
-import useFeedbackMessage from "../util/useFeedback";
 import useParallax from "../util/useParallax";
+import useMarkAsFavorite from "../tmdb/useMarkAsFavorite";
+import useAddToWatchlist from "../tmdb/useAddToWatchlist";
+import useRate from "../tmdb/useRate";
 
 const MovieDetails: React.FC = () => {
     const route = useRoute<StartStackRouteProp<"MovieDetails">>();
@@ -44,6 +45,10 @@ const MovieDetails: React.FC = () => {
         StartStackNavigationProp<"MovieDetails">
     >();
     const { width: screenWidth } = useWindowDimensions();
+
+    const markAsFavorite = useMarkAsFavorite();
+    const addToWatchlist = useAddToWatchlist();
+    const rate = useRate();
 
     const {
         movie: {
@@ -58,7 +63,7 @@ const MovieDetails: React.FC = () => {
         },
     } = route.params;
 
-    const { movieDetails, loading, updateCache } = useMovieDetails(id);
+    const { data, status } = useMovieDetails(id);
     const getImageUrl = useImageUrl();
 
     const {
@@ -69,7 +74,7 @@ const MovieDetails: React.FC = () => {
         recommendations,
         genres,
         accountStates,
-    } = movieDetails || {};
+    } = data || {};
 
     const { favorite, rated, watchlist } = accountStates || {};
 
@@ -90,96 +95,20 @@ const MovieDetails: React.FC = () => {
             : []),
     ];
 
-    const { user, markAsFavorite, addToWatchlist, rate } = useUser();
-    const showFeedback = useFeedbackMessage();
     const { style: parallaxStyle, scrollHandler } = useParallax(0.4);
 
     const handleAddToList = () => {};
 
-    const handleMarkAsFavorite = async () => {
-        if (user && movieDetails) {
-            const revertCacheUpdate = updateCache({
-                ...movieDetails,
-                accountStates: {
-                    ...movieDetails.accountStates,
-                    favorite: !favorite,
-                },
-            });
-
-            const { success, favorite: newFavorite } = await markAsFavorite(
-                "movie",
-                id,
-                !favorite,
-            );
-            if (success) {
-                showFeedback(
-                    {
-                        iconName: newFavorite ? "heart" : "heart-o",
-                        title: translate("SUBMITTED"),
-                    },
-                    2000,
-                );
-            } else {
-                revertCacheUpdate();
-            }
-        }
+    const handleMarkAsFavorite = () => {
+        markAsFavorite("movie", id, !favorite);
     };
 
-    const handleAddToWatchist = async () => {
-        if (user && movieDetails) {
-            const revertCacheUpdate = updateCache({
-                ...movieDetails,
-                accountStates: {
-                    ...movieDetails.accountStates,
-                    watchlist: !watchlist,
-                },
-            });
-            const { success, watchlist: newWatchlist } = await addToWatchlist(
-                "movie",
-                id,
-                !watchlist,
-            );
-            if (success) {
-                showFeedback(
-                    {
-                        iconName: newWatchlist ? "bookmark" : "bookmark-o",
-                        title: translate("SUBMITTED"),
-                    },
-                    2000,
-                );
-            } else {
-                revertCacheUpdate();
-            }
-        }
+    const handleAddToWatchist = () => {
+        addToWatchlist("movie", id, !watchlist);
     };
 
-    const handleRate = async (rating?: number) => {
-        if (user && movieDetails) {
-            const revertCacheUpdate = updateCache({
-                ...movieDetails,
-                accountStates: {
-                    ...movieDetails.accountStates,
-                    rated: rating || 0,
-                },
-            });
-            const { success, rating: newRating } = await rate(
-                "movie",
-                id,
-                rating,
-            );
-
-            if (success) {
-                showFeedback(
-                    {
-                        iconName: newRating ? "star" : "star-o",
-                        title: translate("SUBMITTED"),
-                    },
-                    2000,
-                );
-            } else {
-                revertCacheUpdate();
-            }
-        }
+    const handleRate = (rating?: number) => {
+        rate("movie", id, rating);
     };
 
     return (
@@ -239,7 +168,7 @@ const MovieDetails: React.FC = () => {
                         ) : undefined}
                     </View>
                     <InfoBox data={infos} />
-                    {loading ? (
+                    {status === "loading" ? (
                         <ActivityIndicator style={styles.activityIndicator} />
                     ) : undefined}
                 </View>
@@ -248,7 +177,7 @@ const MovieDetails: React.FC = () => {
                 percent={voteAverage * 10}
                 style={[styles.rating, { top: backdropHeight - 20 }]}
             />
-            {movieDetails ? (
+            {data ? (
                 <ActionsWidget
                     isFavorite={!!favorite}
                     isOnWatchlist={!!watchlist}
@@ -396,10 +325,4 @@ const styles = StyleSheet.create({
     },
 });
 
-const MovieDetailsWrapped: React.FC = () => (
-    <MovieDetailsProvider>
-        <MovieDetails />
-    </MovieDetailsProvider>
-);
-
-export default MovieDetailsWrapped;
+export default MovieDetails;

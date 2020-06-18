@@ -5,11 +5,12 @@ import WebView from "react-native-webview";
 
 const Authenticate: React.FC = () => {
     const route = useRoute<ProfileStackRouteProp<"Authenticate">>();
+    console.log("token", route.params.requestToken);
 
     return (
         <WebView
             source={{
-                uri: `https://www.themoviedb.org/authenticate/${route.params.requestToken}`,
+                uri: `https://www.themoviedb.org/auth/access?request_token=${route.params.requestToken}`,
             }}
         />
     );

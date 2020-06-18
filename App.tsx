@@ -12,8 +12,6 @@ import {
     textColor,
 } from "./constants/colors";
 import TabNavigator from "./navigators/TabNavigator";
-import { ConfigurationProvider } from "./tmdb/useConfiguration";
-import { GenreProvider } from "./tmdb/useGenres";
 import { UserProvider } from "./tmdb/useUser";
 import { FeedbackProvider } from "./util/useFeedback";
 
@@ -63,13 +61,7 @@ const App = () => {
 };
 
 const ComposedApp = () => (
-    <Compose
-        components={[
-            ConfigurationProvider,
-            GenreProvider,
-            UserProvider,
-            FeedbackProvider,
-        ]}>
+    <Compose components={[UserProvider, FeedbackProvider]}>
         <App />
     </Compose>
 );

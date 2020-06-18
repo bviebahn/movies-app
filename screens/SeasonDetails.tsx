@@ -12,9 +12,7 @@ import {
 import { headline, secondaryText } from "../constants/styles";
 import translate from "../i18/Locale";
 import { StartStackRouteProp } from "../navigators/StartStackNavigator";
-import useSeasonDetails, {
-    SeasonDetailsProvider,
-} from "../tmdb/useSeasonDetails";
+import useSeasonDetails from "../tmdb/useSeasonDetails";
 import { formatDate } from "../util/date";
 import useImageUrl from "../tmdb/useImageUrl";
 import useParallax from "../util/useParallax";
@@ -25,8 +23,8 @@ const SeasonDetails: React.FC = () => {
         tvShowId,
         season: { airDate, name, overview, posterPath, seasonNumber },
     } = route.params;
-    const { seasonDetails } = useSeasonDetails(tvShowId, seasonNumber);
-    const { episodes } = seasonDetails || {};
+    const { data } = useSeasonDetails(tvShowId, seasonNumber);
+    const { episodes } = data || {};
 
     const { style: parallaxStyle, scrollHandler } = useParallax(0.4);
     const getImageUrl = useImageUrl();
@@ -129,10 +127,4 @@ const styles = StyleSheet.create({
     },
 });
 
-const SeasonDetailsWrapped: React.FC = () => (
-    <SeasonDetailsProvider>
-        <SeasonDetails />
-    </SeasonDetailsProvider>
-);
-
-export default SeasonDetailsWrapped;
+export default SeasonDetails;

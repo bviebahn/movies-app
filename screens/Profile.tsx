@@ -20,18 +20,12 @@ import {
 import translate from "../i18/Locale";
 import { ProfileStackNavigationProp } from "../navigators/ProfileStackNavigator";
 import LogoFull from "../tmdb/LogoFull";
-import useUser from "../tmdb/useUser";
+import useUser, { createRequestToken } from "../tmdb/useUser";
 import { getGravatarImageUrl } from "../tmdb/util";
 
 const Profile: React.FC = () => {
     const navigation = useNavigation<ProfileStackNavigationProp<"Profile">>();
-    const {
-        user,
-        loading,
-        createRequestToken,
-        createSessionId,
-        logout,
-    } = useUser();
+    const { user, loading, auth, logout } = useUser();
     const [requestToken, setRequestToken] = useState<string>();
     const { top } = useSafeArea();
 
@@ -39,22 +33,24 @@ const Profile: React.FC = () => {
         if (requestToken) {
             const unsubscribe = navigation.addListener("focus", async () => {
                 if (requestToken) {
-                    await createSessionId(requestToken);
+                    await auth(requestToken);
                     setRequestToken(undefined);
                 }
             });
 
             return unsubscribe;
         }
-    }, [navigation, requestToken, createSessionId]);
+    }, [navigation, requestToken, auth]);
 
     const handleLogin = async () => {
-        const newRequestToken = await createRequestToken();
-        if (newRequestToken) {
+        try {
+            const newRequestToken = await createRequestToken();
             setRequestToken(newRequestToken);
             navigation.navigate("Authenticate", {
                 requestToken: newRequestToken,
             });
+        } catch {
+            // TODO: show error
         }
     };
 

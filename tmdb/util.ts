@@ -17,14 +17,20 @@ import { TMDB_BASE_URL, TMDB_ACCESS_TOKEN } from "./constants";
 
 export function fetchTmdb(
     path: string,
-    options?: { method?: string; version?: number; body?: any },
+    options?: {
+        method?: string;
+        version?: 3 | 4;
+        accessToken?: string;
+        body?: any;
+    },
 ) {
     const method = options?.method || "GET";
     const version = options?.version || 3;
+    const accessToken = options?.accessToken || TMDB_ACCESS_TOKEN;
     return fetch(`${TMDB_BASE_URL}${version}${path}`, {
         method: method,
         headers: {
-            Authorization: `Bearer ${TMDB_ACCESS_TOKEN}`,
+            Authorization: `Bearer ${accessToken}`,
             "Content-Type": "application/json",
         },
         ...(options?.body ? { body: JSON.stringify(options.body) } : {}),
@@ -126,7 +132,9 @@ export function convertPerson(person: TmdbPerson): Person {
 
 export function convertSearchResult(result: TmdbSearchResult): SearchResult {
     return {
+        page: result.page,
         totalResults: result.total_results,
+        totalPages: result.total_pages,
         results: result.results.map((r) => {
             if (r.media_type === "movie") {
                 return { ...convertMovie(r), mediaType: "movie" };

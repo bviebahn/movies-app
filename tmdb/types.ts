@@ -348,15 +348,6 @@ export type Person = {
 export type ImageType = "backdrop" | "logo" | "poster" | "profile" | "still";
 export type ImageSize = "small" | "medium" | "large" | "original";
 
-export type SearchResult = {
-    results: ReadonlyArray<
-        | (Movie & { mediaType: "movie" })
-        | (TvShow & { mediaType: "tv" })
-        | (Person & { mediaType: "person" })
-    >;
-    totalResults: number;
-};
-
 export type TmdbSearchResult = {
     page: number;
     total_results: number;
@@ -366,6 +357,18 @@ export type TmdbSearchResult = {
         | (TmdbTvShow & { media_type: "tv" })
         | (TmdbPerson & { media_type: "person" })
     >;
+};
+
+export type SearchResultItem =
+    | (Movie & { mediaType: "movie" })
+    | (TvShow & { mediaType: "tv" })
+    | (Person & { mediaType: "person" });
+
+export type SearchResult = {
+    page: number;
+    totalResults: number;
+    totalPages: number;
+    results: ReadonlyArray<SearchResultItem>;
 };
 
 export type TmdbAccount = {

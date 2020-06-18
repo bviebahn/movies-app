@@ -9,3 +9,5 @@
 -   genres
 -   v4 auth
 -   react-query
+-   TMDb context -> genres, configuration, user?
+-   authenticate onNavigationStateChange

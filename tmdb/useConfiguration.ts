@@ -1,14 +1,9 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { read, write } from "../util/asyncStorage";
 import { Configuration, TmdbConfiguration } from "./types";
 import { fetchTmdb } from "./util";
-
-type ContextType = { configuration?: Configuration };
-
-const ConfigurationContext = React.createContext<ContextType | undefined>(
-    undefined,
-);
+import { useQuery } from "react-query";
 
 const LAST_FETCHED_STORAGE_KEY = "LAST_CONFIGURATION_FETCH";
 const CONFIG_STORAGE_KEY = "CONFIGURATION";
@@ -27,56 +22,51 @@ function convertConfiguration(config: TmdbConfiguration): Configuration {
     };
 }
 
-export const ConfigurationProvider: React.FC<{ children: React.ReactNode }> = ({
-    children,
-}) => {
-    const [state, setState] = useState<Configuration>();
-    useEffect(() => {
-        const fetchConfig = async () => {
-            const response = await fetchTmdb("/configuration");
+async function fetchConfiguration() {
+    const response = await fetchTmdb("/configuration");
+    if (response.ok) {
+        const result: TmdbConfiguration = await response.json();
+        return convertConfiguration(result);
+    }
 
-            if (response.ok) {
-                const result: TmdbConfiguration = await response.json();
-                const config = convertConfiguration(result);
-                setState(config);
-                write(LAST_FETCHED_STORAGE_KEY, Date.now().toString(10));
-                write(CONFIG_STORAGE_KEY, JSON.stringify(config));
-            }
-        };
+    throw new Error("Error fetching Configuration");
+}
+
+function useConfiguration() {
+    const [state, setState] = useState<Configuration>();
+    const { refetch } = useQuery("configuration", fetchConfiguration, {
+        manual: true,
+        cacheTime: Infinity,
+        onSuccess: (config) => {
+            setState(config);
+            write(LAST_FETCHED_STORAGE_KEY, Date.now().toString(10));
+            write(CONFIG_STORAGE_KEY, JSON.stringify(config));
+        },
+    });
+    useEffect(() => {
         (async () => {
+            console.log("reading from storage0");
             const lastFetched = parseInt(
                 (await read(LAST_FETCHED_STORAGE_KEY)) || "0",
                 10,
             );
             if (Date.now() > lastFetched + 7 * 24 * 60 * 60 * 1000) {
-                fetchConfig();
+                refetch();
             } else {
+                console.log("reading from storage1");
+
                 const c = await read(CONFIG_STORAGE_KEY);
 
                 if (!c) {
-                    fetchConfig();
+                    refetch();
                 } else {
                     setState(JSON.parse(c));
                 }
             }
         })();
-    }, []);
+    }, [refetch]);
 
-    return (
-        <ConfigurationContext.Provider value={{ configuration: state }}>
-            {children}
-        </ConfigurationContext.Provider>
-    );
-};
-
-function useConfiguration() {
-    const context = useContext(ConfigurationContext);
-    if (!context) {
-        throw new Error(
-            "useConfiguration must be used within a ConfigurationProvider",
-        );
-    }
-    return context;
+    return state;
 }
 
 export default useConfiguration;

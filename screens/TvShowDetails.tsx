@@ -30,14 +30,13 @@ import {
     StartStackNavigationProp,
     StartStackRouteProp,
 } from "../navigators/StartStackNavigator";
+import useAddToWatchlist from "../tmdb/useAddToWatchlist";
 import useImageUrl from "../tmdb/useImageUrl";
-import useTvShowDetails, {
-    TvShowDetailsProvider,
-} from "../tmdb/useTvShowDetails";
-import useUser from "../tmdb/useUser";
+import useMarkAsFavorite from "../tmdb/useMarkAsFavorite";
+import useRate from "../tmdb/useRate";
+import useTvShowDetails from "../tmdb/useTvShowDetails";
 import { formatDate } from "../util/date";
 import { convertMinutesToTimeString } from "../util/time";
-import useFeedbackMessage from "../util/useFeedback";
 import useParallax from "../util/useParallax";
 
 const TvShowDetails: React.FC = () => {
@@ -45,6 +44,11 @@ const TvShowDetails: React.FC = () => {
     const navigation = useNavigation<
         StartStackNavigationProp<"TvShowDetails">
     >();
+
+    const markAsFavorite = useMarkAsFavorite();
+    const addToWatchlist = useAddToWatchlist();
+    const rate = useRate();
+
     const { width: screenWidth } = useWindowDimensions();
     const getImageUrl = useImageUrl();
     const { style: parallaxStyle, scrollHandler } = useParallax(0.4);
@@ -63,7 +67,7 @@ const TvShowDetails: React.FC = () => {
         },
     } = route.params;
 
-    const { tvShowDetails, loading, updateCache } = useTvShowDetails(id);
+    const { data, status } = useTvShowDetails(id);
 
     const {
         credits,
@@ -74,7 +78,7 @@ const TvShowDetails: React.FC = () => {
         seasons,
         createdBy,
         accountStates,
-    } = tvShowDetails || {};
+    } = data || {};
 
     const { favorite, rated, watchlist } = accountStates || {};
 
@@ -105,91 +109,18 @@ const TvShowDetails: React.FC = () => {
             : []),
     ];
 
-    const { user, markAsFavorite, addToWatchlist, rate } = useUser();
-    const showFeedback = useFeedbackMessage();
-
     const handleAddToList = () => {};
 
-    const handleMarkAsFavorite = async () => {
-        if (user && tvShowDetails) {
-            const revertCacheUpdate = updateCache({
-                ...tvShowDetails,
-                accountStates: {
-                    ...tvShowDetails.accountStates,
-                    favorite: !favorite,
-                },
-            });
-
-            const { success, favorite: newFavorite } = await markAsFavorite(
-                "tv",
-                id,
-                !favorite,
-            );
-            if (success) {
-                showFeedback(
-                    {
-                        iconName: newFavorite ? "heart" : "heart-o",
-                        title: translate("SUBMITTED"),
-                    },
-                    2000,
-                );
-            } else {
-                revertCacheUpdate();
-            }
-        }
+    const handleMarkAsFavorite = () => {
+        markAsFavorite("tv", id, !favorite);
     };
 
-    const handleAddToWatchist = async () => {
-        if (user && tvShowDetails) {
-            const revertCacheUpdate = updateCache({
-                ...tvShowDetails,
-                accountStates: {
-                    ...tvShowDetails.accountStates,
-                    watchlist: !watchlist,
-                },
-            });
-            const { success, watchlist: newWatchlist } = await addToWatchlist(
-                "tv",
-                id,
-                !watchlist,
-            );
-            if (success) {
-                showFeedback(
-                    {
-                        iconName: newWatchlist ? "bookmark" : "bookmark-o",
-                        title: translate("SUBMITTED"),
-                    },
-                    2000,
-                );
-            } else {
-                revertCacheUpdate();
-            }
-        }
+    const handleAddToWatchist = () => {
+        addToWatchlist("tv", id, !watchlist);
     };
 
-    const handleRate = async (rating?: number) => {
-        if (user && tvShowDetails) {
-            const revertCacheUpdate = updateCache({
-                ...tvShowDetails,
-                accountStates: {
-                    ...tvShowDetails.accountStates,
-                    rated: rating || 0,
-                },
-            });
-            const { success, rating: newRating } = await rate("tv", id, rating);
-
-            if (success) {
-                showFeedback(
-                    {
-                        iconName: newRating ? "star" : "star-o",
-                        title: translate("SUBMITTED"),
-                    },
-                    2000,
-                );
-            } else {
-                revertCacheUpdate();
-            }
-        }
+    const handleRate = (rating?: number) => {
+        rate("tv", id, rating);
     };
 
     return (
@@ -249,7 +180,7 @@ const TvShowDetails: React.FC = () => {
                         ) : undefined}
                     </View>
                     <InfoBox data={infos} />
-                    {loading ? (
+                    {status === "loading" ? (
                         <ActivityIndicator style={styles.activityIndicator} />
                     ) : undefined}
                 </View>
@@ -258,7 +189,7 @@ const TvShowDetails: React.FC = () => {
                 percent={voteAverage * 10}
                 style={[styles.rating, { top: backdropHeight - 20 }]}
             />
-            {tvShowDetails ? (
+            {data ? (
                 <ActionsWidget
                     isFavorite={!!favorite}
                     isOnWatchlist={!!watchlist}
@@ -428,10 +359,4 @@ const styles = StyleSheet.create({
     },
 });
 
-const TvShowDetailsWrapped: React.FC = () => (
-    <TvShowDetailsProvider>
-        <TvShowDetails />
-    </TvShowDetailsProvider>
-);
-
-export default TvShowDetailsWrapped;
+export default TvShowDetails;

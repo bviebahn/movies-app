@@ -31,7 +31,8 @@
         "react-native-search-bar": "^3.5.1",
         "react-native-svg": "^12.1.0",
         "react-native-vector-icons": "^6.6.0",
-        "react-native-webview": "^10.2.3"
+        "react-native-webview": "^10.2.3",
+        "react-query": "^1.5.8"
     },
     "devDependencies": {
         "@babel/core": "^7.6.2",
