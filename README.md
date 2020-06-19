@@ -1,6 +1,5 @@
 # TODOS
 
--   Expand episode/rate
 -   guest session?
 -   android searchbar
 -   lists
@@ -8,5 +7,4 @@
 -   person detail
 -   genres
 -   v4 auth
--   react-query
 -   authenticate onNavigationStateChange

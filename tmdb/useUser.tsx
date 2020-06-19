@@ -65,7 +65,6 @@ async function createAccessToken(requestToken: string) {
 }
 
 async function createSessionId(accessToken: string) {
-    // TODO: accessToken in body?
     const response = await fetchTmdb(
         `/authentication/session/convert/4?access_token=${accessToken}`,
         { method: "POST" },
@@ -73,7 +72,6 @@ async function createSessionId(accessToken: string) {
 
     if (response.ok) {
         const result = await response.json();
-        console.log("createSessionId", result);
         if (result.success) {
             return result.session_id as string;
         }
@@ -113,11 +111,9 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
 
     async function auth(requestToken: string) {
         const newAccessToken = await createAccessToken(requestToken);
-        console.log("newAccessToken", newAccessToken);
 
         setAccessToken(newAccessToken);
         const newSessionId = await createSessionId(newAccessToken);
-        console.log("newSessionId", newSessionId);
 
         setSessionId(newSessionId);
         await Promise.all([

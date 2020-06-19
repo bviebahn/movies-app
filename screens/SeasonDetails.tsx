@@ -16,6 +16,7 @@ import useSeasonDetails from "../tmdb/useSeasonDetails";
 import { formatDate } from "../util/date";
 import useImageUrl from "../tmdb/useImageUrl";
 import useParallax from "../util/useParallax";
+import useRate from "../tmdb/useRate";
 
 const SeasonDetails: React.FC = () => {
     const route = useRoute<StartStackRouteProp<"SeasonDetails">>();
@@ -24,10 +25,32 @@ const SeasonDetails: React.FC = () => {
         season: { airDate, name, overview, posterPath, seasonNumber },
     } = route.params;
     const { data } = useSeasonDetails(tvShowId, seasonNumber);
-    const { episodes } = data || {};
+    const { episodes, accountStates } = data || {};
 
     const { style: parallaxStyle, scrollHandler } = useParallax(0.4);
     const getImageUrl = useImageUrl();
+
+    const rate = useRate();
+
+    const ratings = accountStates
+        ? accountStates.reduce<{ [key: number]: number }>(
+              (prev, curr) => ({
+                  ...prev,
+                  [curr.epiodeNumber]: curr.rated,
+              }),
+              {},
+          )
+        : {};
+
+    const handleRateEpisode = (episodeNumber: number, rating?: number) => {
+        rate({
+            mediaType: "episode",
+            tvId: tvShowId,
+            seasonNumber,
+            episodeNumber,
+            rating,
+        });
+    };
 
     const topContent = (
         <View style={styles.topInfoWrapper}>
@@ -67,7 +90,15 @@ const SeasonDetails: React.FC = () => {
         <View>
             <FlatList
                 data={episodes}
-                renderItem={({ item }) => <EpisodeListItem episode={item} />}
+                renderItem={({ item }) => (
+                    <EpisodeListItem
+                        episode={item}
+                        rating={ratings[item.episodeNumber]}
+                        onRate={(rating) =>
+                            handleRateEpisode(item.episodeNumber, rating)
+                        }
+                    />
+                )}
                 keyExtractor={(item) => `${item.id}`}
                 ListHeaderComponent={topContent}
                 scrollEventThrottle={16}

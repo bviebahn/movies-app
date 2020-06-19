@@ -1,69 +1,109 @@
 import useUser from "./useUser";
 import { fetchTmdb } from "./util";
 import { useMutation, queryCache } from "react-query";
-import { MovieDetails, TvShowDetails } from "./types";
+import { MovieDetails, TvShowDetails, SeasonDetails } from "./types";
 
-async function rate({
-    sessionId,
-    mediaType,
-    mediaId,
-    rating,
-}: {
-    sessionId: string;
-    mediaType: "movie" | "tv";
-    mediaId: number;
-    rating?: number;
-}) {
-    const response = await fetchTmdb(
-        `/${mediaType}/${mediaId}/rating?session_id=${sessionId}`,
-        { method: rating ? "POST" : "DELETE", body: { value: rating } },
-    );
+type Variables = { rating?: number } & (
+    | {
+          mediaType: "movie" | "tv";
+          mediaId: number;
+      }
+    | {
+          mediaType: "episode";
+          tvId: number;
+          seasonNumber: number;
+          episodeNumber: number;
+      }
+);
+
+async function rate(variables: Variables & { sessionId: string }) {
+    const { mediaType, rating, sessionId } = variables;
+    const path =
+        variables.mediaType === "episode"
+            ? `/tv/${variables.tvId}/season/${variables.seasonNumber}/episode/${variables.episodeNumber}`
+            : `/${mediaType}/${variables.mediaId}`;
+
+    const response = await fetchTmdb(`${path}/rating?session_id=${sessionId}`, {
+        method: rating ? "POST" : "DELETE",
+        body: { value: rating },
+    });
     if (response.ok) {
         return { success: true, rating };
     }
+
     throw new Error("Error rating");
 }
 
 function useRate() {
     const { sessionId } = useUser();
+
     const [mutate] = useMutation(rate, {
-        onMutate: ({ mediaType, mediaId, rating }): (() => void) => {
-            const oldDetails = queryCache.getQueryData<
-                MovieDetails | TvShowDetails
-            >([`${mediaType}-details`, mediaId]);
+        onMutate: (variables) => {
+            const { mediaType, rating } = variables;
+            if (variables.mediaType === "episode") {
+                const { tvId, seasonNumber, episodeNumber } = variables;
+                const seasonDetails = queryCache.getQueryData<SeasonDetails>([
+                    "season-details",
+                    tvId,
+                    seasonNumber,
+                ]);
 
-            if (oldDetails) {
-                queryCache.setQueryData<MovieDetails | TvShowDetails>(
-                    [`${mediaType}-details`, mediaId],
-                    {
-                        ...oldDetails,
-                        accountStates: {
-                            ...oldDetails.accountStates,
-                            rated: rating || 0,
+                if (seasonDetails) {
+                    queryCache.setQueryData<SeasonDetails>(
+                        ["season-details", tvId, seasonNumber],
+                        {
+                            ...seasonDetails,
+                            accountStates: seasonDetails.accountStates?.map(
+                                (accState) =>
+                                    accState.epiodeNumber === episodeNumber
+                                        ? {
+                                              ...accState,
+                                              rated: rating || 0,
+                                          }
+                                        : accState,
+                            ),
                         },
-                    },
-                );
-            }
+                    );
+                    return () =>
+                        queryCache.setQueryData(
+                            ["season-details", tvId, seasonNumber],
+                            seasonDetails,
+                        );
+                }
+            } else {
+                const { mediaId } = variables;
+                const oldDetails = queryCache.getQueryData<
+                    MovieDetails | TvShowDetails
+                >([`${mediaType}-details`, mediaId]);
 
-            return () =>
-                queryCache.setQueryData(
-                    [`${mediaType}-details`, mediaId],
-                    oldDetails,
-                );
+                if (oldDetails) {
+                    queryCache.setQueryData<MovieDetails | TvShowDetails>(
+                        [`${mediaType}-details`, mediaId],
+                        {
+                            ...oldDetails,
+                            accountStates: {
+                                ...oldDetails.accountStates,
+                                rated: rating || 0,
+                            },
+                        },
+                    );
+                    return () =>
+                        queryCache.setQueryData(
+                            [`${mediaType}-details`, mediaId],
+                            oldDetails,
+                        );
+                }
+            }
         },
-        onError: (_error, _vars, rollback) => (rollback as () => void)(),
+        onError: (_error, _vars, rollback) =>
+            rollback && (rollback as () => void)(),
     });
 
-    return (mediaType: "movie" | "tv", mediaId: number, rating?: number) => {
+    return (variables: Variables) => {
         if (!sessionId) {
             throw new Error("Error rating - no sessionId");
         }
-        return mutate({
-            sessionId,
-            mediaType,
-            mediaId,
-            rating,
-        });
+        return mutate({ ...variables, sessionId });
     };
 }
 

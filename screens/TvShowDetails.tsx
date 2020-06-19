@@ -120,7 +120,7 @@ const TvShowDetails: React.FC = () => {
     };
 
     const handleRate = (rating?: number) => {
-        rate("tv", id, rating);
+        rate({ mediaType: "tv", mediaId: id, rating });
     };
 
     return (

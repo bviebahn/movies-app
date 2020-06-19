@@ -200,6 +200,13 @@ export type TmdbSeasonDetails = {
     poster_path?: string;
     season_number: number;
     episodes: ReadonlyArray<TmdbEpisode>;
+    account_states?: {
+        results: ReadonlyArray<{
+            id: number;
+            episode_number: number;
+            rated: false | { value: number };
+        }>;
+    };
 };
 
 export type SeasonDetails = {
@@ -210,6 +217,11 @@ export type SeasonDetails = {
     posterPath?: string;
     seasonNumber: number;
     episodes: ReadonlyArray<Episode>;
+    accountStates?: ReadonlyArray<{
+        id: number;
+        epiodeNumber: number;
+        rated: number;
+    }>;
 };
 
 export type TmdbEpisode = {

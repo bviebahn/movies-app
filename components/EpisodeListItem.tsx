@@ -1,7 +1,9 @@
-import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import React, { useState } from "react";
+import { View, Text, StyleSheet, LayoutAnimation } from "react-native";
 import { gray0, textColorSecondary, gray3 } from "../constants/colors";
 import Rating from "./Rating";
+import { RectButton } from "react-native-gesture-handler";
+import StarRatingWidget from "./StarRatingWidget";
 
 type Props = {
     episode: {
@@ -10,30 +12,62 @@ type Props = {
         overview: string;
         voteAverage: number;
     };
+    rating: number;
+    onRate: (rating?: number) => void;
 };
 
-const EpisodeListItem: React.FC<Props> = ({ episode }) => (
-    <View style={styles.episodeItem}>
-        <Text style={styles.episodeNumber}>{episode.episodeNumber}.</Text>
-        <View style={styles.episodeInfo}>
-            <Text style={styles.episodeTitle}>{episode.name}</Text>
-            <Text style={styles.episodeOverview} numberOfLines={5}>
-                {episode.overview}
-            </Text>
+const EpisodeListItem: React.FC<Props> = ({ episode, onRate, rating }) => {
+    const [expanded, setExpanded] = useState(false);
+
+    const handleExpand = () => {
+        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+        setExpanded((value) => !value);
+    };
+
+    return (
+        <View style={styles.episodeItem}>
+            <RectButton onPress={handleExpand} style={styles.button}>
+                <View style={styles.content}>
+                    <Text style={styles.episodeNumber}>
+                        {episode.episodeNumber}.
+                    </Text>
+                    <View style={styles.episodeInfo}>
+                        <Text style={styles.episodeTitle}>{episode.name}</Text>
+                        <Text
+                            style={styles.episodeOverview}
+                            numberOfLines={expanded ? undefined : 1}>
+                            {episode.overview}
+                        </Text>
+                    </View>
+                    <View>
+                        <Rating
+                            percent={episode.voteAverage * 10}
+                            style={styles.rating}
+                        />
+                    </View>
+                </View>
+            </RectButton>
+            {expanded ? (
+                <StarRatingWidget
+                    initialValue={rating}
+                    onRate={onRate}
+                    style={styles.starRating}
+                />
+            ) : undefined}
         </View>
-        <Rating percent={episode.voteAverage * 10} style={styles.rating} />
-    </View>
-);
+    );
+};
 
 const styles = StyleSheet.create({
     episodeItem: {
-        paddingHorizontal: 20,
-        paddingVertical: 10,
         flex: 1,
-        flexDirection: "row",
         backgroundColor: gray0,
         borderBottomColor: "#000",
         borderBottomWidth: 1,
+    },
+    button: { paddingHorizontal: 20, paddingVertical: 10 },
+    content: {
+        flexDirection: "row",
     },
     episodeInfo: { flexShrink: 1, marginRight: 10 },
     episodeTitle: {
@@ -53,6 +87,11 @@ const styles = StyleSheet.create({
         flexShrink: 1,
     },
     rating: { marginLeft: "auto" },
+    starRating: {
+        marginLeft: "auto",
+        marginRight: "auto",
+        marginBottom: 10,
+    },
 });
 
 export default EpisodeListItem;

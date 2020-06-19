@@ -1,17 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 
 import {
-    primaryColorDark,
-    textColorSecondary,
     favoriteRed,
-    watchlistGreen,
+    primaryColorDark,
     ratedYellow,
+    textColorSecondary,
+    watchlistGreen,
 } from "../constants/colors";
 import { shadowStyle } from "../constants/styles";
-import Blur from "./Blur";
-import StarRating from "./StarRating";
+import StarRatingWidget from "./StarRatingWidget";
 
 type ButtonProps = {
     icon: string;
@@ -45,11 +44,6 @@ const ActionsWidget: React.FC<ActionsWidgetProps> = ({
     onRate,
 }) => {
     const [ratingVisible, setRatingVisible] = useState(false);
-    const [ratingValue, setRatingValue] = useState(rating);
-
-    useEffect(() => {
-        setRatingValue(rating);
-    }, [rating]);
 
     const toggleRating = () => {
         setRatingVisible((prev) => !prev);
@@ -83,34 +77,12 @@ const ActionsWidget: React.FC<ActionsWidgetProps> = ({
                 color={rating ? ratedYellow : textColorSecondary}
             />
             {ratingVisible ? (
-                <View style={[styles.starRatingWrapper, shadowStyle]}>
-                    <Blur style={styles.blur} />
-                    <TouchableOpacity
-                        onPress={() => handleRate(undefined)}
-                        disabled={!rating}>
-                        <Icon
-                            name="times-circle"
-                            size={24}
-                            color={rating ? "#f44336" : "#f4433650"}
-                        />
-                    </TouchableOpacity>
-                    <StarRating
-                        rating={ratingValue}
-                        onChange={setRatingValue}
-                        style={styles.starRating}
-                    />
-                    <TouchableOpacity
-                        onPress={() => handleRate(ratingValue)}
-                        disabled={ratingValue === rating}>
-                        <Icon
-                            name="check-circle"
-                            size={24}
-                            color={
-                                ratingValue === rating ? "#4caf5050" : "#4caf50"
-                            }
-                        />
-                    </TouchableOpacity>
-                </View>
+                <StarRatingWidget
+                    initialValue={rating}
+                    onRate={handleRate}
+                    blurBackground
+                    style={styles.starRating}
+                />
             ) : undefined}
         </View>
     );
@@ -131,17 +103,9 @@ const styles = StyleSheet.create({
         alignItems: "center",
         margin: 10,
     },
-    starRatingWrapper: {
-        flexDirection: "row",
-        alignItems: "center",
-        position: "absolute",
-        padding: 10,
-        paddingHorizontal: 20,
-        borderRadius: 24,
-        bottom: 80,
-    },
     starRating: {
-        marginHorizontal: 10,
+        position: "absolute",
+        bottom: 80,
     },
     blur: {
         borderRadius: 24,

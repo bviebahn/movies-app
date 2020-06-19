@@ -40,7 +40,6 @@ function useMarkAsFavorite() {
             const oldDetails = queryCache.getQueryData<
                 MovieDetails | TvShowDetails
             >([`${mediaType}-details`, mediaId]);
-            console.log("onMutate", oldDetails);
 
             if (oldDetails) {
                 queryCache.setQueryData<MovieDetails | TvShowDetails>(

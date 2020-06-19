@@ -2,6 +2,7 @@ import { useQuery } from "react-query";
 
 import { SeasonDetails, TmdbSeasonDetails } from "./types";
 import { fetchTmdb } from "./util";
+import useUser from "./useUser";
 
 function convertSeasonDetails(details: TmdbSeasonDetails): SeasonDetails {
     return {
@@ -24,15 +25,27 @@ function convertSeasonDetails(details: TmdbSeasonDetails): SeasonDetails {
             episodeNumber: e.episode_number,
             stillPath: e.still_path,
         })),
+        accountStates: details.account_states?.results.map((s) => ({
+            epiodeNumber: s.episode_number,
+            id: s.id,
+            rated: s.rated ? s.rated.value : 0,
+        })),
     };
 }
 
 async function fetchSeasonDetails(
-    _key: "season-details",
+    _key: string,
     id: number,
     seasonNumber: number,
+    sessionId?: string,
 ) {
-    const response = await fetchTmdb(`/tv/${id}/season/${seasonNumber}`);
+    const response = await fetchTmdb(
+        `/tv/${id}/season/${seasonNumber}${
+            sessionId
+                ? `?append_to_response=account_states&session_id=${sessionId}`
+                : ""
+        }`,
+    );
     if (response.ok) {
         const result = await response.json();
         return convertSeasonDetails(result);
@@ -42,7 +55,12 @@ async function fetchSeasonDetails(
 }
 
 function useSeasonDetails(id: number, seasonNumber: number) {
-    return useQuery(["season-details", id, seasonNumber], fetchSeasonDetails);
+    const { sessionId } = useUser();
+    return useQuery({
+        queryKey: ["season-details", id, seasonNumber],
+        variables: [sessionId],
+        queryFn: fetchSeasonDetails,
+    });
 }
 
 export default useSeasonDetails;

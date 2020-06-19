@@ -2,7 +2,7 @@ import "react-native-gesture-handler";
 
 import { NavigationContainer } from "@react-navigation/native";
 import React from "react";
-import { StatusBar } from "react-native";
+import { StatusBar, Platform, UIManager } from "react-native";
 
 import {
     black,
@@ -16,6 +16,12 @@ import { UserProvider } from "./tmdb/useUser";
 import { FeedbackProvider } from "./util/useFeedback";
 
 declare const global: { HermesInternal: null | {} };
+
+if (Platform.OS === "android") {
+    if (UIManager.setLayoutAnimationEnabledExperimental) {
+        UIManager.setLayoutAnimationEnabledExperimental(true);
+    }
+}
 
 type ComposeProps = {
     components: Array<

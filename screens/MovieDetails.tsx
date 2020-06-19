@@ -108,7 +108,7 @@ const MovieDetails: React.FC = () => {
     };
 
     const handleRate = (rating?: number) => {
-        rate("movie", id, rating);
+        rate({ mediaType: "movie", mediaId: id, rating });
     };
 
     return (
