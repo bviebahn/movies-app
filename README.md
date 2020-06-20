@@ -8,3 +8,4 @@
 -   genres
 -   v4 auth
 -   authenticate onNavigationStateChange
+-   rate/favorite/watchlist update accountlist cache in onSettled/onSuccess

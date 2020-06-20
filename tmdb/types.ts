@@ -17,6 +17,7 @@ export type TmdbMovie = {
 
 export type Movie = {
     id: number;
+    mediaType: "movie";
     adult: boolean;
     backdropPath?: string;
     genreIds: ReadonlyArray<number>;
@@ -94,6 +95,7 @@ export type TvShow = {
     posterPath?: string;
     popularity: number;
     id: number;
+    mediaType: "tv";
     backdropPath?: string;
     voteAverage: number;
     overview: string;
@@ -347,12 +349,11 @@ export type TmdbPerson = {
 };
 
 export type Person = {
+    mediaType: "person";
     profilePath?: string;
     adult: boolean;
     id: number;
-    knownFor: ReadonlyArray<
-        (Movie & { mediaType: "movie" }) | (TvShow & { mediaType: "tv" })
-    >;
+    knownFor: ReadonlyArray<Movie | TvShow>;
     name: string;
     popularity: number;
 };
@@ -360,28 +361,27 @@ export type Person = {
 export type ImageType = "backdrop" | "logo" | "poster" | "profile" | "still";
 export type ImageSize = "small" | "medium" | "large" | "original";
 
-export type TmdbSearchResult = {
+export type TmdbListResult<T> = {
     page: number;
     total_results: number;
     total_pages: number;
-    results: ReadonlyArray<
-        | (TmdbMovie & { media_type: "movie" })
-        | (TmdbTvShow & { media_type: "tv" })
-        | (TmdbPerson & { media_type: "person" })
-    >;
+    results: ReadonlyArray<T>;
 };
 
-export type SearchResultItem =
-    | (Movie & { mediaType: "movie" })
-    | (TvShow & { mediaType: "tv" })
-    | (Person & { mediaType: "person" });
-
-export type SearchResult = {
+export type ListResult<T> = {
     page: number;
     totalResults: number;
     totalPages: number;
-    results: ReadonlyArray<SearchResultItem>;
+    results: ReadonlyArray<T>;
 };
+
+export type TmdbSearchResult = TmdbListResult<
+    | (TmdbMovie & { media_type: "movie" })
+    | (TmdbTvShow & { media_type: "tv" })
+    | (TmdbPerson & { media_type: "person" })
+>;
+
+export type SearchResult = ListResult<Movie | TvShow | Person>;
 
 export type TmdbAccount = {
     avatar: {

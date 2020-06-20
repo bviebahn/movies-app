@@ -1,6 +1,13 @@
 import { useRoute } from "@react-navigation/native";
 import React from "react";
-import { Animated, FlatList, StyleSheet, Text, View } from "react-native";
+import {
+    ActivityIndicator,
+    Animated,
+    FlatList,
+    StyleSheet,
+    Text,
+    View,
+} from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 
 import EpisodeListItem from "../components/EpisodeListItem";
@@ -12,11 +19,11 @@ import {
 import { headline, secondaryText } from "../constants/styles";
 import translate from "../i18/Locale";
 import { StartStackRouteProp } from "../navigators/StartStackNavigator";
+import useImageUrl from "../tmdb/useImageUrl";
+import useRate from "../tmdb/useRate";
 import useSeasonDetails from "../tmdb/useSeasonDetails";
 import { formatDate } from "../util/date";
-import useImageUrl from "../tmdb/useImageUrl";
 import useParallax from "../util/useParallax";
-import useRate from "../tmdb/useRate";
 
 const SeasonDetails: React.FC = () => {
     const route = useRoute<StartStackRouteProp<"SeasonDetails">>();
@@ -24,7 +31,7 @@ const SeasonDetails: React.FC = () => {
         tvShowId,
         season: { airDate, name, overview, posterPath, seasonNumber },
     } = route.params;
-    const { data } = useSeasonDetails(tvShowId, seasonNumber);
+    const { data, status } = useSeasonDetails(tvShowId, seasonNumber);
     const { episodes, accountStates } = data || {};
 
     const { style: parallaxStyle, scrollHandler } = useParallax(0.4);
@@ -56,7 +63,7 @@ const SeasonDetails: React.FC = () => {
         <View style={styles.topInfoWrapper}>
             {posterPath ? (
                 <Animated.Image
-                    source={{ uri: getImageUrl(posterPath, "poster", "large") }}
+                    source={{ uri: getImageUrl(posterPath, "poster", "small") }}
                     style={[styles.poster, parallaxStyle]}
                 />
             ) : undefined}
@@ -80,14 +87,17 @@ const SeasonDetails: React.FC = () => {
             {overview ? (
                 <Text style={styles.overview}>{overview}</Text>
             ) : undefined}
-            <Text style={[styles.episodeListTitle, headline]}>
-                {translate("EPISODES")}
-            </Text>
+            <View style={styles.episodeListTitleWrapper}>
+                <Text style={[styles.episodeListTitle, headline]}>
+                    {translate("EPISODES")}
+                </Text>
+                {status === "loading" ? <ActivityIndicator /> : undefined}
+            </View>
         </View>
     );
 
     return (
-        <View>
+        <View style={styles.seasonDetails}>
             <FlatList
                 data={episodes}
                 renderItem={({ item }) => (
@@ -109,6 +119,7 @@ const SeasonDetails: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
+    seasonDetails: { flex: 1 },
     topInfoWrapper: {
         paddingTop: 300,
     },
@@ -152,9 +163,15 @@ const styles = StyleSheet.create({
     infoValue: {
         color: textColorSecondary,
     },
+    episodeListTitleWrapper: {
+        flexDirection: "row",
+        alignItems: "center",
+    },
     episodeListTitle: {
         padding: 20,
-        paddingBottom: 10,
+    },
+    activityIndicator: {
+        marginLeft: 10,
     },
 });
 

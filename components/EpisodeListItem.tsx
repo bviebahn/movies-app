@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, LayoutAnimation } from "react-native";
-import { gray0, textColorSecondary, gray3 } from "../constants/colors";
-import Rating from "./Rating";
+import { LayoutAnimation, StyleSheet, Text, View } from "react-native";
 import { RectButton } from "react-native-gesture-handler";
+
+import { gray0, gray2, gray3, textColorSecondary } from "../constants/colors";
+import Rating from "./Rating";
 import StarRatingWidget from "./StarRatingWidget";
 
 type Props = {
@@ -35,7 +36,7 @@ const EpisodeListItem: React.FC<Props> = ({ episode, onRate, rating }) => {
                         <Text style={styles.episodeTitle}>{episode.name}</Text>
                         <Text
                             style={styles.episodeOverview}
-                            numberOfLines={expanded ? undefined : 1}>
+                            numberOfLines={expanded ? undefined : 5}>
                             {episode.overview}
                         </Text>
                     </View>
@@ -62,7 +63,7 @@ const styles = StyleSheet.create({
     episodeItem: {
         flex: 1,
         backgroundColor: gray0,
-        borderBottomColor: "#000",
+        borderBottomColor: gray2,
         borderBottomWidth: 1,
     },
     button: { paddingHorizontal: 20, paddingVertical: 10 },

@@ -5,13 +5,36 @@ import {
 } from "@react-navigation/stack";
 import React from "react";
 
+import AccountList from "../screens/AccountList";
 import Authenticate from "../screens/Authenticate";
+import MovieDetails from "../screens/MovieDetails";
 import Profile from "../screens/Profile";
+import SeasonDetails from "../screens/SeasonDetails";
+import TvShowDetails from "../screens/TvShowDetails";
+import { Movie, Season, TvShow } from "../tmdb/types";
+import {
+    accountListNavigationOptions,
+    cardNavigationOptions,
+} from "./navigationOptions";
 
 type ProfileStackParams = {
     Profile: undefined;
     Authenticate: {
         requestToken: string;
+    };
+    AccountList: {
+        type: "favorites" | "watchlist" | "rated";
+        mediaType: "movie" | "tv";
+    };
+    MovieDetails: {
+        movie: Movie;
+    };
+    TvShowDetails: {
+        tvShow: TvShow;
+    };
+    SeasonDetails: {
+        tvShowId: number;
+        season: Season;
     };
 };
 
@@ -34,6 +57,26 @@ const ProfileStackNavigator: React.FC = () => {
                     headerTransparent: false,
                     headerBackTitleVisible: true,
                 }}
+            />
+            <ProfileStack.Screen
+                name="AccountList"
+                component={AccountList}
+                options={accountListNavigationOptions}
+            />
+            <ProfileStack.Screen
+                name="MovieDetails"
+                component={MovieDetails}
+                options={cardNavigationOptions}
+            />
+            <ProfileStack.Screen
+                name="TvShowDetails"
+                component={TvShowDetails}
+                options={cardNavigationOptions}
+            />
+            <ProfileStack.Screen
+                name="SeasonDetails"
+                component={SeasonDetails}
+                options={cardNavigationOptions}
             />
         </ProfileStack.Navigator>
     );

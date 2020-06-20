@@ -23,28 +23,6 @@ if (Platform.OS === "android") {
     }
 }
 
-type ComposeProps = {
-    components: Array<
-        React.JSXElementConstructor<React.PropsWithChildren<any>>
-    >;
-    children: React.ReactNode;
-};
-
-function Compose(props: ComposeProps) {
-    const { components, children } = props;
-
-    return (
-        <>
-            {components.reduceRight(
-                (acc, Comp) => (
-                    <Comp>{acc}</Comp>
-                ),
-                children,
-            )}
-        </>
-    );
-}
-
 const App = () => {
     return (
         <>
@@ -60,16 +38,14 @@ const App = () => {
                         border: black,
                     },
                 }}>
-                <TabNavigator />
+                <FeedbackProvider>
+                    <UserProvider>
+                        <TabNavigator />
+                    </UserProvider>
+                </FeedbackProvider>
             </NavigationContainer>
         </>
     );
 };
 
-const ComposedApp = () => (
-    <Compose components={[UserProvider, FeedbackProvider]}>
-        <App />
-    </Compose>
-);
-
-export default ComposedApp;
+export default App;

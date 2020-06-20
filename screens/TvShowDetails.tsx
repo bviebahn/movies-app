@@ -148,11 +148,7 @@ const TvShowDetails: React.FC = () => {
                     <View style={[styles.posterWrapper, shadowStyle]}>
                         <Image
                             source={{
-                                uri: getImageUrl(
-                                    posterPath,
-                                    "poster",
-                                    "medium",
-                                ),
+                                uri: getImageUrl(posterPath, "poster", "small"),
                             }}
                             style={styles.poster}
                         />
@@ -219,7 +215,7 @@ const TvShowDetails: React.FC = () => {
                                     ? getImageUrl(
                                           season.posterPath,
                                           "poster",
-                                          "medium",
+                                          "small",
                                       )
                                     : undefined
                             }

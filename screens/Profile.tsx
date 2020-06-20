@@ -22,6 +22,40 @@ import { ProfileStackNavigationProp } from "../navigators/ProfileStackNavigator"
 import LogoFull from "../tmdb/LogoFull";
 import useUser, { createRequestToken } from "../tmdb/useUser";
 import { getGravatarImageUrl } from "../tmdb/util";
+import Icon from "react-native-vector-icons/FontAwesome";
+
+const LoginLogoutButton: React.FC<{
+    isLoggedIn: boolean;
+    onLogin: () => void;
+    onLogout: () => void;
+    loading: boolean;
+}> = ({ isLoggedIn, onLogin, onLogout, loading }) => {
+    const buttonContent = (() => {
+        if (loading) {
+            return <ActivityIndicator color={tmdbPrimaryColor} />;
+        }
+
+        return isLoggedIn ? (
+            <Icon name="sign-out" color={tmdbPrimaryColor} size={24} />
+        ) : (
+            <Text style={styles.signinButtonText}>{translate("LOGIN")}</Text>
+        );
+    })();
+    return (
+        <RectButton
+            onPress={isLoggedIn ? onLogout : onLogin}
+            enabled={!loading}
+            rippleColor={tmdbPrimaryColor}
+            style={[
+                styles.singinButton,
+                ...(isLoggedIn
+                    ? [{ backgroundColor: lightRed, paddingHorizontal: 20 }]
+                    : []),
+            ]}>
+            {buttonContent}
+        </RectButton>
+    );
+};
 
 const Profile: React.FC = () => {
     const navigation = useNavigation<ProfileStackNavigationProp<"Profile">>();
@@ -72,23 +106,14 @@ const Profile: React.FC = () => {
                 ) : (
                     <LogoFull size={48} />
                 )}
-                <RectButton
-                    onPress={user ? logout : handleLogin}
-                    enabled={!loading}
-                    rippleColor={tmdbPrimaryColor}
-                    style={[
-                        styles.singinButton,
-                        ...(user ? [{ backgroundColor: lightRed }] : []),
-                    ]}>
-                    {loading ? (
-                        <ActivityIndicator color={tmdbPrimaryColor} />
-                    ) : (
-                        <Text style={styles.signinButtonText}>
-                            {user ? translate("LOGOUT") : translate("LOGIN")}
-                        </Text>
-                    )}
-                </RectButton>
+                <LoginLogoutButton
+                    isLoggedIn={!!user}
+                    loading={loading}
+                    onLogin={handleLogin}
+                    onLogout={logout}
+                />
             </View>
+
             {!user ? (
                 <Text style={styles.signinText}>
                     {translate("SIGNIN_TEXT")}
@@ -99,21 +124,36 @@ const Profile: React.FC = () => {
                 iconColor={favoriteRed}
                 title={translate("FAVORITES")}
                 backgroundColor={favoriteRedDark}
-                onPress={() => undefined}
+                onPress={(mediaType) =>
+                    navigation.navigate("AccountList", {
+                        mediaType,
+                        type: "favorites",
+                    })
+                }
             />
             <ListTile
                 iconName="bookmark"
                 iconColor={watchlistGreen}
                 title={translate("WATCHLIST")}
                 backgroundColor={watchlistGreenDark}
-                onPress={() => undefined}
+                onPress={(mediaType) =>
+                    navigation.navigate("AccountList", {
+                        mediaType,
+                        type: "watchlist",
+                    })
+                }
             />
             <ListTile
                 iconName="star"
                 iconColor={ratedYellow}
                 title={translate("RATED")}
                 backgroundColor={ratedYellowDark}
-                onPress={() => undefined}
+                onPress={(mediaType) =>
+                    navigation.navigate("AccountList", {
+                        mediaType,
+                        type: "rated",
+                    })
+                }
             />
         </View>
     );
@@ -152,7 +192,6 @@ const styles = StyleSheet.create({
         borderRadius: 16,
         justifyContent: "center",
         marginLeft: "auto",
-        paddingHorizontal: 40,
         height: 32,
     },
     signinButtonText: {

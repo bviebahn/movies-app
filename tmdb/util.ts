@@ -12,6 +12,8 @@ import {
     Person,
     TmdbAccount,
     Account,
+    TmdbListResult,
+    ListResult,
 } from "./types";
 import { TMDB_BASE_URL, TMDB_ACCESS_TOKEN } from "./constants";
 
@@ -52,6 +54,7 @@ export function addGenres<T extends { genreIds: ReadonlyArray<number> }>(
 
 export function convertMovie(movie: TmdbMovie): Movie {
     return {
+        mediaType: "movie",
         id: movie.id,
         adult: movie.adult,
         overview: movie.overview,
@@ -71,6 +74,7 @@ export function convertMovie(movie: TmdbMovie): Movie {
 
 export function convertTvShow(tv: TmdbTvShow): TvShow {
     return {
+        mediaType: "tv",
         firstAirDate: tv.first_air_date,
         genreIds: tv.genre_ids,
         id: tv.id,
@@ -117,6 +121,7 @@ export function convertCredits(credits: TmdbCredits): Credits {
 
 export function convertPerson(person: TmdbPerson): Person {
     return {
+        mediaType: "person",
         adult: person.adult,
         id: person.id,
         knownFor: person.known_for.map((i) =>
@@ -146,6 +151,18 @@ export function convertSearchResult(result: TmdbSearchResult): SearchResult {
 
             return { ...convertPerson(r), mediaType: "person" };
         }),
+    };
+}
+
+export function convertListResult<T, V>(
+    result: TmdbListResult<T>,
+    convertFn: (element: T) => V,
+): ListResult<V> {
+    return {
+        page: result.page,
+        totalResults: result.total_results,
+        totalPages: result.total_pages,
+        results: result.results.map(convertFn),
     };
 }
 

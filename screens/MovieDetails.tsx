@@ -136,11 +136,7 @@ const MovieDetails: React.FC = () => {
                     <View style={[styles.posterWrapper, shadowStyle]}>
                         <Image
                             source={{
-                                uri: getImageUrl(
-                                    posterPath,
-                                    "poster",
-                                    "medium",
-                                ),
+                                uri: getImageUrl(posterPath, "poster", "small"),
                             }}
                             style={styles.poster}
                         />
@@ -239,7 +235,7 @@ const MovieDetails: React.FC = () => {
                                     ? getImageUrl(
                                           movie.posterPath,
                                           "poster",
-                                          "medium",
+                                          "small",
                                       )
                                     : undefined
                             }

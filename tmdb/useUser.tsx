@@ -1,14 +1,19 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useQuery } from "react-query";
 
-import { read, write } from "../util/asyncStorage";
+import { read, write, remove } from "../util/asyncStorage";
 import { Account, TmdbAccount } from "./types";
 import { convertAccount, fetchTmdb } from "./util";
 
 type UserContextType = {
+    /** v3 user */
     user?: Account;
+    /** v3 sessionId */
     sessionId?: string;
+    /** v4 accessToken */
     accessToken?: string;
+    /** v4 accountId */
+    accountId?: string;
     loading: boolean;
     auth: (requestToken: string) => Promise<void>;
     logout: () => Promise<boolean>;
@@ -17,6 +22,7 @@ type UserContextType = {
 const UserContext = React.createContext<UserContextType | undefined>(undefined);
 
 const ACCESS_TOKEN_KEY = "ACCESS_TOKEN";
+const ACCOUNT_ID_KEY = "ACCOUNT_ID";
 const SESSION_ID_KEY = "SESSION_ID";
 
 async function fetchUser(_key: "user", sessionId?: string) {
@@ -49,7 +55,9 @@ export async function createRequestToken() {
     throw new Error("Error creating requestToken");
 }
 
-async function createAccessToken(requestToken: string) {
+async function createAccessToken(
+    requestToken: string,
+): Promise<{ accessToken: string; accountId: string }> {
     const response = await fetchTmdb(
         `/auth/access_token?request_token=${requestToken}`,
         { method: "POST", version: 4 },
@@ -58,7 +66,10 @@ async function createAccessToken(requestToken: string) {
     if (response.ok) {
         const result = await response.json();
         if (result.success) {
-            return result.access_token as string;
+            return {
+                accessToken: result.access_token,
+                accountId: result.account_id,
+            };
         }
     }
     throw new Error("Error creating accessToken");
@@ -82,9 +93,8 @@ async function createSessionId(accessToken: string) {
 export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
     children,
 }) => {
-    // v4 access token
     const [accessToken, setAccessToken] = useState<string>();
-    // v3 sessionId
+    const [accountId, setAccountId] = useState<string>();
     const [sessionId, setSessionId] = useState<string>();
     const { data: user, status, refetch } = useQuery(
         ["user", sessionId],
@@ -96,7 +106,22 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
 
     useEffect(() => {
         (async () => {
-            const storageSessionId = await read(SESSION_ID_KEY);
+            const [
+                storageAccessToken,
+                storageAccountId,
+                storageSessionId,
+            ] = await Promise.all([
+                read(ACCESS_TOKEN_KEY),
+                read(ACCOUNT_ID_KEY),
+                read(SESSION_ID_KEY),
+            ]);
+
+            if (storageAccessToken) {
+                setAccessToken(storageAccessToken);
+            }
+            if (storageAccountId) {
+                setAccountId(storageAccountId);
+            }
             if (storageSessionId) {
                 setSessionId(storageSessionId);
             }
@@ -110,40 +135,44 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
     }, [sessionId, refetch]);
 
     async function auth(requestToken: string) {
-        const newAccessToken = await createAccessToken(requestToken);
+        const {
+            accessToken: newAccessToken,
+            accountId: newAccountId,
+        } = await createAccessToken(requestToken);
 
         setAccessToken(newAccessToken);
+        setAccountId(newAccountId);
         const newSessionId = await createSessionId(newAccessToken);
 
         setSessionId(newSessionId);
         await Promise.all([
             write(ACCESS_TOKEN_KEY, newAccessToken),
+            write(ACCOUNT_ID_KEY, newAccountId),
             write(SESSION_ID_KEY, newSessionId),
         ]);
     }
 
     const logout = async () => {
-        // TODO:
-        // if (!accessToken) {
-        //     console.log("no accessToken");
-        //     return false;
-        // }
-        // const response = await fetchTmdb(`/auth/access_token`, {
-        //     method: "DELETE",
-        //     version: 4,
-        //     accessToken,
-        //     body: { access_token: accessToken },
-        // });
-        // console.log("resp", response);
-        // const success = response.ok;
-        // if (success) {
-        //     console.log("success delete accessToken");
-        //     setSessionId(undefined); TODO:
-        //     setAccessToken(undefined);
-        //     await remove(SESSION_ID_KEY);
-        // }
-        // return success;
-        return true;
+        // TODO: use react-query and clear user related caches
+        const response = await fetchTmdb(
+            `/authentication/session?session_id=${sessionId}`,
+            { method: "DELETE" },
+        );
+
+        const success = response.ok;
+        if (success) {
+            setSessionId(undefined);
+            setAccessToken(undefined);
+            setAccountId(undefined);
+
+            await Promise.all([
+                remove(SESSION_ID_KEY),
+                remove(ACCESS_TOKEN_KEY),
+                remove(ACCOUNT_ID_KEY),
+            ]);
+        }
+
+        return success;
     };
 
     return (
@@ -152,6 +181,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
                 user: sessionId ? user : undefined,
                 loading: status === "loading",
                 accessToken,
+                accountId,
                 sessionId,
                 auth,
                 logout,

@@ -33,7 +33,7 @@ const Home: React.FC = () => {
                                     ? getImageUrl(
                                           movie.posterPath,
                                           "poster",
-                                          "medium",
+                                          "small",
                                       )
                                     : undefined
                             }
@@ -60,7 +60,7 @@ const Home: React.FC = () => {
                                     ? getImageUrl(
                                           tvShow.posterPath,
                                           "poster",
-                                          "medium",
+                                          "small",
                                       )
                                     : undefined
                             }

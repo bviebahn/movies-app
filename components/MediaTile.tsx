@@ -43,13 +43,12 @@ const MediaTile: React.FC<Props> = ({
     const imageHeight = width * 1.5;
 
     return (
-        <View>
+        <View style={shadowStyle}>
             <BorderlessButton
                 onPress={onPress}
                 rippleColor="#000"
                 style={[
                     styles.mediaTile,
-                    shadowStyle,
                     {
                         width,
                         height: width * 2 + 20,

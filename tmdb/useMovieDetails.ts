@@ -6,6 +6,7 @@ import { convertCredits, convertMovie, fetchTmdb } from "./util";
 
 function convertMovieDetails(details: TmdbMovieDetails): MovieDetails {
     return {
+        mediaType: "movie",
         id: details.id,
         adult: details.adult,
         overview: details.overview,
