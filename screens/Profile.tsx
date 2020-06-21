@@ -16,6 +16,8 @@ import {
     tmdbSecondaryColor,
     watchlistGreen,
     watchlistGreenDark,
+    recommendationsColor,
+    recommendationsColorDark,
 } from "../constants/colors";
 import translate from "../i18/Locale";
 import { ProfileStackNavigationProp } from "../navigators/ProfileStackNavigator";
@@ -152,6 +154,18 @@ const Profile: React.FC = () => {
                     navigation.navigate("AccountList", {
                         mediaType,
                         type: "rated",
+                    })
+                }
+            />
+            <ListTile
+                iconName="thumbs-up"
+                iconColor={recommendationsColor}
+                title={translate("RECOMMENDATIONS")}
+                backgroundColor={recommendationsColorDark}
+                onPress={(mediaType) =>
+                    navigation.navigate("AccountList", {
+                        mediaType,
+                        type: "recommendations",
                     })
                 }
             />

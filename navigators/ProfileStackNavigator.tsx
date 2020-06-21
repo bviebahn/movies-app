@@ -23,7 +23,7 @@ type ProfileStackParams = {
         requestToken: string;
     };
     AccountList: {
-        type: "favorites" | "watchlist" | "rated";
+        type: "favorites" | "watchlist" | "rated" | "recommendations";
         mediaType: "movie" | "tv";
     };
     MovieDetails: {

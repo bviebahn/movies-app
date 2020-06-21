@@ -24,5 +24,7 @@ export const watchlistGreen = "#00838f";
 export const watchlistGreenDark = "#002f33";
 export const ratedYellow = "#f9a825";
 export const ratedYellowDark = "#321f01";
+export const recommendationsColor = "#1565c0";
+export const recommendationsColorDark = "#05182e";
 
 export const lightRed = "#db2360";

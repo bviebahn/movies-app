@@ -11,6 +11,8 @@ import {
     watchlistGreenDark,
     favoriteRed,
     favoriteRedDark,
+    recommendationsColor,
+    recommendationsColorDark,
 } from "../constants/colors";
 import { ProfileStackRouteProp } from "./ProfileStackNavigator";
 import translate from "../i18/Locale";
@@ -44,6 +46,12 @@ export function accountListNavigationOptions(props: {
                 return ["bookmark", watchlistGreen, watchlistGreenDark];
             case "rated":
                 return ["star", ratedYellow, ratedYellowDark];
+            case "recommendations":
+                return [
+                    "thumbs-up",
+                    recommendationsColor,
+                    recommendationsColorDark,
+                ];
         }
     })();
 
