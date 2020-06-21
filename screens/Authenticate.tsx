@@ -5,7 +5,6 @@ import WebView from "react-native-webview";
 
 const Authenticate: React.FC = () => {
     const route = useRoute<ProfileStackRouteProp<"Authenticate">>();
-    console.log("token", route.params.requestToken);
 
     return (
         <WebView

@@ -16,7 +16,7 @@ async function fetchGenres(
 }
 
 function useGenres(type: "movie" | "tv") {
-    return useQuery(["genres", type], fetchGenres, { cacheTime: Infinity });
+    return useQuery(["genres", type], fetchGenres, { staleTime: Infinity });
 }
 
 export default useGenres;

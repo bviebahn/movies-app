@@ -2,17 +2,30 @@ import React from "react";
 import { Image, StyleSheet, Text, View } from "react-native";
 import { RectButton } from "react-native-gesture-handler";
 
-import { gray0, gray3, textColorSecondary } from "../../constants/colors";
-import { shadowStyle } from "../../constants/styles";
+import {
+    gray0,
+    gray3,
+    textColorSecondary,
+    ratedYellow,
+} from "../../constants/colors";
+import { shadowStyle, dot } from "../../constants/styles";
 import { Movie, Person, TvShow } from "../../tmdb/types";
 import useImageUrl from "../../tmdb/useImageUrl";
 import { formatDate } from "../../util/date";
 import Rating from "../Rating";
+import Icon from "react-native-vector-icons/FontAwesome";
 
 type Props = {
-    item: Movie | TvShow | Person;
+    item: ((Movie | TvShow) & { accountRating?: number }) | Person;
     onPress: () => void;
 };
+
+const AccountRating: React.FC<{ rating: number }> = ({ rating }) => (
+    <>
+        <Icon name="star" color={ratedYellow} size={16} />
+        <Text style={styles.accountRatingText}>{rating / 2}</Text>
+    </>
+);
 
 const MediaListItem: React.FC<Props> = ({ item, onPress }) => {
     const title = item.mediaType === "movie" ? item.title : item.name;
@@ -36,6 +49,9 @@ const MediaListItem: React.FC<Props> = ({ item, onPress }) => {
     const voteAverage =
         item.mediaType === "person" ? undefined : item.voteAverage;
 
+    const accountRating =
+        item.mediaType !== "person" ? item.accountRating : undefined;
+
     return (
         <View style={styles.borderBottom}>
             <RectButton onPress={onPress} style={styles.searchListItem}>
@@ -55,11 +71,19 @@ const MediaListItem: React.FC<Props> = ({ item, onPress }) => {
                 ) : undefined}
                 <View style={styles.itemInfo}>
                     <Text style={styles.itemTitle}>{title}</Text>
-                    {releaseDate ? (
-                        <Text style={styles.itemDate}>
-                            {formatDate(new Date(releaseDate))}
-                        </Text>
-                    ) : undefined}
+                    <View style={styles.releaseDateWrapper}>
+                        {releaseDate ? (
+                            <Text style={styles.itemDate}>
+                                {formatDate(new Date(releaseDate))}
+                            </Text>
+                        ) : undefined}
+                        {accountRating ? (
+                            <>
+                                <View style={dot} />
+                                <AccountRating rating={accountRating} />
+                            </>
+                        ) : undefined}
+                    </View>
                     {overview ? (
                         <Text style={styles.itemOverview} numberOfLines={5}>
                             {overview}
@@ -100,9 +124,19 @@ const styles = StyleSheet.create({
     },
     itemDate: {
         color: gray3,
-        marginBottom: 4,
     },
     rating: { marginLeft: "auto", marginBottom: "auto" },
+    releaseDateWrapper: {
+        marginBottom: 4,
+        flexDirection: "row",
+        alignItems: "center",
+    },
+    accountRatingText: {
+        color: ratedYellow,
+        marginLeft: 5,
+        fontWeight: "bold",
+        fontSize: 12,
+    },
 });
 
 export default MediaListItem;

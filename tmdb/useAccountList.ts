@@ -13,13 +13,21 @@ type MediaType = {
     tv: TvShow;
 };
 
-async function fetchList<T extends keyof MediaType>(
+type Type<
+    T extends "favorites" | "watchlist" | "rated" | "recommendations",
+    M extends keyof MediaType
+> = T extends "rated" ? MediaType[M] & { accountRating: number } : MediaType[M];
+
+async function fetchList<
+    T extends "favorites" | "watchlist" | "rated" | "recommendations",
+    M extends keyof MediaType
+>(
     _key: string,
     accountId: string,
-    type: "favorites" | "watchlist" | "rated" | "recommendations",
-    mediaType: T,
+    type: T,
+    mediaType: M,
     accessToken: string,
-): Promise<ListResult<MediaType[T]>> {
+): Promise<ListResult<Type<T, M>>> {
     const response = await fetchTmdb(
         `/account/${accountId}/${mediaType}/${type}`,
         {
@@ -29,20 +37,26 @@ async function fetchList<T extends keyof MediaType>(
     );
 
     if (response.ok) {
-        const result: TmdbListResult<MediaType[T]> = await response.json();
-        return convertListResult(
-            result,
-            (mediaType === "movie" ? convertMovie : convertTvShow) as any,
-        );
+        const result: TmdbListResult<MediaType[M]> = await response.json();
+        const convertFnForMediaType =
+            mediaType === "movie" ? convertMovie : convertTvShow;
+        const convertFn: any =
+            type === "rated"
+                ? (m: any) => ({
+                      ...convertFnForMediaType(m),
+                      accountRating: m.account_rating.value,
+                  })
+                : convertFnForMediaType;
+        return convertListResult(result, convertFn);
     }
 
     throw new Error("Error fetching account list");
 }
 
-function useAccountList<T extends keyof MediaType>(
-    type: "favorites" | "watchlist" | "rated" | "recommendations",
-    mediaType: T,
-) {
+function useAccountList<
+    T extends "favorites" | "watchlist" | "rated" | "recommendations",
+    M extends keyof MediaType
+>(type: T, mediaType: M) {
     const { accountId, accessToken } = useUser();
     if (!accountId || !accessToken) {
         throw new Error("Missing accountId or access token");

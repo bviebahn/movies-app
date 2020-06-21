@@ -55,7 +55,7 @@ async function fetchConfiguration() {
 
 function useConfiguration() {
     return useQuery("configuration", fetchConfiguration, {
-        cacheTime: Infinity,
+        staleTime: Infinity,
         onSuccess: (config) => {
             write(LAST_FETCHED_STORAGE_KEY, Date.now().toString(10));
             write(CONFIG_STORAGE_KEY, JSON.stringify(config));
