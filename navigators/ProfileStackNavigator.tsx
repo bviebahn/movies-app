@@ -16,6 +16,7 @@ import {
     accountListNavigationOptions,
     cardNavigationOptions,
 } from "./navigationOptions";
+import { AccountListType } from "../tmdb/useAccountList";
 
 type ProfileStackParams = {
     Profile: undefined;
@@ -23,8 +24,7 @@ type ProfileStackParams = {
         requestToken: string;
     };
     AccountList: {
-        type: "favorites" | "watchlist" | "rated" | "recommendations";
-        mediaType: "movie" | "tv";
+        type: AccountListType;
     };
     MovieDetails: {
         movie: Movie;

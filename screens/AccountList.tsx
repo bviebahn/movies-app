@@ -1,37 +1,138 @@
 import { useNavigation, useRoute } from "@react-navigation/native";
-import React from "react";
-import { SafeAreaView } from "react-native";
+import React, { useState } from "react";
+import { SceneMap, TabBar, TabView } from "react-native-tab-view";
 
 import MediaList from "../components/MediaList";
+import translate from "../i18/Locale";
 import {
     ProfileStackNavigationProp,
     ProfileStackRouteProp,
 } from "../navigators/ProfileStackNavigator";
-import useAccountList from "../tmdb/useAccountList";
+import useAccountList, { AccountListType } from "../tmdb/useAccountList";
+import {
+    favoriteRedDark,
+    ratedYellowDark,
+    watchlistGreenDark,
+    recommendationsColorDark,
+    textColorSecondary,
+    favoriteRed,
+    ratedYellow,
+    watchlistGreen,
+    recommendationsColor,
+    textColor,
+} from "../constants/colors";
+import { Text, StyleSheet, ActivityIndicator } from "react-native";
+
+type ListProps = {
+    route: {
+        type: AccountListType;
+        mediaType: "movie" | "tv";
+        navigation: ProfileStackNavigationProp<"AccountList">;
+    };
+};
+
+const List: React.FC<ListProps> = ({ route }) => {
+    const { type, mediaType, navigation } = route;
+    const { data, status } = useAccountList(type, mediaType);
+    return status === "loading" ? (
+        <ActivityIndicator style={styles.activityIndicator} />
+    ) : (
+        <MediaList
+            data={data?.results}
+            onPressItem={(item) => {
+                if (item.mediaType === "movie") {
+                    navigation.push("MovieDetails", { movie: item });
+                } else {
+                    navigation.push("TvShowDetails", { tvShow: item });
+                }
+            }}
+        />
+    );
+};
 
 const AccountList: React.FC = () => {
     const route = useRoute<ProfileStackRouteProp<"AccountList">>();
     const navigation = useNavigation<
         ProfileStackNavigationProp<"AccountList">
     >();
+    const { type } = route.params;
 
-    const { mediaType, type } = route.params;
-    const { data } = useAccountList(type, mediaType);
+    const [lightColor, darkColor] = (() => {
+        switch (type) {
+            case "favorites":
+                return [favoriteRed, favoriteRedDark];
+            case "rated":
+                return [ratedYellow, ratedYellowDark];
+            case "watchlist":
+                return [watchlistGreen, watchlistGreenDark];
+            case "recommendations":
+                return [recommendationsColor, recommendationsColorDark];
+        }
+    })();
+
+    const [index, setIndex] = useState(0);
+    const [routes] = useState([
+        {
+            key: "movie",
+            title: translate("MOVIES"),
+            type,
+            mediaType: "movie",
+            navigation,
+        },
+        {
+            key: "tv",
+            title: translate("TV_SHOWS"),
+            type,
+            mediaType: "tv",
+            navigation,
+        },
+    ]);
+
+    const renderScene = SceneMap({
+        movie: List,
+        tv: List,
+    });
 
     return (
-        <SafeAreaView>
-            <MediaList
-                data={data?.results}
-                onPressItem={(item) => {
-                    if (item.mediaType === "movie") {
-                        navigation.push("MovieDetails", { movie: item });
-                    } else {
-                        navigation.push("TvShowDetails", { tvShow: item });
-                    }
-                }}
-            />
-        </SafeAreaView>
+        <TabView
+            navigationState={{ index, routes }}
+            renderScene={renderScene}
+            onIndexChange={setIndex}
+            renderTabBar={(props) => (
+                <TabBar
+                    {...props}
+                    tabStyle={[styles.tab, { backgroundColor: darkColor }]}
+                    style={{ backgroundColor: darkColor }}
+                    indicatorStyle={{ backgroundColor: lightColor }}
+                    renderLabel={({ route: tabRoute, focused }) => (
+                        <Text
+                            style={[
+                                styles.tabTitle,
+                                focused && styles.tabTitleFocused,
+                            ]}>
+                            {tabRoute.title}
+                        </Text>
+                    )}
+                />
+            )}
+        />
     );
 };
+
+const styles = StyleSheet.create({
+    tabTitle: {
+        color: textColorSecondary,
+        padding: 10,
+        fontWeight: "bold",
+    },
+    tabTitleFocused: { color: textColor },
+    activityIndicator: {
+        marginTop: "auto",
+        marginBottom: "auto",
+    },
+    tab: {
+        marginBottom: 2,
+    },
+});
 
 export default AccountList;

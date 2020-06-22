@@ -13,15 +13,18 @@ type MediaType = {
     tv: TvShow;
 };
 
+export type AccountListType =
+    | "favorites"
+    | "watchlist"
+    | "rated"
+    | "recommendations";
+
 type Type<
-    T extends "favorites" | "watchlist" | "rated" | "recommendations",
+    T extends AccountListType,
     M extends keyof MediaType
 > = T extends "rated" ? MediaType[M] & { accountRating: number } : MediaType[M];
 
-async function fetchList<
-    T extends "favorites" | "watchlist" | "rated" | "recommendations",
-    M extends keyof MediaType
->(
+async function fetchList<T extends AccountListType, M extends keyof MediaType>(
     _key: string,
     accountId: string,
     type: T,
@@ -53,10 +56,10 @@ async function fetchList<
     throw new Error("Error fetching account list");
 }
 
-function useAccountList<
-    T extends "favorites" | "watchlist" | "rated" | "recommendations",
-    M extends keyof MediaType
->(type: T, mediaType: M) {
+function useAccountList<T extends AccountListType, M extends keyof MediaType>(
+    type: T,
+    mediaType: M,
+) {
     const { accountId, accessToken } = useUser();
     if (!accountId || !accessToken) {
         throw new Error("Missing accountId or access token");

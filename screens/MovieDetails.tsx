@@ -38,6 +38,7 @@ import useParallax from "../util/useParallax";
 import useMarkAsFavorite from "../tmdb/useMarkAsFavorite";
 import useAddToWatchlist from "../tmdb/useAddToWatchlist";
 import useRate from "../tmdb/useRate";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const MovieDetails: React.FC = () => {
     const route = useRoute<StartStackRouteProp<"MovieDetails">>();
@@ -65,6 +66,8 @@ const MovieDetails: React.FC = () => {
 
     const { data, status } = useMovieDetails(id);
     const getImageUrl = useImageUrl();
+
+    const { top } = useSafeAreaInsets();
 
     const {
         runtime,
@@ -131,7 +134,11 @@ const MovieDetails: React.FC = () => {
                 />
             ) : undefined}
 
-            <View style={styles.mainContent}>
+            <View
+                style={[
+                    styles.mainContent,
+                    !backdropPath && { marginTop: top + 40 },
+                ]}>
                 {posterPath ? (
                     <View style={[styles.posterWrapper, shadowStyle]}>
                         <Image

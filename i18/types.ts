@@ -25,8 +25,4 @@ export type Translations = {
     RATED: string;
     MOVIES: string;
     TV_SHOWS: string;
-    ACCOUNT_LIST_TITLE: SubstituteTranslation<{
-        type: "favorites" | "watchlist" | "rated" | "recommendations";
-        mediaType: "movie" | "tv";
-    }>;
 };

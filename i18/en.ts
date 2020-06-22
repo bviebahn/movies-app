@@ -26,28 +26,6 @@ const translations: Translations = {
     RATED: "Rated",
     MOVIES: "Movies",
     TV_SHOWS: "TV Shows",
-    ACCOUNT_LIST_TITLE: ({ type, mediaType }) => {
-        return (() => {
-            switch (type) {
-                case "favorites":
-                    return `${
-                        mediaType === "movie" ? "Movie" : "TV"
-                    } Favorites`;
-                case "rated":
-                    return `Rated ${
-                        mediaType === "movie" ? "Movies" : "TV Shows"
-                    }`;
-                case "watchlist":
-                    return `${
-                        mediaType === "movie" ? "Movie" : "TV"
-                    } Watchlist`;
-                case "recommendations":
-                    return `${
-                        mediaType === "movie" ? "Movie" : "TV"
-                    } Recommendations`;
-            }
-        })();
-    },
 };
 
 export default translations;

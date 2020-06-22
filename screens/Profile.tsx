@@ -126,9 +126,8 @@ const Profile: React.FC = () => {
                 iconColor={favoriteRed}
                 title={translate("FAVORITES")}
                 backgroundColor={favoriteRedDark}
-                onPress={(mediaType) =>
+                onPress={() =>
                     navigation.navigate("AccountList", {
-                        mediaType,
                         type: "favorites",
                     })
                 }
@@ -138,9 +137,8 @@ const Profile: React.FC = () => {
                 iconColor={watchlistGreen}
                 title={translate("WATCHLIST")}
                 backgroundColor={watchlistGreenDark}
-                onPress={(mediaType) =>
+                onPress={() =>
                     navigation.navigate("AccountList", {
-                        mediaType,
                         type: "watchlist",
                     })
                 }
@@ -150,9 +148,8 @@ const Profile: React.FC = () => {
                 iconColor={ratedYellow}
                 title={translate("RATED")}
                 backgroundColor={ratedYellowDark}
-                onPress={(mediaType) =>
+                onPress={() =>
                     navigation.navigate("AccountList", {
-                        mediaType,
                         type: "rated",
                     })
                 }
@@ -162,9 +159,8 @@ const Profile: React.FC = () => {
                 iconColor={recommendationsColor}
                 title={translate("RECOMMENDATIONS")}
                 backgroundColor={recommendationsColorDark}
-                onPress={(mediaType) =>
+                onPress={() =>
                     navigation.navigate("AccountList", {
-                        mediaType,
                         type: "recommendations",
                     })
                 }

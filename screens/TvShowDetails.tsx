@@ -38,6 +38,7 @@ import useTvShowDetails from "../tmdb/useTvShowDetails";
 import { formatDate } from "../util/date";
 import { convertMinutesToTimeString } from "../util/time";
 import useParallax from "../util/useParallax";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const TvShowDetails: React.FC = () => {
     const route = useRoute<StartStackRouteProp<"TvShowDetails">>();
@@ -52,6 +53,7 @@ const TvShowDetails: React.FC = () => {
     const { width: screenWidth } = useWindowDimensions();
     const getImageUrl = useImageUrl();
     const { style: parallaxStyle, scrollHandler } = useParallax(0.4);
+    const { top } = useSafeAreaInsets();
 
     const {
         tvShow: {
@@ -143,7 +145,11 @@ const TvShowDetails: React.FC = () => {
                 />
             ) : undefined}
 
-            <View style={styles.mainContent}>
+            <View
+                style={[
+                    styles.mainContent,
+                    !backdropPath && { marginTop: top + 40 },
+                ]}>
                 {posterPath ? (
                     <View style={[styles.posterWrapper, shadowStyle]}>
                         <Image

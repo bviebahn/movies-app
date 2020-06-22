@@ -36,18 +36,33 @@ export function cardNavigationOptions<
 export function accountListNavigationOptions(props: {
     route: ProfileStackRouteProp<"AccountList">;
 }): object {
-    const { mediaType, type } = props.route.params;
-    const title = translate("ACCOUNT_LIST_TITLE", { type, mediaType });
-    const [iconName, iconColor, headerBackground] = (() => {
+    const { type } = props.route.params;
+    const [title, iconName, iconColor, headerBackground] = (() => {
         switch (type) {
             case "favorites":
-                return ["heart", favoriteRed, favoriteRedDark];
+                return [
+                    translate("FAVORITES"),
+                    "heart",
+                    favoriteRed,
+                    favoriteRedDark,
+                ];
             case "watchlist":
-                return ["bookmark", watchlistGreen, watchlistGreenDark];
+                return [
+                    translate("WATCHLIST"),
+                    "bookmark",
+                    watchlistGreen,
+                    watchlistGreenDark,
+                ];
             case "rated":
-                return ["star", ratedYellow, ratedYellowDark];
+                return [
+                    translate("RATED"),
+                    "star",
+                    ratedYellow,
+                    ratedYellowDark,
+                ];
             case "recommendations":
                 return [
+                    translate("RECOMMENDATIONS"),
                     "thumbs-up",
                     recommendationsColor,
                     recommendationsColorDark,
@@ -64,8 +79,12 @@ export function accountListNavigationOptions(props: {
                 iconColor={iconColor}
             />
         ),
-        headerStyle: { backgroundColor: headerBackground },
         headerTintColor: iconColor,
+        headerStyle: {
+            backgroundColor: headerBackground,
+            elevation: 0,
+            shadowColor: "transparent",
+        },
     };
 }
 
