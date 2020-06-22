@@ -1,4 +1,4 @@
-import { useQuery } from "react-query";
+import { useInfiniteQuery } from "react-query";
 import {
     fetchTmdb,
     convertListResult,
@@ -30,9 +30,10 @@ async function fetchList<T extends AccountListType, M extends keyof MediaType>(
     type: T,
     mediaType: M,
     accessToken: string,
+    page: number = 1,
 ): Promise<ListResult<Type<T, M>>> {
     const response = await fetchTmdb(
-        `/account/${accountId}/${mediaType}/${type}`,
+        `/account/${accountId}/${mediaType}/${type}?page=${page}`,
         {
             version: 4,
             accessToken,
@@ -65,10 +66,14 @@ function useAccountList<T extends AccountListType, M extends keyof MediaType>(
         throw new Error("Missing accountId or access token");
     }
 
-    return useQuery({
+    return useInfiniteQuery({
         queryKey: ["account-list", accountId, type, mediaType],
         variables: [accessToken],
         queryFn: fetchList,
+        config: {
+            getFetchMore: (prevPage: any) =>
+                prevPage.page < prevPage.totalPages && prevPage.page + 1,
+        },
     });
 }
 

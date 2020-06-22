@@ -169,11 +169,9 @@ const styles = StyleSheet.create({
         marginTop: "auto",
         marginBottom: "auto",
     },
-
     listFooter: {
         marginVertical: 20,
     },
-
     genresTitle: {
         color: textColorSecondary,
         marginLeft: 20,

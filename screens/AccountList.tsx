@@ -22,6 +22,7 @@ import {
     textColor,
 } from "../constants/colors";
 import { Text, StyleSheet, ActivityIndicator } from "react-native";
+import { Movie, TvShow } from "../tmdb/types";
 
 type ListProps = {
     route: {
@@ -33,12 +34,19 @@ type ListProps = {
 
 const List: React.FC<ListProps> = ({ route }) => {
     const { type, mediaType, navigation } = route;
-    const { data, status } = useAccountList(type, mediaType);
+    const { data, status, fetchMore, isFetchingMore } = useAccountList(
+        type,
+        mediaType,
+    );
+
     return status === "loading" ? (
         <ActivityIndicator style={styles.activityIndicator} />
     ) : (
-        <MediaList
-            data={data?.results}
+        <MediaList<Movie | TvShow>
+            data={data.reduce(
+                (prev: any, curr) => [...prev, ...curr.results],
+                [],
+            )}
             onPressItem={(item) => {
                 if (item.mediaType === "movie") {
                     navigation.push("MovieDetails", { movie: item });
@@ -46,6 +54,11 @@ const List: React.FC<ListProps> = ({ route }) => {
                     navigation.push("TvShowDetails", { tvShow: item });
                 }
             }}
+            onEndReached={() => fetchMore()}
+            ListFooterComponent={
+                isFetchingMore ? <ActivityIndicator /> : undefined
+            }
+            ListFooterComponentStyle={styles.listFooter}
         />
     );
 };
@@ -132,6 +145,9 @@ const styles = StyleSheet.create({
     },
     tab: {
         marginBottom: 2,
+    },
+    listFooter: {
+        marginVertical: 20,
     },
 });
 
