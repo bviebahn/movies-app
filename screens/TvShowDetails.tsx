@@ -16,7 +16,7 @@ import ActionsWidget from "../components/ActionsWidget";
 import InfoBox from "../components/InfoBox";
 import MediaTile from "../components/MediaTile";
 import MediaWidget from "../components/MediaWidget";
-import Rating from "../components/Rating";
+import { RatingWithVoteCount } from "../components/Rating";
 import ReviewsWidget from "../components/ReviewsWidget";
 import { gray1, textColor, textColorSecondary } from "../constants/colors";
 import { secondaryText, shadowStyle } from "../constants/styles";
@@ -82,6 +82,7 @@ const TvShowDetails: React.FC = () => {
         seasons,
         createdBy,
         accountStates,
+        voteCount,
     } = data || {};
 
     const { favorite, rated, watchlist } = accountStates || {};
@@ -183,8 +184,9 @@ const TvShowDetails: React.FC = () => {
                     ) : undefined}
                 </View>
             </View>
-            <Rating
+            <RatingWithVoteCount
                 percent={voteAverage * 10}
+                voteCount={voteCount || 0}
                 style={[styles.rating, { top: backdropHeight - 20 }]}
             />
             {data ? (

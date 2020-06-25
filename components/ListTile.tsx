@@ -30,9 +30,9 @@ const ListTile: React.FC<Props> = ({
             </View>
             <Text style={styles.title}>{title}</Text>
             <Icon
-                name="chevron-right"
+                name="chevron-circle-right"
                 size={24}
-                color="#00000050"
+                color={`${iconColor}80`}
                 style={styles.arrowIcon}
             />
         </RectButton>

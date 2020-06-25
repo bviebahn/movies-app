@@ -32,6 +32,7 @@ const translations: Translations = {
     BIOGRAPHY: "Biografie",
     CREDITS: "Credits",
     AS_CHARACTER: ({ character }) => `als ${character}`,
+    VOTE_COUNT: ({ voteCount }) => `${voteCount} Bewertungen`,
 };
 
 export default translations;

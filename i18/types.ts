@@ -31,4 +31,5 @@ export type Translations = {
     BIOGRAPHY: string;
     CREDITS: string;
     AS_CHARACTER: SubstituteTranslation<{ character: string }>;
+    VOTE_COUNT: SubstituteTranslation<{ voteCount: number }>;
 };

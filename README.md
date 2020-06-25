@@ -8,4 +8,5 @@
 -   authenticate onNavigationStateChange
 -   rate/favorite/watchlist update accountlist cache in onSettled/onSuccess
 -   navigation types
--   merge credits with same if
+-   merge credits with same id
+-   voteCount animation

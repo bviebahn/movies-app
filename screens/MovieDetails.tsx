@@ -14,10 +14,12 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import ActionsWidget from "../components/ActionsWidget";
+import DotSeperatedLine from "../components/DotSeperatedLine";
+import DynamicSizedTitle from "../components/DynamicSizedTitle";
 import InfoBox from "../components/InfoBox";
 import MediaTile from "../components/MediaTile";
 import MediaWidget from "../components/MediaWidget";
-import Rating from "../components/Rating";
+import { RatingWithVoteCount } from "../components/Rating";
 import ReviewsWidget from "../components/ReviewsWidget";
 import { gray1, textColorSecondary } from "../constants/colors";
 import { secondaryText, shadowStyle } from "../constants/styles";
@@ -28,8 +30,8 @@ import {
 } from "../constants/values";
 import translate from "../i18/Locale";
 import {
-    StartStackRouteProp,
     StartStackNavigationProp,
+    StartStackRouteProp,
 } from "../navigators/StartStackNavigator";
 import useAddToWatchlist from "../tmdb/useAddToWatchlist";
 import useImageUrl from "../tmdb/useImageUrl";
@@ -39,8 +41,6 @@ import useRate from "../tmdb/useRate";
 import { formatDate } from "../util/date";
 import { convertMinutesToTimeString } from "../util/time";
 import useParallax from "../util/useParallax";
-import DynamicSizedTitle from "../components/DynamicSizedTitle";
-import DotSeperatedLine from "../components/DotSeperatedLine";
 
 const MovieDetails: React.FC = () => {
     const route = useRoute<StartStackRouteProp<"MovieDetails">>();
@@ -79,6 +79,7 @@ const MovieDetails: React.FC = () => {
         recommendations,
         genres,
         accountStates,
+        voteCount,
     } = data || {};
 
     const { favorite, rated, watchlist } = accountStates || {};
@@ -171,8 +172,9 @@ const MovieDetails: React.FC = () => {
                     ) : undefined}
                 </View>
             </View>
-            <Rating
+            <RatingWithVoteCount
                 percent={voteAverage * 10}
+                voteCount={voteCount || 0}
                 style={[styles.rating, { top: backdropHeight - 20 }]}
             />
             {data ? (
