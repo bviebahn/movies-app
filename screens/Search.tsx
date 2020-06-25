@@ -42,8 +42,9 @@ const SearchResults: React.FC<{
                     navigation.push("MovieDetails", { movie: item });
                 } else if (item.mediaType === "tv") {
                     navigation.push("TvShowDetails", { tvShow: item });
+                } else {
+                    navigation.push("PersonDetails", { id: item.id });
                 }
-                // TODO: person detail
             }}
             onEndReached={() => fetchMoreDebounced()}
             ListFooterComponent={

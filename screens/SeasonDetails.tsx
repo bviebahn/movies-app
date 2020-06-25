@@ -24,6 +24,7 @@ import useRate from "../tmdb/useRate";
 import useSeasonDetails from "../tmdb/useSeasonDetails";
 import { formatDate } from "../util/date";
 import useParallax from "../util/useParallax";
+import DynamicSizedTitle from "../components/DynamicSizedTitle";
 
 const SeasonDetails: React.FC = () => {
     const route = useRoute<StartStackRouteProp<"SeasonDetails">>();
@@ -63,7 +64,9 @@ const SeasonDetails: React.FC = () => {
         <View style={styles.topInfoWrapper}>
             {posterPath ? (
                 <Animated.Image
-                    source={{ uri: getImageUrl(posterPath, "poster", "small") }}
+                    source={{
+                        uri: getImageUrl(posterPath, "poster", "medium"),
+                    }}
                     style={[styles.poster, parallaxStyle]}
                 />
             ) : undefined}
@@ -73,13 +76,7 @@ const SeasonDetails: React.FC = () => {
                 style={styles.posterGradient}
             />
             <View style={styles.topInfo}>
-                <Text
-                    style={[
-                        styles.title,
-                        name.length > 40 && styles.titleSmall,
-                    ]}>
-                    {name}
-                </Text>
+                <DynamicSizedTitle title={name} />
                 <Text style={secondaryText}>
                     {formatDate(new Date(airDate))}
                 </Text>

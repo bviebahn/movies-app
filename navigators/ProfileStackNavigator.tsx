@@ -17,6 +17,7 @@ import {
     cardNavigationOptions,
 } from "./navigationOptions";
 import { AccountListType } from "../tmdb/useAccountList";
+import PersonDetails from "../screens/PersonDetails";
 
 type ProfileStackParams = {
     Profile: undefined;
@@ -35,6 +36,9 @@ type ProfileStackParams = {
     SeasonDetails: {
         tvShowId: number;
         season: Season;
+    };
+    PersonDetails: {
+        id: number;
     };
 };
 
@@ -76,6 +80,11 @@ const ProfileStackNavigator: React.FC = () => {
             <ProfileStack.Screen
                 name="SeasonDetails"
                 component={SeasonDetails}
+                options={cardNavigationOptions}
+            />
+            <ProfileStack.Screen
+                name="PersonDetails"
+                component={PersonDetails}
                 options={cardNavigationOptions}
             />
         </ProfileStack.Navigator>

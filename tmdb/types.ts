@@ -8,7 +8,7 @@ export type TmdbMovie = {
     overview: string;
     popularity: number;
     poster_path?: string;
-    release_date: string;
+    release_date?: string;
     title: string;
     video: false;
     vote_average: number;
@@ -26,7 +26,7 @@ export type Movie = {
     overview: string;
     popularity: number;
     posterPath?: string;
-    releaseDate: string;
+    releaseDate?: string;
     title: string;
     video: false;
     voteAverage: number;
@@ -82,7 +82,7 @@ export type TmdbTvShow = {
     backdrop_path?: string;
     vote_average: number;
     overview: string;
-    first_air_date: string;
+    first_air_date?: string;
     origin_country: ReadonlyArray<string>;
     genre_ids: ReadonlyArray<number>;
     original_language: string;
@@ -99,7 +99,7 @@ export type TvShow = {
     backdropPath?: string;
     voteAverage: number;
     overview: string;
-    firstAirDate: string;
+    firstAirDate?: string;
     originCountry: ReadonlyArray<string>;
     genreIds: ReadonlyArray<number>;
     originalLanguage: string;
@@ -356,6 +356,73 @@ export type Person = {
     knownFor: ReadonlyArray<Movie | TvShow>;
     name: string;
     popularity: number;
+};
+
+type TmdbPersonCredits = {
+    cast: ReadonlyArray<
+        (
+            | (TmdbMovie & { media_type: "movie" })
+            | (TmdbTvShow & { episode_count: number; media_type: "tv" })
+        ) & {
+            character: string;
+            credit_id: string;
+        }
+    >;
+    crew: ReadonlyArray<
+        (
+            | (TmdbMovie & { media_type: "movie" })
+            | (TmdbTvShow & { episode_count: number; media_type: "tv" })
+        ) & {
+            job: string;
+            credit_id: string;
+        }
+    >;
+};
+
+export type TmdbPersonDetails = {
+    birthday?: string;
+    known_for_department: string;
+    deathday?: string;
+    id: number;
+    name: string;
+    also_known_as: ReadonlyArray<string>;
+    gender: number;
+    biography: string;
+    popularity: number;
+    place_of_birth?: string;
+    profile_path?: string;
+    adult: boolean;
+    imdb_id: string;
+    homepage?: string;
+    combined_credits: TmdbPersonCredits;
+};
+
+export type PersonCredits = ReadonlyArray<
+    (Movie | (TvShow & { episodeCount: number })) & {
+        creditId: string;
+    } & (
+            | { creditType: "crew"; job: string }
+            | { creditType: "cast"; character: string }
+        )
+>;
+
+export type PersonDetails = {
+    mediaType: "person";
+    birthday?: string;
+    knownForDepartment: string;
+    deathday?: string;
+    id: number;
+    name: string;
+    alsoKnownAs: ReadonlyArray<string>;
+    gender: number;
+    biography: string;
+    popularity: number;
+    placeOfBirth?: string;
+    profilePath?: string;
+    adult: boolean;
+    imdbId: string;
+    homepage?: string;
+    credits: PersonCredits;
 };
 
 export type ImageType = "backdrop" | "logo" | "poster" | "profile" | "still";

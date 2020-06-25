@@ -19,7 +19,7 @@ import MediaWidget from "../components/MediaWidget";
 import Rating from "../components/Rating";
 import ReviewsWidget from "../components/ReviewsWidget";
 import { gray1, textColor, textColorSecondary } from "../constants/colors";
-import { dot, secondaryText, shadowStyle } from "../constants/styles";
+import { secondaryText, shadowStyle } from "../constants/styles";
 import {
     TILE_HORIZONTAL_MARGIN,
     TILE_WIDTH_M,
@@ -39,6 +39,8 @@ import { formatDate } from "../util/date";
 import { convertMinutesToTimeString } from "../util/time";
 import useParallax from "../util/useParallax";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import DynamicSizedTitle from "../components/DynamicSizedTitle";
+import DotSeperatedLine from "../components/DotSeperatedLine";
 
 const TvShowDetails: React.FC = () => {
     const route = useRoute<StartStackRouteProp<"TvShowDetails">>();
@@ -161,26 +163,20 @@ const TvShowDetails: React.FC = () => {
                     </View>
                 ) : undefined}
                 <View style={styles.infoContainer}>
-                    <Text
-                        style={[
-                            styles.title,
-                            name.length > 40 && styles.titleSmall,
-                        ]}>
-                        {name}
-                    </Text>
-                    <View style={styles.dateRuntimeWrapper}>
-                        <Text style={secondaryText}>
-                            {formatDate(new Date(firstAirDate))}
-                        </Text>
-                        {episodeRunTime ? (
-                            <>
-                                <View style={dot} />
-                                <Text style={secondaryText}>
-                                    {convertMinutesToTimeString(episodeRunTime)}
-                                </Text>
-                            </>
+                    <DynamicSizedTitle title={name} />
+                    <DotSeperatedLine>
+                        {firstAirDate ? (
+                            <Text style={secondaryText}>
+                                {formatDate(new Date(firstAirDate))}
+                            </Text>
                         ) : undefined}
-                    </View>
+                        {episodeRunTime ? (
+                            <Text style={secondaryText}>
+                                {convertMinutesToTimeString(episodeRunTime)}
+                            </Text>
+                        ) : undefined}
+                    </DotSeperatedLine>
+
                     <InfoBox data={infos} />
                     {status === "loading" ? (
                         <ActivityIndicator style={styles.activityIndicator} />
@@ -256,7 +252,11 @@ const TvShowDetails: React.FC = () => {
                                       )
                                     : undefined
                             }
-                            onPress={() => undefined}
+                            onPress={() =>
+                                navigation.push("PersonDetails", {
+                                    id: credit.id,
+                                })
+                            }
                             style={styles.tileMargin}
                             size="small"
                         />
@@ -276,7 +276,11 @@ const TvShowDetails: React.FC = () => {
                     renderItem={(tvShow) => (
                         <MediaTile
                             title={tvShow.name}
-                            subtitle={formatDate(new Date(tvShow.firstAirDate))}
+                            subtitle={
+                                tvShow.firstAirDate
+                                    ? formatDate(new Date(tvShow.firstAirDate))
+                                    : undefined
+                            }
                             imageUrl={
                                 tvShow.posterPath
                                     ? getImageUrl(
@@ -351,10 +355,6 @@ const styles = StyleSheet.create({
     tileMargin: {
         marginHorizontal: TILE_HORIZONTAL_MARGIN,
         marginVertical: 10,
-    },
-    dateRuntimeWrapper: {
-        flexDirection: "row",
-        marginTop: 5,
     },
     widget: {
         marginBottom: 20,

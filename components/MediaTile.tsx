@@ -23,7 +23,7 @@ import Rating from "./Rating";
 type Props = {
     imageUrl?: string;
     title: string;
-    subtitle: string;
+    subtitle?: string;
     voteAverage?: number;
     onPress: () => void;
     style?: StyleProp<ViewStyle>;
@@ -76,7 +76,9 @@ const MediaTile: React.FC<Props> = ({
                     <Text numberOfLines={2} style={styles.title}>
                         {title}
                     </Text>
-                    <Text style={styles.subtitle}>{subtitle}</Text>
+                    {subtitle ? (
+                        <Text style={styles.subtitle}>{subtitle}</Text>
+                    ) : undefined}
                 </View>
             </BorderlessButton>
         </View>

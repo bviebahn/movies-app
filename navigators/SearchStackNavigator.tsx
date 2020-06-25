@@ -11,6 +11,7 @@ import SeasonDetails from "../screens/SeasonDetails";
 import TvShowDetails from "../screens/TvShowDetails";
 import { Movie, Season, TvShow } from "../tmdb/types";
 import { cardNavigationOptions } from "./navigationOptions";
+import PersonDetails from "../screens/PersonDetails";
 
 type SearchStackParams = {
     Search: undefined;
@@ -23,6 +24,9 @@ type SearchStackParams = {
     SeasonDetails: {
         tvShowId: number;
         season: Season;
+    };
+    PersonDetails: {
+        id: number;
     };
 };
 
@@ -51,6 +55,11 @@ const SearchStackNavigator: React.FC = () => {
             <SearchStack.Screen
                 name="SeasonDetails"
                 component={SeasonDetails}
+                options={cardNavigationOptions}
+            />
+            <SearchStack.Screen
+                name="PersonDetails"
+                component={PersonDetails}
                 options={cardNavigationOptions}
             />
         </SearchStack.Navigator>

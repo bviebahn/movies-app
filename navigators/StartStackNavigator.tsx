@@ -11,6 +11,7 @@ import SeasonDetails from "../screens/SeasonDetails";
 import TvShowDetails from "../screens/TvShowDetails";
 import { Movie, Season, TvShow } from "../tmdb/types";
 import { cardNavigationOptions } from "./navigationOptions";
+import PersonDetails from "../screens/PersonDetails";
 
 type StartStackParams = {
     Home: undefined;
@@ -23,6 +24,9 @@ type StartStackParams = {
     SeasonDetails: {
         tvShowId: number;
         season: Season;
+    };
+    PersonDetails: {
+        id: number;
     };
 };
 
@@ -51,6 +55,11 @@ const StartStackNavigator: React.FC = () => {
             <StartStack.Screen
                 name="SeasonDetails"
                 component={SeasonDetails}
+                options={cardNavigationOptions}
+            />
+            <StartStack.Screen
+                name="PersonDetails"
+                component={PersonDetails}
                 options={cardNavigationOptions}
             />
         </StartStack.Navigator>

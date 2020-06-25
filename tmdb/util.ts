@@ -14,6 +14,8 @@ import {
     Account,
     TmdbListResult,
     ListResult,
+    TmdbPersonDetails,
+    PersonDetails,
 } from "./types";
 import { TMDB_BASE_URL, TMDB_ACCESS_TOKEN } from "./constants";
 
@@ -174,6 +176,60 @@ export function convertAccount(result: TmdbAccount): Account {
         id: result.id,
         includeAdult: result.include_adult,
         username: result.username,
+    };
+}
+
+export function convertPersonDetails(person: TmdbPersonDetails): PersonDetails {
+    return {
+        mediaType: "person",
+        id: person.id,
+        adult: person.adult,
+        alsoKnownAs: person.also_known_as,
+        biography: person.biography,
+        gender: person.gender,
+        imdbId: person.imdb_id,
+        knownForDepartment: person.known_for_department,
+        name: person.name,
+        popularity: person.popularity,
+        birthday: person.birthday,
+        deathday: person.deathday,
+        homepage: person.homepage,
+        placeOfBirth: person.place_of_birth,
+        profilePath: person.profile_path,
+        credits: [
+            ...person.combined_credits.cast.map((c) =>
+                c.media_type === "movie"
+                    ? {
+                          ...convertMovie(c),
+                          character: c.character,
+                          creditId: c.credit_id,
+                          creditType: "cast" as "cast",
+                      }
+                    : {
+                          ...convertTvShow(c),
+                          character: c.character,
+                          creditId: c.credit_id,
+                          episodeCount: c.episode_count,
+                          creditType: "cast" as "cast",
+                      },
+            ),
+            ...person.combined_credits.crew.map((c) =>
+                c.media_type === "movie"
+                    ? {
+                          ...convertMovie(c),
+                          job: c.job,
+                          creditId: c.credit_id,
+                          creditType: "crew" as "crew",
+                      }
+                    : {
+                          ...convertTvShow(c),
+                          job: c.job,
+                          creditId: c.credit_id,
+                          episodeCount: c.episode_count,
+                          creditType: "crew" as "crew",
+                      },
+            ),
+        ],
     };
 }
 

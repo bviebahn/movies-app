@@ -27,7 +27,11 @@ const Home: React.FC = () => {
                     renderItem={(movie) => (
                         <MediaTile
                             title={movie.title}
-                            subtitle={formatDate(new Date(movie.releaseDate))}
+                            subtitle={
+                                movie.releaseDate
+                                    ? formatDate(new Date(movie.releaseDate))
+                                    : undefined
+                            }
                             imageUrl={
                                 movie.posterPath
                                     ? getImageUrl(
@@ -54,7 +58,11 @@ const Home: React.FC = () => {
                     renderItem={(tvShow) => (
                         <MediaTile
                             title={tvShow.name}
-                            subtitle={formatDate(new Date(tvShow.firstAirDate))}
+                            subtitle={
+                                tvShow.firstAirDate
+                                    ? formatDate(new Date(tvShow.firstAirDate))
+                                    : undefined
+                            }
                             imageUrl={
                                 tvShow.posterPath
                                     ? getImageUrl(

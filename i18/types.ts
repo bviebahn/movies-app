@@ -25,4 +25,10 @@ export type Translations = {
     RATED: string;
     MOVIES: string;
     TV_SHOWS: string;
+    BIRTHDAY: string;
+    PLACE_OF_BIRTH: string;
+    DEATHDAY: string;
+    BIOGRAPHY: string;
+    CREDITS: string;
+    AS_CHARACTER: SubstituteTranslation<{ character: string }>;
 };

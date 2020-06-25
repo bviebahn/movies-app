@@ -26,6 +26,12 @@ const translations: Translations = {
     RATED: "Bewertet",
     MOVIES: "Filme",
     TV_SHOWS: "Serien",
+    BIRTHDAY: "Geburtstag",
+    PLACE_OF_BIRTH: "Geburtsort",
+    DEATHDAY: "Todestag",
+    BIOGRAPHY: "Biografie",
+    CREDITS: "Credits",
+    AS_CHARACTER: ({ character }) => `als ${character}`,
 };
 
 export default translations;

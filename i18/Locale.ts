@@ -6,7 +6,7 @@ let translations: Translations;
 function translate<Key extends keyof Translations>(
     key: Key,
     ...data: Translations[Key] extends SubstituteTranslation<infer P> ? [P] : []
-) {
+): string {
     const translation = translations[key];
 
     if (!translation) {
@@ -17,7 +17,7 @@ function translate<Key extends keyof Translations>(
         return (translation as any)(data[0] as any);
     }
 
-    return translation;
+    return translation as string;
 }
 
 type LanguageTag = "en" | "de";

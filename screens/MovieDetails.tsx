@@ -3,14 +3,15 @@ import { getLanguage } from "iso-countries-languages";
 import React from "react";
 import {
     ActivityIndicator,
+    Animated,
     Image,
     ScrollView,
     StyleSheet,
     Text,
     useWindowDimensions,
     View,
-    Animated,
 } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import ActionsWidget from "../components/ActionsWidget";
 import InfoBox from "../components/InfoBox";
@@ -18,8 +19,8 @@ import MediaTile from "../components/MediaTile";
 import MediaWidget from "../components/MediaWidget";
 import Rating from "../components/Rating";
 import ReviewsWidget from "../components/ReviewsWidget";
-import { textColor, textColorSecondary, gray1 } from "../constants/colors";
-import { dot, secondaryText, shadowStyle } from "../constants/styles";
+import { gray1, textColorSecondary } from "../constants/colors";
+import { secondaryText, shadowStyle } from "../constants/styles";
 import {
     TILE_HORIZONTAL_MARGIN,
     TILE_WIDTH_M,
@@ -27,18 +28,19 @@ import {
 } from "../constants/values";
 import translate from "../i18/Locale";
 import {
-    StartStackNavigationProp,
     StartStackRouteProp,
+    StartStackNavigationProp,
 } from "../navigators/StartStackNavigator";
+import useAddToWatchlist from "../tmdb/useAddToWatchlist";
 import useImageUrl from "../tmdb/useImageUrl";
+import useMarkAsFavorite from "../tmdb/useMarkAsFavorite";
 import useMovieDetails from "../tmdb/useMovieDetails";
+import useRate from "../tmdb/useRate";
 import { formatDate } from "../util/date";
 import { convertMinutesToTimeString } from "../util/time";
 import useParallax from "../util/useParallax";
-import useMarkAsFavorite from "../tmdb/useMarkAsFavorite";
-import useAddToWatchlist from "../tmdb/useAddToWatchlist";
-import useRate from "../tmdb/useRate";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import DynamicSizedTitle from "../components/DynamicSizedTitle";
+import DotSeperatedLine from "../components/DotSeperatedLine";
 
 const MovieDetails: React.FC = () => {
     const route = useRoute<StartStackRouteProp<"MovieDetails">>();
@@ -150,26 +152,19 @@ const MovieDetails: React.FC = () => {
                     </View>
                 ) : undefined}
                 <View style={styles.infoContainer}>
-                    <Text
-                        style={[
-                            styles.title,
-                            title.length > 40 && styles.titleSmall,
-                        ]}>
-                        {title}
-                    </Text>
-                    <View style={styles.dateRuntimeWrapper}>
-                        <Text style={secondaryText}>
-                            {formatDate(new Date(releaseDate))}
-                        </Text>
-                        {runtime ? (
-                            <>
-                                <View style={dot} />
-                                <Text style={secondaryText}>
-                                    {convertMinutesToTimeString(runtime)}
-                                </Text>
-                            </>
+                    <DynamicSizedTitle title={title} />
+                    <DotSeperatedLine>
+                        {releaseDate ? (
+                            <Text style={secondaryText}>
+                                {formatDate(new Date(releaseDate))}
+                            </Text>
                         ) : undefined}
-                    </View>
+                        {runtime ? (
+                            <Text style={secondaryText}>
+                                {convertMinutesToTimeString(runtime)}
+                            </Text>
+                        ) : undefined}
+                    </DotSeperatedLine>
                     <InfoBox data={infos} />
                     {status === "loading" ? (
                         <ActivityIndicator style={styles.activityIndicator} />
@@ -216,7 +211,11 @@ const MovieDetails: React.FC = () => {
                                       )
                                     : undefined
                             }
-                            onPress={() => undefined}
+                            onPress={() =>
+                                navigation.navigate("PersonDetails", {
+                                    id: credit.id,
+                                })
+                            }
                             size="small"
                             style={styles.tileMargin}
                         />
@@ -236,7 +235,11 @@ const MovieDetails: React.FC = () => {
                     renderItem={(movie) => (
                         <MediaTile
                             title={movie.title}
-                            subtitle={formatDate(new Date(movie.releaseDate))}
+                            subtitle={
+                                movie.releaseDate
+                                    ? formatDate(new Date(movie.releaseDate))
+                                    : undefined
+                            }
                             imageUrl={
                                 movie.posterPath
                                     ? getImageUrl(
@@ -287,14 +290,6 @@ const styles = StyleSheet.create({
         marginLeft: 10,
         flex: 1,
     },
-    title: {
-        color: textColor,
-        fontSize: 24,
-        fontWeight: "bold",
-    },
-    titleSmall: {
-        fontSize: 20,
-    },
     rating: { position: "absolute", right: 20 },
     overviewWrapper: {
         margin: 20,
@@ -305,10 +300,6 @@ const styles = StyleSheet.create({
     activityIndicator: {
         marginTop: "auto",
         marginBottom: "auto",
-    },
-    dateRuntimeWrapper: {
-        flexDirection: "row",
-        marginTop: 5,
     },
     tagline: {
         marginTop: 10,

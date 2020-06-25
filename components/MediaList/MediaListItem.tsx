@@ -8,12 +8,13 @@ import {
     textColorSecondary,
     ratedYellow,
 } from "../../constants/colors";
-import { shadowStyle, dot } from "../../constants/styles";
+import { shadowStyle } from "../../constants/styles";
 import { Movie, Person, TvShow } from "../../tmdb/types";
 import useImageUrl from "../../tmdb/useImageUrl";
 import { formatDate } from "../../util/date";
 import Rating from "../Rating";
 import Icon from "react-native-vector-icons/FontAwesome";
+import DotSeperatedLine from "../DotSeperatedLine";
 
 type Props = {
     item: ((Movie | TvShow) & { accountRating?: number }) | Person;
@@ -71,19 +72,16 @@ const MediaListItem: React.FC<Props> = ({ item, onPress }) => {
                 ) : undefined}
                 <View style={styles.itemInfo}>
                     <Text style={styles.itemTitle}>{title}</Text>
-                    <View style={styles.releaseDateWrapper}>
+                    <DotSeperatedLine>
                         {releaseDate ? (
                             <Text style={styles.itemDate}>
                                 {formatDate(new Date(releaseDate))}
                             </Text>
                         ) : undefined}
                         {accountRating ? (
-                            <>
-                                <View style={dot} />
-                                <AccountRating rating={accountRating} />
-                            </>
+                            <AccountRating rating={accountRating} />
                         ) : undefined}
-                    </View>
+                    </DotSeperatedLine>
                     {overview ? (
                         <Text style={styles.itemOverview} numberOfLines={5}>
                             {overview}
@@ -126,11 +124,6 @@ const styles = StyleSheet.create({
         color: gray3,
     },
     rating: { marginLeft: "auto", marginBottom: "auto" },
-    releaseDateWrapper: {
-        marginBottom: 4,
-        flexDirection: "row",
-        alignItems: "center",
-    },
     accountRatingText: {
         color: ratedYellow,
         marginLeft: 5,
