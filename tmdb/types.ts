@@ -387,7 +387,7 @@ export type TmdbPersonDetails = {
     name: string;
     also_known_as: ReadonlyArray<string>;
     gender: number;
-    biography: string;
+    biography?: string;
     popularity: number;
     place_of_birth?: string;
     profile_path?: string;
@@ -415,7 +415,7 @@ export type PersonDetails = {
     name: string;
     alsoKnownAs: ReadonlyArray<string>;
     gender: number;
-    biography: string;
+    biography?: string;
     popularity: number;
     placeOfBirth?: string;
     profilePath?: string;

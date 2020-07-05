@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { LayoutAnimation, StyleSheet, Text, View } from "react-native";
 import { RectButton } from "react-native-gesture-handler";
 
-import { gray0, gray2, gray3, textColorSecondary } from "../constants/colors";
+import { gray0, gray2, gray5, textColorSecondary } from "../constants/colors";
 import Rating from "./Rating";
 import StarRatingWidget from "./StarRatingWidget";
 
@@ -80,11 +80,11 @@ const styles = StyleSheet.create({
     episodeNumber: {
         fontSize: 16,
         fontWeight: "bold",
-        color: gray3,
+        color: gray5,
         marginRight: 2,
     },
     episodeOverview: {
-        color: gray3,
+        color: gray5,
         flexShrink: 1,
     },
     rating: { marginLeft: "auto" },

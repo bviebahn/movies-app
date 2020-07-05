@@ -3,7 +3,7 @@ import { StyleSheet, Text, View } from "react-native";
 import Modal from "react-native-modal";
 import Icon from "react-native-vector-icons/FontAwesome";
 
-import { gray0, gray3 } from "../constants/colors";
+import { gray0, gray5 } from "../constants/colors";
 import Blur from "./Blur";
 
 type Props = {
@@ -50,14 +50,14 @@ const styles = StyleSheet.create({
         alignSelf: "center",
     },
     title: {
-        color: gray3,
+        color: gray5,
         fontSize: 20,
         fontWeight: "bold",
         marginTop: 10,
         marginBottom: 5,
     },
     message: {
-        color: gray3,
+        color: gray5,
     },
     blur: {
         borderRadius: 8,

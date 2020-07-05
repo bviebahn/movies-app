@@ -91,8 +91,13 @@ const PersonDetails: React.FC = () => {
                     <InfoBox data={infos} />
                 </View>
             </View>
-            <Text style={styles.title}>{translate("BIOGRAPHY")}</Text>
-            <Text style={styles.biography}>{biography}</Text>
+
+            {biography ? (
+                <>
+                    <Text style={styles.title}>{translate("BIOGRAPHY")}</Text>
+                    <Text style={styles.biography}>{biography}</Text>
+                </>
+            ) : undefined}
             <Text style={styles.title}>{translate("CREDITS")}</Text>
         </>
     ) : (

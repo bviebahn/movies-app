@@ -12,7 +12,7 @@ import Icon from "react-native-vector-icons/FontAwesome";
 
 import {
     gray2,
-    gray3,
+    gray5,
     textColor,
     textColorSecondary,
 } from "../constants/colors";
@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
         justifyContent: "center",
     },
     subtitle: {
-        color: gray3,
+        color: gray5,
         marginTop: 5,
     },
     rating: { position: "absolute", top: 220, right: 10 },

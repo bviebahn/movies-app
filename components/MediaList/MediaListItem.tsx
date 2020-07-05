@@ -4,7 +4,7 @@ import { RectButton } from "react-native-gesture-handler";
 
 import {
     gray0,
-    gray3,
+    gray5,
     textColorSecondary,
     ratedYellow,
 } from "../../constants/colors";
@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
         color: textColorSecondary,
     },
     itemDate: {
-        color: gray3,
+        color: gray5,
     },
     rating: { marginLeft: "auto", marginBottom: "auto" },
     accountRatingText: {

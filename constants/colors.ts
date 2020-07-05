@@ -1,8 +1,10 @@
 export const gray0 = "#0F0F0F";
 export const gray1 = "#121212";
 export const gray2 = "#1e1e1e";
-export const gray3 = "#888";
-export const gray4 = "#ccc";
+export const gray3 = "#333";
+export const gray4 = "#555";
+export const gray5 = "#888";
+export const gray6 = "#ccc";
 export const black = "#000";
 
 export const primaryColor = "#3F51B5";
