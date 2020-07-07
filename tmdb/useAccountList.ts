@@ -66,15 +66,14 @@ function useAccountList<T extends AccountListType, M extends keyof MediaType>(
         throw new Error("Missing accountId or access token");
     }
 
-    return useInfiniteQuery({
-        queryKey: ["account-list", accountId, type, mediaType],
-        variables: [accessToken],
-        queryFn: fetchList,
-        config: {
+    return useInfiniteQuery(
+        ["account-list", accountId, type, mediaType, accessToken],
+        fetchList,
+        {
             getFetchMore: (prevPage: any) =>
                 prevPage.page < prevPage.totalPages && prevPage.page + 1,
         },
-    });
+    );
 }
 
 export default useAccountList;

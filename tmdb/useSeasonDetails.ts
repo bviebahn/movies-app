@@ -56,11 +56,10 @@ async function fetchSeasonDetails(
 
 function useSeasonDetails(id: number, seasonNumber: number) {
     const { sessionId } = useUser();
-    return useQuery({
-        queryKey: ["season-details", id, seasonNumber],
-        variables: [sessionId],
-        queryFn: fetchSeasonDetails,
-    });
+    return useQuery(
+        ["season-details", id, seasonNumber, sessionId],
+        fetchSeasonDetails,
+    );
 }
 
 export default useSeasonDetails;

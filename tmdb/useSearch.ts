@@ -1,8 +1,8 @@
-import { TmdbSearchResult, ListResult, Movie, TvShow, Person } from "./types";
+import { TmdbSearchResult } from "./types";
 import { convertSearchResult, fetchTmdb } from "./util";
 import { useInfiniteQuery } from "react-query";
 
-async function fetchSearch(_key: string, query: string, page: number = 1) {
+async function fetchSearch(_key: string, query: string, page: unknown = 1) {
     const response = await fetchTmdb(
         `/search/multi?query=${query}&page=${page}`,
     );
@@ -16,19 +16,9 @@ async function fetchSearch(_key: string, query: string, page: number = 1) {
 }
 
 function useSearch(query: string) {
-    return useInfiniteQuery<
-        ListResult<Movie | TvShow | Person>,
-        [string, string],
-        number,
-        [],
-        Error
-    >({
-        queryKey: ["search", query],
-        queryFn: fetchSearch,
-        config: {
-            getFetchMore: (prevPage) =>
-                prevPage.page < prevPage.totalPages && prevPage.page + 1,
-        },
+    return useInfiniteQuery(["search", query], fetchSearch, {
+        getFetchMore: (prevPage) =>
+            prevPage.page < prevPage.totalPages && prevPage.page + 1,
     });
 }
 

@@ -103,7 +103,8 @@ function useRate() {
         if (!sessionId) {
             throw new Error("Error rating - no sessionId");
         }
-        return mutate({ ...variables, sessionId });
+
+        return mutate({ ...variables, sessionId } as any);
     };
 }
 

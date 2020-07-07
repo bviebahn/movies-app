@@ -25,7 +25,7 @@ const ACCESS_TOKEN_KEY = "ACCESS_TOKEN";
 const ACCOUNT_ID_KEY = "ACCOUNT_ID";
 const SESSION_ID_KEY = "SESSION_ID";
 
-async function fetchUser(_key: "user", sessionId?: string) {
+async function fetchUser(_key: string, sessionId?: string) {
     if (!sessionId) {
         throw new Error("sessionId missing in fetchUser");
     }
@@ -100,7 +100,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
         ["user", sessionId],
         fetchUser,
         {
-            manual: true,
+            enabled: false,
         },
     );
 

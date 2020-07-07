@@ -44,15 +44,14 @@ function useAccountLists() {
         throw new Error("Missing accountId or access token");
     }
 
-    return useInfiniteQuery({
-        queryKey: ["account-lists", accountId],
-        variables: [accessToken],
-        queryFn: fetchAccountLists,
-        config: {
+    return useInfiniteQuery(
+        ["account-lists", accountId, accessToken],
+        fetchAccountLists,
+        {
             getFetchMore: (prevPage: any) =>
                 prevPage.page < prevPage.totalPages && prevPage.page + 1,
         },
-    });
+    );
 }
 
 export default useAccountLists;

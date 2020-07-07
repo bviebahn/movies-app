@@ -58,11 +58,7 @@ async function fetchMovieDetails(_key: string, id: number, sessionId?: string) {
 
 function useMovieDetails(id: number) {
     const { sessionId } = useUser();
-    return useQuery({
-        queryKey: ["movie-details", id],
-        variables: [sessionId],
-        queryFn: fetchMovieDetails,
-    });
+    return useQuery(["movie-details", id, sessionId], fetchMovieDetails);
 }
 
 export default useMovieDetails;

@@ -1083,11 +1083,6 @@
     color "^3.1.2"
     react-native-iphone-x-helper "^1.2.1"
 
-"@scarf/scarf@^1.0.6":
-  version "1.0.6"
-  resolved "https://registry.yarnpkg.com/@scarf/scarf/-/scarf-1.0.6.tgz#52011dfb19187b53b75b7b6eac20da0810ddd88f"
-  integrity sha512-y4+DuXrAd1W5UIY3zTcsosi/1GyYT8k5jGnZ/wG7UUHVrU+MHlH4Mp87KK2/lvMW4+H7HVcdB+aJhqywgXksjA==
-
 "@types/babel__core@^7.1.0":
   version "7.1.7"
   resolved "https://registry.yarnpkg.com/@types/babel__core/-/babel__core-7.1.7.tgz#1dacad8840364a57c98d0dd4855c6dd3752c6b89"
@@ -5542,12 +5537,11 @@ react-native@0.62.2:
     use-subscription "^1.0.0"
     whatwg-fetch "^3.0.0"
 
-react-query@^1.5.9:
-  version "1.5.9"
-  resolved "https://registry.yarnpkg.com/react-query/-/react-query-1.5.9.tgz#8df202a338c1875a033cc6a29d1b7f777b233237"
-  integrity sha512-RrCSSRBkFZe+AAhGFuMDvaucMIANWEbDeuVbn/bWPXuYCNYKz2HD4v7uN1FYAArFjv3i8E0PoR8ll3dBjhrObg==
+react-query@^2.4.13:
+  version "2.4.13"
+  resolved "https://registry.yarnpkg.com/react-query/-/react-query-2.4.13.tgz#478f4f32a8c6b56de0e7bb6eb3cd2baa812e1ebb"
+  integrity sha512-PFUmChSy3kph+r0c+oz7HgBiKi98bb1D8FeeBZ1qiuuGXUJYhWCvOST+lOgwtLiBbT1wdoNjObFC35jpHbSvUQ==
   dependencies:
-    "@scarf/scarf" "^1.0.6"
     ts-toolbelt "^6.9.4"
 
 react-refresh@^0.4.0:

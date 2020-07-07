@@ -79,11 +79,7 @@ async function fetchTvShowDetails(
 
 function useTvShowDetails(id: number) {
     const { sessionId } = useUser();
-    return useQuery({
-        queryKey: ["tv-details", id],
-        variables: [sessionId],
-        queryFn: fetchTvShowDetails,
-    });
+    return useQuery(["tv-details", id, sessionId], fetchTvShowDetails);
 }
 
 export default useTvShowDetails;
