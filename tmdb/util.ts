@@ -16,6 +16,8 @@ import {
     ListResult,
     TmdbPersonDetails,
     PersonDetails,
+    TmdbAccountList,
+    AccountList,
 } from "./types";
 import { TMDB_BASE_URL, TMDB_ACCESS_TOKEN } from "./constants";
 
@@ -231,6 +233,30 @@ export function convertPersonDetails(person: TmdbPersonDetails): PersonDetails {
             ),
         ],
     };
+}
+
+export function convertAccountLists(
+    accountLists: ReadonlyArray<TmdbAccountList>,
+): ReadonlyArray<AccountList> {
+    return accountLists.map((v) => ({
+        adult: v.adult,
+        averageRating: v.average_rating,
+        countryCode: v.iso_3166_1,
+        languageCode: v.iso_639_1,
+        createdAt: v.created_at,
+        description: v.description,
+        featured: v.featured,
+        id: v.id,
+        name: v.name,
+        numberOfItems: v.number_of_items,
+        public: v.public,
+        revenue: v.revenue,
+        runtime: v.runtime,
+        sortBy: v.sort_by,
+        updatedAt: v.updated_at,
+        backdropPath: v.backdrop_path,
+        posterPath: v.poster_path,
+    }));
 }
 
 export function getGravatarImageUrl(hash: string) {

@@ -475,3 +475,43 @@ export type Account = {
     includeAdult: boolean;
     username: string;
 };
+
+export type TmdbAccountList = {
+    iso_639_1: string;
+    id: number;
+    featured: number;
+    description: string;
+    revenue: string;
+    public: number;
+    name: string;
+    updated_at: string;
+    created_at: string;
+    sort_by: number;
+    backdrop_path?: string;
+    runtime: number;
+    average_rating: number;
+    iso_3166_1: string;
+    adult: number;
+    number_of_items: number;
+    poster_path?: string;
+};
+
+export type AccountList = {
+    languageCode: string;
+    id: number;
+    featured: number;
+    description: string;
+    revenue: string;
+    public: number;
+    name: string;
+    updatedAt: string;
+    createdAt: string;
+    sortBy: number;
+    backdropPath?: string;
+    runtime: number;
+    averageRating: number;
+    countryCode: string;
+    adult: number;
+    numberOfItems: number;
+    posterPath?: string;
+};

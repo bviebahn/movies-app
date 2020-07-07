@@ -60,7 +60,7 @@ const CreditsList: React.FC<Props> = ({ credits, ...restProps }) => {
                     const nextDate = getDate(nextItem);
                     return nextDate
                         ? nextDate.slice(0, 4) !== yearString
-                        : false;
+                        : !!date;
                 })();
 
                 return (
@@ -81,8 +81,9 @@ const CreditsList: React.FC<Props> = ({ credits, ...restProps }) => {
                                 });
                             }
                         }}
-                        isFirst={isFirstInGroup}
-                        isLast={isLastInGroup}
+                        isFirst={index === 0}
+                        isFirstInGroup={isFirstInGroup}
+                        isLastInGroup={isLastInGroup}
                     />
                 );
             }}
@@ -97,7 +98,8 @@ type ListItemProps = {
     title: string;
     role?: string;
     isFirst: boolean;
-    isLast: boolean;
+    isFirstInGroup: boolean;
+    isLastInGroup: boolean;
     onPress: () => void;
 };
 
@@ -106,19 +108,24 @@ const ListItem: React.FC<ListItemProps> = ({
     title,
     role,
     isFirst,
-    isLast,
+    isFirstInGroup,
+    isLastInGroup,
     onPress,
 }) => (
     <View style={styles.listItemWrapper}>
-        <View style={styles.timeline} />
-        {isFirst ? <View style={styles.timelineDot} /> : undefined}
+        <View
+            style={[styles.timeline, isFirst && styles.firstListItemTimeline]}
+        />
+        {isFirstInGroup ? <View style={styles.timelineDot} /> : undefined}
         <View style={styles.listItemContent}>
-            {isFirst ? <Text style={styles.date}>{date}</Text> : undefined}
+            {isFirstInGroup ? (
+                <Text style={styles.date}>{date}</Text>
+            ) : undefined}
             <View
                 style={[
                     styles.border,
-                    isFirst && styles.borderTop,
-                    isLast && styles.borderBottom,
+                    isFirstInGroup && styles.borderTop,
+                    isLastInGroup && styles.borderBottom,
                 ]}>
                 <RectButton onPress={onPress} style={styles.listItem}>
                     <View style={styles.itemRight}>
@@ -140,6 +147,9 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         paddingRight: 20,
         paddingLeft: 10,
+    },
+    firstListItemTimeline: {
+        marginTop: 30,
     },
     listItemContent: { flex: 1 },
     border: {

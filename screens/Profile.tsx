@@ -25,6 +25,7 @@ import LogoFull from "../tmdb/LogoFull";
 import useUser, { createRequestToken } from "../tmdb/useUser";
 import { getGravatarImageUrl } from "../tmdb/util";
 import Icon from "react-native-vector-icons/FontAwesome";
+import AccountLists from "../components/AccountLists";
 
 const LoginLogoutButton: React.FC<{
     isLoggedIn: boolean;
@@ -120,51 +121,55 @@ const Profile: React.FC = () => {
                 <Text style={styles.signinText}>
                     {translate("SIGNIN_TEXT")}
                 </Text>
-            ) : undefined}
-            <ListTile
-                iconName="heart"
-                iconColor={favoriteRed}
-                title={translate("FAVORITES")}
-                backgroundColor={favoriteRedDark}
-                onPress={() =>
-                    navigation.navigate("AccountList", {
-                        type: "favorites",
-                    })
-                }
-            />
-            <ListTile
-                iconName="bookmark"
-                iconColor={watchlistGreen}
-                title={translate("WATCHLIST")}
-                backgroundColor={watchlistGreenDark}
-                onPress={() =>
-                    navigation.navigate("AccountList", {
-                        type: "watchlist",
-                    })
-                }
-            />
-            <ListTile
-                iconName="star"
-                iconColor={ratedYellow}
-                title={translate("RATED")}
-                backgroundColor={ratedYellowDark}
-                onPress={() =>
-                    navigation.navigate("AccountList", {
-                        type: "rated",
-                    })
-                }
-            />
-            <ListTile
-                iconName="thumbs-up"
-                iconColor={recommendationsColor}
-                title={translate("RECOMMENDATIONS")}
-                backgroundColor={recommendationsColorDark}
-                onPress={() =>
-                    navigation.navigate("AccountList", {
-                        type: "recommendations",
-                    })
-                }
-            />
+            ) : (
+                <>
+                    <ListTile
+                        iconName="heart"
+                        iconColor={favoriteRed}
+                        title={translate("FAVORITES")}
+                        backgroundColor={favoriteRedDark}
+                        onPress={() =>
+                            navigation.navigate("AccountList", {
+                                type: "favorites",
+                            })
+                        }
+                    />
+                    <ListTile
+                        iconName="bookmark"
+                        iconColor={watchlistGreen}
+                        title={translate("WATCHLIST")}
+                        backgroundColor={watchlistGreenDark}
+                        onPress={() =>
+                            navigation.navigate("AccountList", {
+                                type: "watchlist",
+                            })
+                        }
+                    />
+                    <ListTile
+                        iconName="star"
+                        iconColor={ratedYellow}
+                        title={translate("RATED")}
+                        backgroundColor={ratedYellowDark}
+                        onPress={() =>
+                            navigation.navigate("AccountList", {
+                                type: "rated",
+                            })
+                        }
+                    />
+                    <ListTile
+                        iconName="thumbs-up"
+                        iconColor={recommendationsColor}
+                        title={translate("RECOMMENDATIONS")}
+                        backgroundColor={recommendationsColorDark}
+                        onPress={() =>
+                            navigation.navigate("AccountList", {
+                                type: "recommendations",
+                            })
+                        }
+                    />
+                    <AccountLists style={styles.accountLists} />
+                </>
+            )}
         </View>
     );
 };
@@ -208,6 +213,9 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: "bold",
         color: tmdbPrimaryColor,
+    },
+    accountLists: {
+        margin: 20,
     },
 });
 

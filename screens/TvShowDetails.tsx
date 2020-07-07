@@ -203,7 +203,7 @@ const TvShowDetails: React.FC = () => {
             <View style={styles.overviewWrapper}>
                 <Text style={styles.overview}>{overview}</Text>
             </View>
-            {seasons ? (
+            {seasons && seasons.length ? (
                 <MediaWidget
                     title={`${seasons.length} ${translate("SEASONS")}`}
                     data={seasons}
@@ -270,7 +270,7 @@ const TvShowDetails: React.FC = () => {
             {reviews && reviews.length ? (
                 <ReviewsWidget reviews={reviews} style={styles.widget} />
             ) : undefined}
-            {recommendations ? (
+            {recommendations && recommendations.length ? (
                 <MediaWidget
                     title={translate("RECOMMENDATIONS")}
                     data={recommendations}
