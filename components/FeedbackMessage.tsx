@@ -25,7 +25,8 @@ const FeedbackMessage: React.FC<Props> = ({
             isVisible={isVisible}
             hasBackdrop={false}
             animationIn="pulse"
-            animationOut="fadeOut">
+            animationOut="fadeOut"
+            testID="feedbackMessage">
             <View style={styles.content}>
                 <Blur style={styles.blur} />
                 {iconName ? (

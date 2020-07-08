@@ -1,10 +1,9 @@
-import "react-native";
 import React, { useState } from "react";
-
-import { render, fireEvent } from "react-native-testing-library";
-import { View, TouchableOpacity, Text } from "react-native";
-import useDebounce, { useDebouncedValue } from "../useDebounce";
+import { Text, TouchableOpacity, View } from "react-native";
+import { fireEvent, render } from "react-native-testing-library";
 import { act } from "react-test-renderer";
+
+import useDebounce, { useDebouncedValue } from "../useDebounce";
 
 jest.useFakeTimers();
 
