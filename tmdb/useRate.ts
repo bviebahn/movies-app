@@ -1,6 +1,6 @@
 import useUser from "./useUser";
 import { fetchTmdb } from "./util";
-import { useMutation, queryCache } from "react-query";
+import { useMutation, queryCache, AnyQueryKey } from "react-query";
 import { MovieDetails, TvShowDetails, SeasonDetails } from "./types";
 
 type Variables = { rating?: number } & (
@@ -42,43 +42,46 @@ function useRate() {
             const { mediaType, rating } = variables;
             if (variables.mediaType === "episode") {
                 const { tvId, seasonNumber, episodeNumber } = variables;
-                const seasonDetails = queryCache.getQueryData<SeasonDetails>([
+                const queryKey: AnyQueryKey = [
                     "season-details",
                     tvId,
                     seasonNumber,
-                ]);
+                    sessionId,
+                ];
+                const seasonDetails = queryCache.getQueryData<SeasonDetails>(
+                    queryKey,
+                );
 
                 if (seasonDetails) {
-                    queryCache.setQueryData<SeasonDetails>(
-                        ["season-details", tvId, seasonNumber],
-                        {
-                            ...seasonDetails,
-                            accountStates: seasonDetails.accountStates?.map(
-                                (accState) =>
-                                    accState.epiodeNumber === episodeNumber
-                                        ? {
-                                              ...accState,
-                                              rated: rating || 0,
-                                          }
-                                        : accState,
-                            ),
-                        },
-                    );
+                    queryCache.setQueryData<SeasonDetails>(queryKey, {
+                        ...seasonDetails,
+                        accountStates: seasonDetails.accountStates?.map(
+                            (accState) =>
+                                accState.epiodeNumber === episodeNumber
+                                    ? {
+                                          ...accState,
+                                          rated: rating || 0,
+                                      }
+                                    : accState,
+                        ),
+                    });
                     return () =>
-                        queryCache.setQueryData(
-                            ["season-details", tvId, seasonNumber],
-                            seasonDetails,
-                        );
+                        queryCache.setQueryData(queryKey, seasonDetails);
                 }
             } else {
                 const { mediaId } = variables;
+                const queryKey: AnyQueryKey = [
+                    `${mediaType}-details`,
+                    mediaId,
+                    sessionId,
+                ];
                 const oldDetails = queryCache.getQueryData<
                     MovieDetails | TvShowDetails
-                >([`${mediaType}-details`, mediaId]);
+                >(queryKey);
 
                 if (oldDetails) {
                     queryCache.setQueryData<MovieDetails | TvShowDetails>(
-                        [`${mediaType}-details`, mediaId],
+                        queryKey,
                         {
                             ...oldDetails,
                             accountStates: {
@@ -87,11 +90,7 @@ function useRate() {
                             },
                         },
                     );
-                    return () =>
-                        queryCache.setQueryData(
-                            [`${mediaType}-details`, mediaId],
-                            oldDetails,
-                        );
+                    return () => queryCache.setQueryData(queryKey, oldDetails);
                 }
             }
         },

@@ -1,23 +1,46 @@
 import React from "react";
-import useAccountLists from "../tmdb/useAccountLists";
+import {
+    FlatList,
+    StyleProp,
+    StyleSheet,
+    Text,
+    View,
+    ViewStyle,
+} from "react-native";
+import { RectButton } from "react-native-gesture-handler";
+
+import { gray0, gray6, textColorSecondary } from "../constants/colors";
+import { headline, shadowStyle } from "../constants/styles";
+import translate from "../i18/Locale";
 import { AccountList } from "../tmdb/types";
-import { View, Text, StyleProp, ViewStyle, StyleSheet } from "react-native";
-import { textColorSecondary, gray0, gray4 } from "../constants/colors";
+import useAccountLists from "../tmdb/useAccountLists";
+import { convertMinutesToTimeString } from "../util/time";
+import DotSeperatedLine from "./DotSeperatedLine";
 
 const List: React.FC<{ list: AccountList }> = ({
-    list: { name, numberOfItems },
+    list: { name, numberOfItems, runtime },
 }) => (
-    <View>
-        <Text style={styles.listName}>{name}</Text>
-        <Text style={styles.numberOfItems}>{numberOfItems}</Text>
+    <View style={shadowStyle}>
+        <RectButton style={styles.list}>
+            <Text style={styles.listName}>{name}</Text>
+            <DotSeperatedLine>
+                <Text style={styles.listInfoText}>
+                    {translate("ITEM_COUNT", { itemCount: numberOfItems })}
+                </Text>
+                <Text style={styles.listInfoText}>
+                    {convertMinutesToTimeString(runtime)}
+                </Text>
+            </DotSeperatedLine>
+        </RectButton>
     </View>
 );
 
 type Props = {
     style?: StyleProp<ViewStyle>;
+    ListHeaderComponent?: React.ReactElement;
 };
 
-const AccountLists: React.FC<Props> = ({ style }) => {
+const AccountLists: React.FC<Props> = ({ style, ListHeaderComponent }) => {
     const { data } = useAccountLists();
 
     const lists = data.reduce<AccountList[]>(
@@ -25,28 +48,50 @@ const AccountLists: React.FC<Props> = ({ style }) => {
         [],
     );
 
+    const listHeader = (
+        <>
+            {ListHeaderComponent}
+            {lists.length ? (
+                <Text style={[headline, styles.listsHeadline]}>
+                    {translate("YOUR_LISTS")}
+                </Text>
+            ) : undefined}
+        </>
+    );
+
     return (
-        <View style={[styles.accountLists, style]}>
-            {lists.map((list) => (
-                <List list={list} />
-            ))}
+        <View style={style}>
+            <FlatList
+                data={lists}
+                renderItem={({ item }) => <List list={item} />}
+                keyExtractor={(item) => `${item.id}`}
+                ListHeaderComponent={listHeader}
+            />
         </View>
     );
 };
 
 const styles = StyleSheet.create({
-    accountLists: {
-        padding: 20,
+    listName: {
+        fontSize: 18,
+        color: textColorSecondary,
+        fontWeight: "bold",
+        marginBottom: 5,
+    },
+    listInfoText: {
+        color: gray6,
+    },
+    list: {
+        paddingHorizontal: 20,
+        paddingVertical: 10,
+        marginHorizontal: 20,
+        marginVertical: 10,
         backgroundColor: gray0,
         borderRadius: 8,
     },
-    listName: {
-        fontSize: 16,
-        color: textColorSecondary,
-        fontWeight: "bold",
-    },
-    numberOfItems: {
-        color: gray4,
+    listsHeadline: {
+        margin: 20,
+        marginBottom: 5,
     },
 });
 

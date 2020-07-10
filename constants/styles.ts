@@ -19,6 +19,12 @@ export const headline: StyleProp<TextStyle> = {
     fontWeight: "bold",
 };
 
+export const headline2: StyleProp<TextStyle> = {
+    color: textColor,
+    fontSize: 22,
+    fontWeight: "bold",
+};
+
 export const secondaryText: StyleProp<TextStyle> = {
     color: textColorSecondary,
 };

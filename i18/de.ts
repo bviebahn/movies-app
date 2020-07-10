@@ -32,7 +32,11 @@ const translations: Translations = {
     BIOGRAPHY: "Biografie",
     CREDITS: "Credits",
     AS_CHARACTER: ({ character }) => `als ${character}`,
-    VOTE_COUNT: ({ voteCount }) => `${voteCount} Bewertungen`,
+    VOTE_COUNT: ({ voteCount }) =>
+        `${voteCount} ${voteCount === 1 ? "Bewertung" : "Bewertungen"}`,
+    YOUR_LISTS: "Deine Listen",
+    ITEM_COUNT: ({ itemCount }) =>
+        `${itemCount} ${itemCount === 1 ? "Objekt" : "Objekte"}`, // TODO: ?
 };
 
 export default translations;

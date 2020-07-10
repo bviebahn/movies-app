@@ -3,7 +3,9 @@ import React, { useEffect, useState } from "react";
 import { ActivityIndicator, Image, StyleSheet, Text, View } from "react-native";
 import { RectButton } from "react-native-gesture-handler";
 import { useSafeArea } from "react-native-safe-area-context";
+import Icon from "react-native-vector-icons/FontAwesome";
 
+import AccountLists from "../components/AccountLists";
 import ListTile from "../components/ListTile";
 import {
     favoriteRed,
@@ -11,21 +13,20 @@ import {
     lightRed,
     ratedYellow,
     ratedYellowDark,
+    recommendationsColor,
+    recommendationsColorDark,
     textColorSecondary,
     tmdbPrimaryColor,
+    tmdbPrimaryColorDark,
     tmdbSecondaryColor,
     watchlistGreen,
     watchlistGreenDark,
-    recommendationsColor,
-    recommendationsColorDark,
 } from "../constants/colors";
 import translate from "../i18/Locale";
 import { ProfileStackNavigationProp } from "../navigators/ProfileStackNavigator";
 import LogoFull from "../tmdb/LogoFull";
 import useUser, { createRequestToken } from "../tmdb/useUser";
 import { getGravatarImageUrl } from "../tmdb/util";
-import Icon from "react-native-vector-icons/FontAwesome";
-import AccountLists from "../components/AccountLists";
 
 const LoginLogoutButton: React.FC<{
     isLoggedIn: boolean;
@@ -91,32 +92,8 @@ const Profile: React.FC = () => {
         }
     };
 
-    return (
-        <View>
-            <View style={[styles.userRow, { paddingTop: top + 20 }]}>
-                {user ? (
-                    <>
-                        <Image
-                            source={{
-                                uri: getGravatarImageUrl(
-                                    user.avatar.gravatar.hash,
-                                ),
-                            }}
-                            style={styles.avatar}
-                        />
-                        <Text style={styles.username}>{user.username}</Text>
-                    </>
-                ) : (
-                    <LogoFull size={48} />
-                )}
-                <LoginLogoutButton
-                    isLoggedIn={!!user}
-                    loading={loading}
-                    onLogin={handleLogin}
-                    onLogout={logout}
-                />
-            </View>
-
+    const topContent = (
+        <>
             {!user ? (
                 <Text style={styles.signinText}>
                     {translate("SIGNIN_TEXT")}
@@ -167,19 +144,53 @@ const Profile: React.FC = () => {
                             })
                         }
                     />
-                    <AccountLists style={styles.accountLists} />
                 </>
             )}
+        </>
+    );
+
+    return (
+        <View style={styles.profile}>
+            <View style={[styles.userRow, { paddingTop: top + 20 }]}>
+                {user ? (
+                    <>
+                        <Image
+                            source={{
+                                uri: getGravatarImageUrl(
+                                    user.avatar.gravatar.hash,
+                                ),
+                            }}
+                            style={styles.avatar}
+                        />
+                        <Text style={styles.username}>{user.username}</Text>
+                    </>
+                ) : (
+                    <LogoFull size={48} />
+                )}
+                <LoginLogoutButton
+                    isLoggedIn={!!user}
+                    loading={loading}
+                    onLogin={handleLogin}
+                    onLogout={logout}
+                />
+            </View>
+            <AccountLists
+                style={styles.accountLists}
+                ListHeaderComponent={topContent}
+            />
         </View>
     );
 };
 
 const styles = StyleSheet.create({
+    profile: { flex: 1 },
     userRow: {
         flexDirection: "row",
         padding: 20,
         backgroundColor: tmdbPrimaryColor,
         alignItems: "center",
+        borderBottomColor: tmdbPrimaryColorDark,
+        borderBottomWidth: 1,
     },
     avatar: {
         width: 48,
@@ -215,7 +226,7 @@ const styles = StyleSheet.create({
         color: tmdbPrimaryColor,
     },
     accountLists: {
-        margin: 20,
+        flex: 1,
     },
 });
 

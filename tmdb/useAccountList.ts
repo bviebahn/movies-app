@@ -30,10 +30,12 @@ async function fetchList<T extends AccountListType, M extends keyof MediaType>(
     type: T,
     mediaType: M,
     accessToken: string,
-    page: number = 1,
+    page?: unknown,
 ): Promise<ListResult<Type<T, M>>> {
     const response = await fetchTmdb(
-        `/account/${accountId}/${mediaType}/${type}?page=${page}`,
+        `/account/${accountId}/${mediaType}/${type}${
+            page ? `?page=${page}` : ""
+        }`,
         {
             version: 4,
             accessToken,

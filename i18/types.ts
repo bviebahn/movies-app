@@ -32,4 +32,6 @@ export type Translations = {
     CREDITS: string;
     AS_CHARACTER: SubstituteTranslation<{ character: string }>;
     VOTE_COUNT: SubstituteTranslation<{ voteCount: number }>;
+    YOUR_LISTS: string;
+    ITEM_COUNT: SubstituteTranslation<{ itemCount: number }>;
 };

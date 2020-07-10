@@ -34,10 +34,13 @@ type ListProps = {
 
 const List: React.FC<ListProps> = ({ route }) => {
     const { type, mediaType, navigation } = route;
-    const { data, status, fetchMore, isFetchingMore } = useAccountList(
-        type,
-        mediaType,
-    );
+    const {
+        data,
+        status,
+        fetchMore,
+        canFetchMore,
+        isFetchingMore,
+    } = useAccountList(type, mediaType);
 
     return status === "loading" ? (
         <ActivityIndicator style={styles.activityIndicator} />
@@ -54,7 +57,7 @@ const List: React.FC<ListProps> = ({ route }) => {
                     navigation.push("TvShowDetails", { tvShow: item });
                 }
             }}
-            onEndReached={() => fetchMore()}
+            onEndReached={() => canFetchMore && fetchMore()}
             ListFooterComponent={
                 isFetchingMore ? <ActivityIndicator /> : undefined
             }
