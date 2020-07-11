@@ -45,7 +45,7 @@ async function fetchMovieDetails(_key: string, id: number, sessionId?: string) {
     const response = await fetchTmdb(
         `/movie/${id}?append_to_response=credits,reviews,recommendations${
             sessionId ? `,account_states&session_id=${sessionId}` : ""
-        }`,
+        }`
     );
 
     if (response.ok) {

@@ -46,7 +46,7 @@ const ActionsWidget: React.FC<ActionsWidgetProps> = ({
     const [ratingVisible, setRatingVisible] = useState(false);
 
     const toggleRating = () => {
-        setRatingVisible((prev) => !prev);
+        setRatingVisible(prev => !prev);
     };
 
     const handleRate = (value?: number) => {

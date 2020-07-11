@@ -56,11 +56,11 @@ export async function createRequestToken() {
 }
 
 async function createAccessToken(
-    requestToken: string,
+    requestToken: string
 ): Promise<{ accessToken: string; accountId: string }> {
     const response = await fetchTmdb(
         `/auth/access_token?request_token=${requestToken}`,
-        { method: "POST", version: 4 },
+        { method: "POST", version: 4 }
     );
 
     if (response.ok) {
@@ -78,7 +78,7 @@ async function createAccessToken(
 async function createSessionId(accessToken: string) {
     const response = await fetchTmdb(
         `/authentication/session/convert/4?access_token=${accessToken}`,
-        { method: "POST" },
+        { method: "POST" }
     );
 
     if (response.ok) {
@@ -101,7 +101,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
         fetchUser,
         {
             enabled: false,
-        },
+        }
     );
 
     useEffect(() => {
@@ -156,7 +156,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
         // TODO: use react-query and clear user related caches
         const response = await fetchTmdb(
             `/authentication/session?session_id=${sessionId}`,
-            { method: "DELETE" },
+            { method: "DELETE" }
         );
 
         const success = response.ok;

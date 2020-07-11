@@ -30,7 +30,7 @@ async function fetchList<T extends AccountListType, M extends keyof MediaType>(
     type: T,
     mediaType: M,
     accessToken: string,
-    page?: unknown,
+    page?: unknown
 ): Promise<ListResult<Type<T, M>>> {
     const response = await fetchTmdb(
         `/account/${accountId}/${mediaType}/${type}${
@@ -39,7 +39,7 @@ async function fetchList<T extends AccountListType, M extends keyof MediaType>(
         {
             version: 4,
             accessToken,
-        },
+        }
     );
 
     if (response.ok) {
@@ -61,7 +61,7 @@ async function fetchList<T extends AccountListType, M extends keyof MediaType>(
 
 function useAccountList<T extends AccountListType, M extends keyof MediaType>(
     type: T,
-    mediaType: M,
+    mediaType: M
 ) {
     const { accountId, accessToken } = useUser();
     if (!accountId || !accessToken) {
@@ -74,7 +74,7 @@ function useAccountList<T extends AccountListType, M extends keyof MediaType>(
         {
             getFetchMore: (prevPage: any) =>
                 prevPage.page < prevPage.totalPages && prevPage.page + 1,
-        },
+        }
     );
 }
 

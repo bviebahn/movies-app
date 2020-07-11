@@ -24,7 +24,7 @@ const Home: React.FC = () => {
                     title={translate("POPULAR_MOVIES")}
                     data={popularMovies}
                     itemWidth={TILE_WIDTH_M + TILE_HORIZONTAL_MARGIN * 2}
-                    renderItem={(movie) => (
+                    renderItem={movie => (
                         <MediaTile
                             title={movie.title}
                             subtitle={
@@ -37,7 +37,7 @@ const Home: React.FC = () => {
                                     ? getImageUrl(
                                           movie.posterPath,
                                           "poster",
-                                          "small",
+                                          "small"
                                       )
                                     : undefined
                             }
@@ -48,14 +48,14 @@ const Home: React.FC = () => {
                             style={styles.mediaTile}
                         />
                     )}
-                    keyExtractor={(item) => `${item.id}`}
+                    keyExtractor={item => `${item.id}`}
                     style={styles.widget}
                 />
                 <MediaWidget
                     title={translate("POPULAR_TV_SHOWS")}
                     data={popularTvShows}
                     itemWidth={TILE_WIDTH_M + TILE_HORIZONTAL_MARGIN * 2}
-                    renderItem={(tvShow) => (
+                    renderItem={tvShow => (
                         <MediaTile
                             title={tvShow.name}
                             subtitle={
@@ -68,7 +68,7 @@ const Home: React.FC = () => {
                                     ? getImageUrl(
                                           tvShow.posterPath,
                                           "poster",
-                                          "small",
+                                          "small"
                                       )
                                     : undefined
                             }
@@ -79,7 +79,7 @@ const Home: React.FC = () => {
                             style={styles.mediaTile}
                         />
                     )}
-                    keyExtractor={(item) => `${item.id}`}
+                    keyExtractor={item => `${item.id}`}
                     style={styles.widget}
                 />
             </ScrollView>

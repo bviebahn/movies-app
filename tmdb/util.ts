@@ -28,7 +28,7 @@ export function fetchTmdb(
         version?: 3 | 4;
         accessToken?: string;
         body?: any;
-    },
+    }
 ) {
     const method = options?.method || "GET";
     const version = options?.version || 3;
@@ -45,12 +45,12 @@ export function fetchTmdb(
 
 export function addGenres<T extends { genreIds: ReadonlyArray<number> }>(
     obj: T,
-    genres: ReadonlyArray<Genre>,
+    genres: ReadonlyArray<Genre>
 ): T & { genres: ReadonlyArray<Genre> } {
     return {
         ...obj,
         genres: obj.genreIds.reduce<ReadonlyArray<Genre>>((prev, curr) => {
-            const genre = genres.find((g) => g.id === curr);
+            const genre = genres.find(g => g.id === curr);
             return [...prev, ...(genre ? [genre] : [])];
         }, []),
     };
@@ -99,7 +99,7 @@ export function convertCredits(credits: TmdbCredits): Credits {
     const interestingJobs = ["Director", "Writer", "Producer", "Creator"];
     return {
         id: credits.id,
-        cast: credits.cast.map((c) => ({
+        cast: credits.cast.map(c => ({
             castId: c.cast_id,
             character: c.character,
             creditId: c.credit_id,
@@ -110,8 +110,8 @@ export function convertCredits(credits: TmdbCredits): Credits {
             profilePath: c.profile_path,
         })),
         crew: credits.crew
-            .filter((c) => interestingJobs.includes(c.job))
-            .map((c) => ({
+            .filter(c => interestingJobs.includes(c.job))
+            .map(c => ({
                 creditId: c.credit_id,
                 department: c.department,
                 id: c.id,
@@ -128,10 +128,10 @@ export function convertPerson(person: TmdbPerson): Person {
         mediaType: "person",
         adult: person.adult,
         id: person.id,
-        knownFor: person.known_for.map((i) =>
+        knownFor: person.known_for.map(i =>
             i.media_type === "movie"
                 ? { ...convertMovie(i), mediaType: "movie" }
-                : { ...convertTvShow(i), mediaType: "tv" },
+                : { ...convertTvShow(i), mediaType: "tv" }
         ),
         name: person.name,
         popularity: person.popularity,
@@ -144,7 +144,7 @@ export function convertSearchResult(result: TmdbSearchResult): SearchResult {
         page: result.page,
         totalResults: result.total_results,
         totalPages: result.total_pages,
-        results: result.results.map((r) => {
+        results: result.results.map(r => {
             if (r.media_type === "movie") {
                 return { ...convertMovie(r), mediaType: "movie" };
             }
@@ -160,7 +160,7 @@ export function convertSearchResult(result: TmdbSearchResult): SearchResult {
 
 export function convertListResult<T, V>(
     result: TmdbListResult<T>,
-    convertFn: (element: T) => V,
+    convertFn: (element: T) => V
 ): ListResult<V> {
     return {
         page: result.page,
@@ -199,7 +199,7 @@ export function convertPersonDetails(person: TmdbPersonDetails): PersonDetails {
         placeOfBirth: person.place_of_birth,
         profilePath: person.profile_path,
         credits: [
-            ...person.combined_credits.cast.map((c) =>
+            ...person.combined_credits.cast.map(c =>
                 c.media_type === "movie"
                     ? {
                           ...convertMovie(c),
@@ -213,9 +213,9 @@ export function convertPersonDetails(person: TmdbPersonDetails): PersonDetails {
                           creditId: c.credit_id,
                           episodeCount: c.episode_count,
                           creditType: "cast" as "cast",
-                      },
+                      }
             ),
-            ...person.combined_credits.crew.map((c) =>
+            ...person.combined_credits.crew.map(c =>
                 c.media_type === "movie"
                     ? {
                           ...convertMovie(c),
@@ -229,16 +229,16 @@ export function convertPersonDetails(person: TmdbPersonDetails): PersonDetails {
                           creditId: c.credit_id,
                           episodeCount: c.episode_count,
                           creditType: "crew" as "crew",
-                      },
+                      }
             ),
         ],
     };
 }
 
 export function convertAccountLists(
-    accountLists: ReadonlyArray<TmdbAccountList>,
+    accountLists: ReadonlyArray<TmdbAccountList>
 ): ReadonlyArray<AccountList> {
-    return accountLists.map((v) => ({
+    return accountLists.map(v => ({
         adult: v.adult,
         averageRating: v.average_rating,
         countryCode: v.iso_3166_1,

@@ -22,7 +22,7 @@ const EpisodeListItem: React.FC<Props> = ({ episode, onRate, rating }) => {
 
     const handleExpand = () => {
         LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-        setExpanded((value) => !value);
+        setExpanded(value => !value);
     };
 
     return (

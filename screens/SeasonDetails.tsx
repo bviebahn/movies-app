@@ -46,7 +46,7 @@ const SeasonDetails: React.FC = () => {
                   ...prev,
                   [curr.epiodeNumber]: curr.rated,
               }),
-              {},
+              {}
           )
         : {};
 
@@ -101,12 +101,12 @@ const SeasonDetails: React.FC = () => {
                     <EpisodeListItem
                         episode={item}
                         rating={ratings[item.episodeNumber]}
-                        onRate={(rating) =>
+                        onRate={rating =>
                             handleRateEpisode(item.episodeNumber, rating)
                         }
                     />
                 )}
-                keyExtractor={(item) => `${item.id}`}
+                keyExtractor={item => `${item.id}`}
                 ListHeaderComponent={topContent}
                 scrollEventThrottle={16}
                 onScroll={scrollHandler}

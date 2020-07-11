@@ -38,7 +38,7 @@ function useRate() {
     const { sessionId } = useUser();
 
     const [mutate] = useMutation(rate, {
-        onMutate: (variables) => {
+        onMutate: variables => {
             const { mediaType, rating } = variables;
             if (variables.mediaType === "episode") {
                 const { tvId, seasonNumber, episodeNumber } = variables;
@@ -49,20 +49,20 @@ function useRate() {
                     sessionId,
                 ];
                 const seasonDetails = queryCache.getQueryData<SeasonDetails>(
-                    queryKey,
+                    queryKey
                 );
 
                 if (seasonDetails) {
                     queryCache.setQueryData<SeasonDetails>(queryKey, {
                         ...seasonDetails,
                         accountStates: seasonDetails.accountStates?.map(
-                            (accState) =>
+                            accState =>
                                 accState.epiodeNumber === episodeNumber
                                     ? {
                                           ...accState,
                                           rated: rating || 0,
                                       }
-                                    : accState,
+                                    : accState
                         ),
                     });
                     return () =>
@@ -88,7 +88,7 @@ function useRate() {
                                 ...oldDetails.accountStates,
                                 rated: rating || 0,
                             },
-                        },
+                        }
                     );
                     return () => queryCache.setQueryData(queryKey, oldDetails);
                 }

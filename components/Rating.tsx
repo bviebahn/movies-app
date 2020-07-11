@@ -36,7 +36,7 @@ export const RatingWithVoteCount: React.FC<Props & { voteCount: number }> = ({
         <View style={style}>
             <TouchableWithoutFeedback
                 onPress={() => {
-                    setToggled((t) => !t);
+                    setToggled(t => !t);
                 }}
                 style={styles.touchable}>
                 {isToggled ? (

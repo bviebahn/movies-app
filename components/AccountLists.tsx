@@ -46,7 +46,7 @@ const AccountLists: React.FC<Props> = ({ style, ListHeaderComponent }) => {
 
     const lists = data?.reduce<AccountList[]>(
         (prev, curr) => [...prev, ...curr.results],
-        [],
+        []
     );
 
     const listHeader = (
@@ -65,7 +65,7 @@ const AccountLists: React.FC<Props> = ({ style, ListHeaderComponent }) => {
             <FlatList
                 data={lists}
                 renderItem={({ item }) => <List list={item} />}
-                keyExtractor={(item) => `${item.id}`}
+                keyExtractor={item => `${item.id}`}
                 ListHeaderComponent={listHeader}
             />
         </View>

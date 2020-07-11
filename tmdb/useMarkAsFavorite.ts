@@ -25,7 +25,7 @@ async function markAsFavorite({
                 media_id: mediaId,
                 favorite,
             },
-        },
+        }
     );
     if (response.ok) {
         return { success: true, favorite };
@@ -55,7 +55,7 @@ function useMarkAsFavorite() {
                             ...oldDetails.accountStates,
                             favorite,
                         },
-                    },
+                    }
                 );
             }
 

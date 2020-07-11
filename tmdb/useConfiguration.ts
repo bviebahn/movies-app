@@ -24,7 +24,7 @@ function convertConfiguration(config: TmdbConfiguration): Configuration {
 async function readConfigFromStorage(): Promise<Configuration | undefined> {
     const lastFetched = parseInt(
         (await read(LAST_FETCHED_STORAGE_KEY)) || "0",
-        10,
+        10
     );
     if (Date.now() > lastFetched + 7 * 24 * 60 * 60 * 1000) {
         return undefined;
@@ -56,7 +56,7 @@ async function fetchConfiguration() {
 function useConfiguration() {
     return useQuery("configuration", fetchConfiguration, {
         staleTime: Infinity,
-        onSuccess: (config) => {
+        onSuccess: config => {
             write(LAST_FETCHED_STORAGE_KEY, Date.now().toString(10));
             write(CONFIG_STORAGE_KEY, JSON.stringify(config));
         },

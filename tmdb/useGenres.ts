@@ -4,7 +4,7 @@ import { useQuery } from "react-query";
 
 async function fetchGenres(
     _key: string,
-    type: "movie" | "tv",
+    type: "movie" | "tv"
 ): Promise<ReadonlyArray<Genre>> {
     const response = await fetchTmdb(`/genre/${type}/list`);
     if (response.ok) {

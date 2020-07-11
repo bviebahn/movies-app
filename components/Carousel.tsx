@@ -22,7 +22,7 @@ const Carousel: <T>(p: Props<T>) => React.ReactElement<Props<T>> = ({
         (prev, _, index) => {
             return [...prev, prev[index] + elementsPerInterval * itemWidth];
         },
-        [0],
+        [0]
     );
 
     return (

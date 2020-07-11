@@ -4,7 +4,7 @@ import { useInfiniteQuery } from "react-query";
 
 async function fetchSearch(_key: string, query: string, page: unknown = 1) {
     const response = await fetchTmdb(
-        `/search/multi?query=${query}&page=${page}`,
+        `/search/multi?query=${query}&page=${page}`
     );
 
     if (response.ok) {
@@ -17,7 +17,7 @@ async function fetchSearch(_key: string, query: string, page: unknown = 1) {
 
 function useSearch(query: string) {
     return useInfiniteQuery(["search", query], fetchSearch, {
-        getFetchMore: (prevPage) =>
+        getFetchMore: prevPage =>
             prevPage.page < prevPage.totalPages && prevPage.page + 1,
     });
 }

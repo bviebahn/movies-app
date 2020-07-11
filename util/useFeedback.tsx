@@ -4,7 +4,7 @@ import FeedbackMessage from "../components/FeedbackMessage";
 
 type ShowFeedbackFn = (
     content: { iconName: string; title: string; message?: string },
-    time: number,
+    time: number
 ) => void;
 
 const FeedbackContext = createContext<
@@ -28,7 +28,7 @@ export const FeedbackProvider: React.FC<{ children: React.ReactNode }> = ({
 
     const showFeedback: ShowFeedbackFn = (
         { iconName, title, message },
-        time,
+        time
     ) => {
         if (timeout.current) {
             clearTimeout(timeout.current);
@@ -41,8 +41,8 @@ export const FeedbackProvider: React.FC<{ children: React.ReactNode }> = ({
         });
 
         timeout.current = setTimeout(
-            () => setFeedback((prev) => ({ ...prev, visible: false })),
-            time,
+            () => setFeedback(prev => ({ ...prev, visible: false })),
+            time
         );
     };
 
@@ -61,12 +61,12 @@ export const FeedbackProvider: React.FC<{ children: React.ReactNode }> = ({
 
 const useFeedbackMessage = (): ((
     content: { iconName: string; title: string; message?: string },
-    time: number,
+    time: number
 ) => void) => {
     const context = useContext(FeedbackContext);
     if (!context) {
         throw new Error(
-            "useFeedbackMessage must be used within a FeedbackProvider",
+            "useFeedbackMessage must be used within a FeedbackProvider"
         );
     }
 

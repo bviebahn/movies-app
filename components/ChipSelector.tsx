@@ -20,7 +20,7 @@ const ChipSelector: React.FC<Props> = ({ data, onPressItem }) => {
                     <Text style={secondaryText}>{item}</Text>
                 </TouchableOpacity>
             )}
-            keyExtractor={(item) => item}
+            keyExtractor={item => item}
             horizontal
             showsHorizontalScrollIndicator={false}
         />

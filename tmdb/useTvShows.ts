@@ -4,7 +4,7 @@ import { TvShow } from "./types";
 import { convertTvShow, fetchTmdb } from "./util";
 
 const useTvShows = (
-    type: "popular" | "latest" | "airing_today" | "top_rated" | "on_the_air",
+    type: "popular" | "latest" | "airing_today" | "top_rated" | "on_the_air"
 ) => {
     const [data, setData] = useState<ReadonlyArray<TvShow>>();
     const [loading, setLoading] = useState(true);

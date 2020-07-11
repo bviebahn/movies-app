@@ -3,7 +3,7 @@ import { useQuery } from "react-query";
 
 async function fetchPersonDetails(_key: string, id: number) {
     const response = await fetchTmdb(
-        `/person/${id}?append_to_response=combined_credits`,
+        `/person/${id}?append_to_response=combined_credits`
     );
 
     if (response.ok) {

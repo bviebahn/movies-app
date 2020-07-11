@@ -36,7 +36,7 @@ const StarRating: React.FC<StarRatingProps> = ({
                     const x = gestureEvent.moveX - layout.current.x;
                     const newRating = Math.max(
                         minRating,
-                        Math.ceil((x / layout.current.width) * 10),
+                        Math.ceil((x / layout.current.width) * 10)
                     );
                     onChange(newRating);
                 }
@@ -46,12 +46,12 @@ const StarRating: React.FC<StarRatingProps> = ({
                     const x = gestureEvent.x0 - layout.current.x;
                     const newRating = Math.max(
                         minRating,
-                        Math.ceil((x / layout.current.width) * 10),
+                        Math.ceil((x / layout.current.width) * 10)
                     );
                     onChange(newRating);
                 }
             },
-        }),
+        })
     );
 
     return (
@@ -63,7 +63,7 @@ const StarRating: React.FC<StarRatingProps> = ({
                 if (ref.current) {
                     ref.current.measure(
                         (_x, _y, width, _h, pageX) =>
-                            (layout.current = { x: pageX, width }),
+                            (layout.current = { x: pageX, width })
                     );
                 }
             }}>

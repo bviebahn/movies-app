@@ -25,7 +25,7 @@ async function addToWatchlist({
                 media_id: mediaId,
                 watchlist,
             },
-        },
+        }
     );
     if (response.ok) {
         return { success: true, watchlist };
@@ -55,7 +55,7 @@ function useAddToWatchlist() {
                             ...oldDetails.accountStates,
                             watchlist,
                         },
-                    },
+                    }
                 );
             }
 

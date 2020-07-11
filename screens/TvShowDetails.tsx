@@ -94,9 +94,7 @@ const TvShowDetails: React.FC = () => {
             ? [
                   {
                       key: translate("CREATOR", { n: createdBy.length }),
-                      value: createdBy
-                          .map((creator) => creator.name)
-                          .join(", "),
+                      value: createdBy.map(creator => creator.name).join(", "),
                   },
               ]
             : []),
@@ -108,7 +106,7 @@ const TvShowDetails: React.FC = () => {
             ? [
                   {
                       key: translate("GENRES"),
-                      value: genres.map((genre) => genre.name).join(", "),
+                      value: genres.map(genre => genre.name).join(", "),
                   },
               ]
             : []),
@@ -208,18 +206,18 @@ const TvShowDetails: React.FC = () => {
                     title={`${seasons.length} ${translate("SEASONS")}`}
                     data={seasons}
                     itemWidth={TILE_WIDTH_M + TILE_HORIZONTAL_MARGIN * 2}
-                    renderItem={(season) => (
+                    renderItem={season => (
                         <MediaTile
                             title={season.name}
                             subtitle={`${season.episodeCount} ${translate(
-                                "EPISODES",
+                                "EPISODES"
                             )}`}
                             imageUrl={
                                 season.posterPath
                                     ? getImageUrl(
                                           season.posterPath,
                                           "poster",
-                                          "small",
+                                          "small"
                                       )
                                     : undefined
                             }
@@ -232,7 +230,7 @@ const TvShowDetails: React.FC = () => {
                             style={styles.tileMargin}
                         />
                     )}
-                    keyExtractor={(item) => `${item.id}`}
+                    keyExtractor={item => `${item.id}`}
                     style={styles.widget}
                 />
             ) : undefined}
@@ -241,7 +239,7 @@ const TvShowDetails: React.FC = () => {
                     title={translate("CAST")}
                     data={credits.cast.slice(0, 10)}
                     itemWidth={TILE_WIDTH_S + TILE_HORIZONTAL_MARGIN * 2}
-                    renderItem={(credit) => (
+                    renderItem={credit => (
                         <MediaTile
                             title={credit.name}
                             subtitle={credit.character}
@@ -250,7 +248,7 @@ const TvShowDetails: React.FC = () => {
                                     ? getImageUrl(
                                           credit.profilePath,
                                           "profile",
-                                          "medium",
+                                          "medium"
                                       )
                                     : undefined
                             }
@@ -263,7 +261,7 @@ const TvShowDetails: React.FC = () => {
                             size="small"
                         />
                     )}
-                    keyExtractor={(credit) => `${credit.id}`}
+                    keyExtractor={credit => `${credit.id}`}
                     style={styles.widget}
                 />
             ) : undefined}
@@ -275,7 +273,7 @@ const TvShowDetails: React.FC = () => {
                     title={translate("RECOMMENDATIONS")}
                     data={recommendations}
                     itemWidth={TILE_WIDTH_M + TILE_HORIZONTAL_MARGIN * 2}
-                    renderItem={(tvShow) => (
+                    renderItem={tvShow => (
                         <MediaTile
                             title={tvShow.name}
                             subtitle={
@@ -288,7 +286,7 @@ const TvShowDetails: React.FC = () => {
                                     ? getImageUrl(
                                           tvShow.posterPath,
                                           "poster",
-                                          "medium",
+                                          "medium"
                                       )
                                     : undefined
                             }
@@ -299,7 +297,7 @@ const TvShowDetails: React.FC = () => {
                             style={styles.tileMargin}
                         />
                     )}
-                    keyExtractor={(item) => `${item.id}`}
+                    keyExtractor={item => `${item.id}`}
                     style={styles.widget}
                 />
             ) : undefined}

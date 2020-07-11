@@ -6,7 +6,7 @@ import {
 import { useRef } from "react";
 
 function useParallax(
-    amount: number,
+    amount: number
 ): {
     scrollHandler: (event: NativeSyntheticEvent<NativeScrollEvent>) => void;
     style: {
@@ -28,7 +28,7 @@ function useParallax(
                     },
                 },
             ],
-            { useNativeDriver: false },
+            { useNativeDriver: false }
         ),
         style: {
             transform: [

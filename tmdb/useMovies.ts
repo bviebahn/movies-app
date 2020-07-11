@@ -4,7 +4,7 @@ import { Movie } from "./types";
 import { convertMovie, fetchTmdb } from "./util";
 
 const useMovies = (
-    type: "popular" | "latest" | "now_playing" | "top_rated" | "upcoming",
+    type: "popular" | "latest" | "now_playing" | "top_rated" | "upcoming"
 ) => {
     const [data, setData] = useState<ReadonlyArray<Movie>>();
     const [loading, setLoading] = useState(true);

@@ -157,7 +157,7 @@ const Profile: React.FC = () => {
                         <Image
                             source={{
                                 uri: getGravatarImageUrl(
-                                    user.avatar.gravatar.hash,
+                                    user.avatar.gravatar.hash
                                 ),
                             }}
                             style={styles.avatar}

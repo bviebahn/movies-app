@@ -35,9 +35,9 @@ const SearchResults: React.FC<{
         <MediaList
             data={data.reduce<SearchResult["results"]>(
                 (prev, curr) => [...prev, ...curr.results],
-                [],
+                []
             )}
-            onPressItem={(item) => {
+            onPressItem={item => {
                 if (item.mediaType === "movie") {
                     navigation.push("MovieDetails", { movie: item });
                 } else if (item.mediaType === "tv") {
@@ -136,16 +136,14 @@ const Search: React.FC = () => {
                             {translate("MOVIE_GENRES")}
                         </Text>
                         <ChipSelector
-                            data={(movieGenres || []).map(
-                                (genre) => genre.name,
-                            )}
+                            data={(movieGenres || []).map(genre => genre.name)}
                             onPressItem={() => undefined}
                         />
                         <Text style={styles.genresTitle}>
                             {translate("TV_GENRES")}
                         </Text>
                         <ChipSelector
-                            data={(tvGenres || []).map((genre) => genre.name)}
+                            data={(tvGenres || []).map(genre => genre.name)}
                             onPressItem={() => undefined}
                         />
                     </>

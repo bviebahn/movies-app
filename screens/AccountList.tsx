@@ -48,9 +48,9 @@ const List: React.FC<ListProps> = ({ route }) => {
         <MediaList<Movie | TvShow>
             data={data?.reduce(
                 (prev: any, curr) => [...prev, ...curr.results],
-                [],
+                []
             )}
-            onPressItem={(item) => {
+            onPressItem={item => {
                 if (item.mediaType === "movie") {
                     navigation.push("MovieDetails", { movie: item });
                 } else {
@@ -114,7 +114,7 @@ const AccountList: React.FC = () => {
             navigationState={{ index, routes }}
             renderScene={renderScene}
             onIndexChange={setIndex}
-            renderTabBar={(props) => (
+            renderTabBar={props => (
                 <TabBar
                     {...props}
                     tabStyle={[styles.tab, { backgroundColor: darkColor }]}

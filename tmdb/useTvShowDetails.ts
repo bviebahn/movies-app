@@ -23,7 +23,7 @@ function convertTvShowDetails(details: TmdbTvShowDetails): TvShowDetails {
         status: details.status,
         homepage: details.homepage,
         episodeRunTime: details.episode_run_time[0],
-        createdBy: details.created_by.map((c) => ({
+        createdBy: details.created_by.map(c => ({
             creditId: c.credit_id,
             gender: c.gender,
             id: c.id,
@@ -35,7 +35,7 @@ function convertTvShowDetails(details: TmdbTvShowDetails): TvShowDetails {
         numberOfEpisodes: details.number_of_episodes,
         numberOfSeasons: details.number_of_seasons,
         originCountry: details.origin_country,
-        seasons: details.seasons.map((s) => ({
+        seasons: details.seasons.map(s => ({
             airDate: s.air_date,
             episodeCount: s.episode_count,
             id: s.id,
@@ -61,12 +61,12 @@ function convertTvShowDetails(details: TmdbTvShowDetails): TvShowDetails {
 async function fetchTvShowDetails(
     _key: string,
     id: number,
-    sessionId?: string,
+    sessionId?: string
 ) {
     const response = await fetchTmdb(
         `/tv/${id}?append_to_response=credits,reviews,recommendations${
             sessionId ? `,account_states&session_id=${sessionId}` : ""
-        }`,
+        }`
     );
 
     if (response.ok) {

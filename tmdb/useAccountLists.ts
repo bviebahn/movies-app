@@ -14,14 +14,14 @@ async function fetchAccountLists(
     _key: string,
     accountId: string,
     accessToken: string,
-    page: number = 1,
+    page: number = 1
 ): Promise<AccountListsResult> {
     const response = await fetchTmdb(
         `/account/${accountId}/lists?page=${page}`,
         {
             version: 4,
             accessToken,
-        },
+        }
     );
 
     if (response.ok) {
@@ -50,7 +50,7 @@ function useAccountLists() {
         {
             getFetchMore: (prevPage: any) =>
                 prevPage.page < prevPage.totalPages && prevPage.page + 1,
-        },
+        }
     );
 }
 

@@ -17,7 +17,7 @@ function polarToCartesian(
     centerX: number,
     centerY: number,
     radius: number,
-    angleInDegrees: number,
+    angleInDegrees: number
 ) {
     var angleInRadians = ((angleInDegrees - 90) * Math.PI) / 180.0;
     return {
@@ -31,7 +31,7 @@ function createCirclePath(
     y: number,
     radius: number,
     startAngle: number,
-    endAngle: number,
+    endAngle: number
 ) {
     var start = polarToCartesian(x, y, radius, endAngle * 0.9999);
     var end = polarToCartesian(x, y, radius, startAngle);
@@ -70,7 +70,7 @@ const CircularProgress: React.FC<Props> = ({
         radius,
         radius - 4,
         0,
-        currentFillAngle,
+        currentFillAngle
     );
 
     const fullCirclePath = createCirclePath(radius, radius, radius - 4, 0, 360);

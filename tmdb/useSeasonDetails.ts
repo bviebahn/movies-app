@@ -12,7 +12,7 @@ function convertSeasonDetails(details: TmdbSeasonDetails): SeasonDetails {
         posterPath: details.poster_path,
         airDate: details.air_date,
         seasonNumber: details.season_number,
-        episodes: details.episodes.map((e) => ({
+        episodes: details.episodes.map(e => ({
             airDate: e.air_date,
             guestStars: e.guest_stars,
             id: e.id,
@@ -25,7 +25,7 @@ function convertSeasonDetails(details: TmdbSeasonDetails): SeasonDetails {
             episodeNumber: e.episode_number,
             stillPath: e.still_path,
         })),
-        accountStates: details.account_states?.results.map((s) => ({
+        accountStates: details.account_states?.results.map(s => ({
             epiodeNumber: s.episode_number,
             id: s.id,
             rated: s.rated ? s.rated.value : 0,
@@ -37,14 +37,14 @@ async function fetchSeasonDetails(
     _key: string,
     id: number,
     seasonNumber: number,
-    sessionId?: string,
+    sessionId?: string
 ) {
     const response = await fetchTmdb(
         `/tv/${id}/season/${seasonNumber}${
             sessionId
                 ? `?append_to_response=account_states&session_id=${sessionId}`
                 : ""
-        }`,
+        }`
     );
     if (response.ok) {
         const result = await response.json();
@@ -58,7 +58,7 @@ function useSeasonDetails(id: number, seasonNumber: number) {
     const { sessionId } = useUser();
     return useQuery(
         ["season-details", id, seasonNumber, sessionId],
-        fetchSeasonDetails,
+        fetchSeasonDetails
     );
 }
 

@@ -95,7 +95,7 @@ const MovieDetails: React.FC = () => {
             ? [
                   {
                       key: translate("GENRES"),
-                      value: genres.map((genre) => genre.name).join(", "),
+                      value: genres.map(genre => genre.name).join(", "),
                   },
               ]
             : []),
@@ -200,7 +200,7 @@ const MovieDetails: React.FC = () => {
                     title={translate("CAST")}
                     data={credits.cast.slice(0, 10)}
                     itemWidth={TILE_WIDTH_S + TILE_HORIZONTAL_MARGIN * 2}
-                    renderItem={(credit) => (
+                    renderItem={credit => (
                         <MediaTile
                             title={credit.name}
                             subtitle={credit.character}
@@ -209,7 +209,7 @@ const MovieDetails: React.FC = () => {
                                     ? getImageUrl(
                                           credit.profilePath,
                                           "profile",
-                                          "medium",
+                                          "medium"
                                       )
                                     : undefined
                             }
@@ -222,7 +222,7 @@ const MovieDetails: React.FC = () => {
                             style={styles.tileMargin}
                         />
                     )}
-                    keyExtractor={(credit) => `${credit.id}`}
+                    keyExtractor={credit => `${credit.id}`}
                     style={styles.widget}
                 />
             ) : undefined}
@@ -234,7 +234,7 @@ const MovieDetails: React.FC = () => {
                     title={translate("RECOMMENDATIONS")}
                     data={recommendations}
                     itemWidth={TILE_WIDTH_M + TILE_HORIZONTAL_MARGIN * 2}
-                    renderItem={(movie) => (
+                    renderItem={movie => (
                         <MediaTile
                             title={movie.title}
                             subtitle={
@@ -247,7 +247,7 @@ const MovieDetails: React.FC = () => {
                                     ? getImageUrl(
                                           movie.posterPath,
                                           "poster",
-                                          "small",
+                                          "small"
                                       )
                                     : undefined
                             }
@@ -258,7 +258,7 @@ const MovieDetails: React.FC = () => {
                             style={styles.tileMargin}
                         />
                     )}
-                    keyExtractor={(item) => `${item.id}`}
+                    keyExtractor={item => `${item.id}`}
                     style={styles.widget}
                 />
             ) : undefined}
