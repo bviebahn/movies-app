@@ -9,3 +9,4 @@
 -   navigation types
 -   merge credits with same id
 -   voteCount animation
+-   onRemove update favorites/watchlist

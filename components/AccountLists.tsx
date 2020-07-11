@@ -42,8 +42,9 @@ type Props = {
 
 const AccountLists: React.FC<Props> = ({ style, ListHeaderComponent }) => {
     const { data } = useAccountLists();
+    console.log(data);
 
-    const lists = data.reduce<AccountList[]>(
+    const lists = data?.reduce<AccountList[]>(
         (prev, curr) => [...prev, ...curr.results],
         [],
     );
@@ -51,7 +52,7 @@ const AccountLists: React.FC<Props> = ({ style, ListHeaderComponent }) => {
     const listHeader = (
         <>
             {ListHeaderComponent}
-            {lists.length ? (
+            {lists?.length ? (
                 <Text style={[headline, styles.listsHeadline]}>
                     {translate("YOUR_LISTS")}
                 </Text>

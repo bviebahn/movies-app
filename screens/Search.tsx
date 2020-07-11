@@ -28,7 +28,7 @@ const SearchResults: React.FC<{
     handleScroll: (event: NativeSyntheticEvent<NativeScrollEvent>) => void;
     navigation: SearchStackNavigationProp<"Search">;
 }> = ({ query, handleScroll, navigation }) => {
-    const { data, isFetchingMore, fetchMore } = useSearch(query);
+    const { data, isFetchingMore, fetchMore, canFetchMore } = useSearch(query);
     const fetchMoreDebounced = useDebounce(fetchMore, 1000);
 
     return data ? (
@@ -46,7 +46,7 @@ const SearchResults: React.FC<{
                     navigation.push("PersonDetails", { id: item.id });
                 }
             }}
-            onEndReached={() => fetchMoreDebounced()}
+            onEndReached={() => canFetchMore && fetchMoreDebounced()}
             ListFooterComponent={
                 isFetchingMore ? <ActivityIndicator /> : undefined
             }

@@ -46,7 +46,7 @@ const List: React.FC<ListProps> = ({ route }) => {
         <ActivityIndicator style={styles.activityIndicator} />
     ) : (
         <MediaList<Movie | TvShow>
-            data={data.reduce(
+            data={data?.reduce(
                 (prev: any, curr) => [...prev, ...curr.results],
                 [],
             )}
