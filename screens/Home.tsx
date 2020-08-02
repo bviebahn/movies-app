@@ -1,15 +1,17 @@
-import React from "react";
-import useMovies from "../tmdb/useMovies";
-import { SafeAreaView, ScrollView, StyleSheet } from "react-native";
-import translate from "../i18/Locale";
-import MediaTile from "../components/MediaTile";
 import { useNavigation } from "@react-navigation/native";
-import { StartStackNavigationProp } from "../navigators/StartStackNavigator";
-import { formatDate } from "../util/date";
+import React from "react";
+import { ScrollView, StyleSheet } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+
+import MediaTile from "../components/MediaTile";
 import MediaWidget from "../components/MediaWidget";
-import useTvShows from "../tmdb/useTvShows";
 import { TILE_HORIZONTAL_MARGIN, TILE_WIDTH_M } from "../constants/values";
+import translate from "../i18/Locale";
+import { StartStackNavigationProp } from "../navigators/StartStackNavigator";
 import useImageUrl from "../tmdb/useImageUrl";
+import useMovies from "../tmdb/useMovies";
+import useTvShows from "../tmdb/useTvShows";
+import { formatDate } from "../util/date";
 
 const Home: React.FC = () => {
     const { data: popularMovies } = useMovies("popular");

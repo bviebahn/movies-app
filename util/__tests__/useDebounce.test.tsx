@@ -16,7 +16,7 @@ describe("utils - useDebounce", () => {
                 <View>
                     <TouchableOpacity
                         testID="button"
-                        onPress={() => setValue((v) => v + 1)}
+                        onPress={() => setValue(v => v + 1)}
                     />
                     <Text>{`value: ${value}`}</Text>
                     <Text>{`debouncedValue: ${debounced}`}</Text>

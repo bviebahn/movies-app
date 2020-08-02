@@ -1,15 +1,17 @@
 import React, { useState } from "react";
-import { shadowStyle } from "../constants/styles";
 import {
-    StyleSheet,
-    View,
-    TouchableOpacity,
     StyleProp,
+    StyleSheet,
+    TouchableOpacity,
+    View,
     ViewStyle,
 } from "react-native";
-import Blur from "./Blur";
+import StarRating from "react-native-star-rating-widget";
 import Icon from "react-native-vector-icons/FontAwesome";
-import StarRating from "./StarRating";
+
+import { shadowStyle } from "../constants/styles";
+import Blur from "./Blur";
+import { yellowLight } from "../constants/colors";
 
 type Props = {
     initialValue?: number;
@@ -40,10 +42,11 @@ const StarRatingWidget: React.FC<Props> = ({
             <StarRating
                 rating={rating}
                 onChange={setRating}
+                emptyColor={yellowLight}
                 style={styles.starRating}
             />
             <TouchableOpacity
-                onPress={() => onRate(rating)}
+                onPress={() => onRate(rating * 2)}
                 disabled={rating === initialValue}>
                 <Icon
                     name="check-circle"

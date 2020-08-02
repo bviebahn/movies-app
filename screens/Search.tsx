@@ -6,12 +6,12 @@ import {
     Easing,
     NativeScrollEvent,
     NativeSyntheticEvent,
-    SafeAreaView,
     StyleSheet,
     Text,
     View,
 } from "react-native";
-import SearchBar from "react-native-search-bar";
+import { SafeAreaView } from "react-native-safe-area-context";
+import SearchBar from "react-native-platform-searchbar";
 
 import ChipSelector from "../components/ChipSelector";
 import MediaList from "../components/MediaList";
@@ -59,7 +59,7 @@ const SearchResults: React.FC<{
 const Search: React.FC = () => {
     const navigation = useNavigation<SearchStackNavigationProp<"Search">>();
     const [screenTitleHidden, setScreenTitleHidden] = useState(false);
-    const [query, setQuery] = useState<string>();
+    const [query, setQuery] = useState<string>("");
     const anim = useRef(new Animated.Value(1));
     const scrollOffset = useRef(0);
 
@@ -115,12 +115,12 @@ const Search: React.FC = () => {
                         {translate("SEARCH")}
                     </Animated.Text>
                     <SearchBar
-                        text={query}
-                        barStyle="black"
-                        hideBackground
-                        textColor={textColorSecondary}
-                        keyboardAppearance="dark"
+                        value={query}
                         onChangeText={setQuery}
+                        theme="dark"
+                        keyboardAppearance="dark"
+                        placeholder={translate("SEARCH")}
+                        onCancel={() => setScreenTitleHidden(false)}
                         onFocus={() => setScreenTitleHidden(true)}
                     />
                 </View>
@@ -163,6 +163,7 @@ const styles = StyleSheet.create({
         color: textColorSecondary,
         fontSize: 32,
         fontWeight: "bold",
+        marginBottom: 10,
     },
     activityIndicator: {
         marginTop: "auto",

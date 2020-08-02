@@ -14,6 +14,8 @@ import {
 import TabNavigator from "./navigators/TabNavigator";
 import { UserProvider } from "./tmdb/useUser";
 import { FeedbackProvider } from "./util/useFeedback";
+import { AccountListSelectorProvider } from "./util/useAccountListSelector";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
 declare const global: { HermesInternal: null | {} };
 
@@ -38,11 +40,15 @@ const App = () => {
                         border: black,
                     },
                 }}>
-                <FeedbackProvider>
-                    <UserProvider>
-                        <TabNavigator />
-                    </UserProvider>
-                </FeedbackProvider>
+                <SafeAreaProvider>
+                    <FeedbackProvider>
+                        <UserProvider>
+                            <AccountListSelectorProvider>
+                                <TabNavigator />
+                            </AccountListSelectorProvider>
+                        </UserProvider>
+                    </FeedbackProvider>
+                </SafeAreaProvider>
             </NavigationContainer>
         </>
     );

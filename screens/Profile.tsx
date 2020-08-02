@@ -2,7 +2,7 @@ import { useNavigation } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator, Image, StyleSheet, Text, View } from "react-native";
 import { RectButton } from "react-native-gesture-handler";
-import { useSafeArea } from "react-native-safe-area-context";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Icon from "react-native-vector-icons/FontAwesome";
 
 import AccountLists from "../components/AccountLists";
@@ -65,7 +65,7 @@ const Profile: React.FC = () => {
     const navigation = useNavigation<ProfileStackNavigationProp<"Profile">>();
     const { user, loading, auth, logout } = useUser();
     const [requestToken, setRequestToken] = useState<string>();
-    const { top } = useSafeArea();
+    const { top } = useSafeAreaInsets();
 
     useEffect(() => {
         if (requestToken) {
@@ -92,62 +92,54 @@ const Profile: React.FC = () => {
         }
     };
 
-    const topContent = (
+    const topContent = user ? (
         <>
-            {!user ? (
-                <Text style={styles.signinText}>
-                    {translate("SIGNIN_TEXT")}
-                </Text>
-            ) : (
-                <>
-                    <ListTile
-                        iconName="heart"
-                        iconColor={favoriteRed}
-                        title={translate("FAVORITES")}
-                        backgroundColor={favoriteRedDark}
-                        onPress={() =>
-                            navigation.navigate("AccountList", {
-                                type: "favorites",
-                            })
-                        }
-                    />
-                    <ListTile
-                        iconName="bookmark"
-                        iconColor={watchlistGreen}
-                        title={translate("WATCHLIST")}
-                        backgroundColor={watchlistGreenDark}
-                        onPress={() =>
-                            navigation.navigate("AccountList", {
-                                type: "watchlist",
-                            })
-                        }
-                    />
-                    <ListTile
-                        iconName="star"
-                        iconColor={ratedYellow}
-                        title={translate("RATED")}
-                        backgroundColor={ratedYellowDark}
-                        onPress={() =>
-                            navigation.navigate("AccountList", {
-                                type: "rated",
-                            })
-                        }
-                    />
-                    <ListTile
-                        iconName="thumbs-up"
-                        iconColor={recommendationsColor}
-                        title={translate("RECOMMENDATIONS")}
-                        backgroundColor={recommendationsColorDark}
-                        onPress={() =>
-                            navigation.navigate("AccountList", {
-                                type: "recommendations",
-                            })
-                        }
-                    />
-                </>
-            )}
+            <ListTile
+                iconName="heart"
+                iconColor={favoriteRed}
+                title={translate("FAVORITES")}
+                backgroundColor={favoriteRedDark}
+                onPress={() =>
+                    navigation.navigate("AccountList", {
+                        type: "favorites",
+                    })
+                }
+            />
+            <ListTile
+                iconName="bookmark"
+                iconColor={watchlistGreen}
+                title={translate("WATCHLIST")}
+                backgroundColor={watchlistGreenDark}
+                onPress={() =>
+                    navigation.navigate("AccountList", {
+                        type: "watchlist",
+                    })
+                }
+            />
+            <ListTile
+                iconName="star"
+                iconColor={ratedYellow}
+                title={translate("RATED")}
+                backgroundColor={ratedYellowDark}
+                onPress={() =>
+                    navigation.navigate("AccountList", {
+                        type: "rated",
+                    })
+                }
+            />
+            <ListTile
+                iconName="thumbs-up"
+                iconColor={recommendationsColor}
+                title={translate("RECOMMENDATIONS")}
+                backgroundColor={recommendationsColorDark}
+                onPress={() =>
+                    navigation.navigate("AccountList", {
+                        type: "recommendations",
+                    })
+                }
+            />
         </>
-    );
+    ) : undefined;
 
     return (
         <View style={styles.profile}>
@@ -186,9 +178,9 @@ const styles = StyleSheet.create({
     profile: { flex: 1 },
     userRow: {
         flexDirection: "row",
+        alignItems: "center",
         padding: 20,
         backgroundColor: tmdbPrimaryColor,
-        alignItems: "center",
         borderBottomColor: tmdbPrimaryColorDark,
         borderBottomWidth: 1,
     },
@@ -204,21 +196,13 @@ const styles = StyleSheet.create({
         color: textColorSecondary,
         flexShrink: 1,
     },
-    signinText: {
-        color: tmdbSecondaryColor,
-        fontSize: 14,
-        padding: 20,
-        paddingTop: 0,
-        flexShrink: 1,
-        fontWeight: "bold",
-        backgroundColor: tmdbPrimaryColor,
-    },
     singinButton: {
         backgroundColor: tmdbSecondaryColor,
         borderRadius: 16,
         justifyContent: "center",
         marginLeft: "auto",
         height: 32,
+        paddingHorizontal: 10,
     },
     signinButtonText: {
         fontSize: 16,

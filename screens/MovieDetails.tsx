@@ -41,6 +41,7 @@ import useRate from "../tmdb/useRate";
 import { formatDate } from "../util/date";
 import { convertMinutesToTimeString } from "../util/time";
 import useParallax from "../util/useParallax";
+import useAccountListSelector from "../util/useAccountListSelector";
 
 const MovieDetails: React.FC = () => {
     const route = useRoute<StartStackRouteProp<"MovieDetails">>();
@@ -49,6 +50,7 @@ const MovieDetails: React.FC = () => {
     >();
     const { width: screenWidth } = useWindowDimensions();
 
+    const { showAccountListSelector } = useAccountListSelector();
     const markAsFavorite = useMarkAsFavorite();
     const addToWatchlist = useAddToWatchlist();
     const rate = useRate();
@@ -102,8 +104,6 @@ const MovieDetails: React.FC = () => {
     ];
 
     const { style: parallaxStyle, scrollHandler } = useParallax(0.4);
-
-    const handleAddToList = () => {};
 
     const handleMarkAsFavorite = () => {
         markAsFavorite("movie", id, !favorite);
@@ -182,7 +182,7 @@ const MovieDetails: React.FC = () => {
                     isFavorite={!!favorite}
                     isOnWatchlist={!!watchlist}
                     rating={rated || 0}
-                    onAddToList={handleAddToList}
+                    onAddToList={() => showAccountListSelector("movie", id)}
                     onMarkAsFavorite={handleMarkAsFavorite}
                     onAddToWatchlist={handleAddToWatchist}
                     onRate={handleRate}

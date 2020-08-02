@@ -37,17 +37,16 @@ async function fetchAccountLists(
     throw new Error("Error fetching account lists");
 }
 
-function useAccountLists() {
+function useAccountLists(
+    { enabled }: { enabled: boolean } = { enabled: true }
+) {
     const { accountId, accessToken } = useUser();
 
-    if (!accountId || !accessToken) {
-        throw new Error("Missing accountId or access token");
-    }
-
     return useInfiniteQuery(
-        ["account-lists", accountId, accessToken],
+        ["account-lists", accountId!, accessToken!],
         fetchAccountLists,
         {
+            enabled: enabled && accountId && accessToken,
             getFetchMore: (prevPage: any) =>
                 prevPage.page < prevPage.totalPages && prevPage.page + 1,
         }

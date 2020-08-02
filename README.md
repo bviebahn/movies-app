@@ -10,3 +10,8 @@
 -   merge credits with same id
 -   voteCount animation
 -   onRemove update favorites/watchlist
+
+https://github.com/dancormier/react-native-swipeout
+https://github.com/FuYaoDe/react-native-app-intro
+https://github.com/oblador/react-native-lightbox
+https://github.com/mfrachet/rn-placeholder
