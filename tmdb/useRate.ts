@@ -30,6 +30,7 @@ async function rate(variables: Variables & { sessionId: string }) {
     if (response.ok) {
         return { success: true, rating };
     }
+    console.log("vars", variables);
 
     throw new Error("Error rating");
 }

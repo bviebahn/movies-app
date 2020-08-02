@@ -114,7 +114,11 @@ const MovieDetails: React.FC = () => {
     };
 
     const handleRate = (rating?: number) => {
-        rate({ mediaType: "movie", mediaId: id, rating });
+        rate({
+            mediaType: "movie",
+            mediaId: id,
+            rating: rating ? rating * 2 : undefined,
+        });
     };
 
     return (
@@ -181,7 +185,7 @@ const MovieDetails: React.FC = () => {
                 <ActionsWidget
                     isFavorite={!!favorite}
                     isOnWatchlist={!!watchlist}
-                    rating={rated || 0}
+                    rating={(rated || 0) / 2}
                     onAddToList={() => showAccountListSelector("movie", id)}
                     onMarkAsFavorite={handleMarkAsFavorite}
                     onAddToWatchlist={handleAddToWatchist}

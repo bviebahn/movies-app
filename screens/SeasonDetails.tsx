@@ -56,7 +56,7 @@ const SeasonDetails: React.FC = () => {
             tvId: tvShowId,
             seasonNumber,
             episodeNumber,
-            rating,
+            rating: rating ? rating * 2 : undefined,
         });
     };
 
@@ -100,7 +100,7 @@ const SeasonDetails: React.FC = () => {
                 renderItem={({ item }) => (
                     <EpisodeListItem
                         episode={item}
-                        rating={ratings[item.episodeNumber]}
+                        rating={ratings[item.episodeNumber] / 2}
                         onRate={rating =>
                             handleRateEpisode(item.episodeNumber, rating)
                         }

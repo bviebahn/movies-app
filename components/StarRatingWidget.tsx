@@ -46,7 +46,7 @@ const StarRatingWidget: React.FC<Props> = ({
                 style={styles.starRating}
             />
             <TouchableOpacity
-                onPress={() => onRate(rating * 2)}
+                onPress={() => onRate(rating)}
                 disabled={rating === initialValue}>
                 <Icon
                     name="check-circle"
