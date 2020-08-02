@@ -1,31 +1,21 @@
-import { useEffect, useState } from "react";
+import { useQuery } from "react-query";
 
-import { Movie } from "./types";
 import { convertMovie, fetchTmdb } from "./util";
+import { Movie } from "./types";
 
-const useMovies = (
-    type: "popular" | "latest" | "now_playing" | "top_rated" | "upcoming"
-) => {
-    const [data, setData] = useState<ReadonlyArray<Movie>>();
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(false);
+type Type = "popular" | "latest" | "now_playing" | "top_rated" | "upcoming";
 
-    useEffect(() => {
-        const fetchMovies = async () => {
-            const response = await fetchTmdb(`/movie/${type}`);
+async function fetchMovies(_key: string, type: Type) {
+    const response = await fetchTmdb(`/movie/${type}`);
+    if (response.ok) {
+        const movies = await response.json();
+        return movies.results.map(convertMovie) as ReadonlyArray<Movie>;
+    }
+    throw new Error("Error fetching Movies");
+}
 
-            setLoading(false);
-            if (response.ok) {
-                const movies = await response.json();
-                setData(movies.results.map(convertMovie));
-            } else {
-                setError(true);
-            }
-        };
-        fetchMovies();
-    }, [type]);
-
-    return { data, loading, error };
-};
+function useMovies(type: Type) {
+    return useQuery(["movies", type], fetchMovies);
+}
 
 export default useMovies;

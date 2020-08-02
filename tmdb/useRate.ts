@@ -1,6 +1,6 @@
 import useUser from "./useUser";
 import { fetchTmdb } from "./util";
-import { useMutation, queryCache, AnyQueryKey } from "react-query";
+import { useMutation, queryCache } from "react-query";
 import { MovieDetails, TvShowDetails, SeasonDetails } from "./types";
 
 type Variables = { rating?: number } & (
@@ -42,7 +42,7 @@ function useRate() {
             const { mediaType, rating } = variables;
             if (variables.mediaType === "episode") {
                 const { tvId, seasonNumber, episodeNumber } = variables;
-                const queryKey: AnyQueryKey = [
+                const queryKey = [
                     "season-details",
                     tvId,
                     seasonNumber,
@@ -70,11 +70,7 @@ function useRate() {
                 }
             } else {
                 const { mediaId } = variables;
-                const queryKey: AnyQueryKey = [
-                    `${mediaType}-details`,
-                    mediaId,
-                    sessionId,
-                ];
+                const queryKey = [`${mediaType}-details`, mediaId, sessionId];
                 const oldDetails = queryCache.getQueryData<
                     MovieDetails | TvShowDetails
                 >(queryKey);
@@ -103,7 +99,7 @@ function useRate() {
             throw new Error("Error rating - no sessionId");
         }
 
-        return mutate({ ...variables, sessionId } as any);
+        return mutate({ ...variables, sessionId });
     };
 }
 

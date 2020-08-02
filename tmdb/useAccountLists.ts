@@ -47,7 +47,7 @@ function useAccountLists(
         fetchAccountLists,
         {
             enabled: enabled && accountId && accessToken,
-            getFetchMore: (prevPage: any) =>
+            getFetchMore: prevPage =>
                 prevPage.page < prevPage.totalPages && prevPage.page + 1,
         }
     );

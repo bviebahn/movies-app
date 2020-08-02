@@ -1,6 +1,6 @@
 import useUser from "./useUser";
 import { fetchTmdb } from "./util";
-import { useMutation, queryCache, AnyQueryKey } from "react-query";
+import { useMutation, queryCache } from "react-query";
 import { MovieDetails, TvShowDetails } from "./types";
 
 async function addToWatchlist({
@@ -37,11 +37,7 @@ function useAddToWatchlist() {
     const { sessionId, user } = useUser();
     const [mutate] = useMutation(addToWatchlist, {
         onMutate: ({ mediaType, mediaId, watchlist }): (() => void) => {
-            const queryKey: AnyQueryKey = [
-                `${mediaType}-details`,
-                mediaId,
-                sessionId,
-            ];
+            const queryKey = [`${mediaType}-details`, mediaId, sessionId];
             const oldDetails = queryCache.getQueryData<
                 MovieDetails | TvShowDetails
             >(queryKey);

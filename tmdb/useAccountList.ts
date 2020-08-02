@@ -72,7 +72,7 @@ function useAccountList<T extends AccountListType, M extends keyof MediaType>(
         ["account-list", accountId, type, mediaType, accessToken],
         fetchList,
         {
-            getFetchMore: (prevPage: any) =>
+            getFetchMore: prevPage =>
                 prevPage.page < prevPage.totalPages && prevPage.page + 1,
         }
     );

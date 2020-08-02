@@ -1,31 +1,21 @@
-import { useEffect, useState } from "react";
-
-import { TvShow } from "./types";
 import { convertTvShow, fetchTmdb } from "./util";
+import { useQuery } from "react-query";
+import { TvShow } from "./types";
 
-const useTvShows = (
-    type: "popular" | "latest" | "airing_today" | "top_rated" | "on_the_air"
-) => {
-    const [data, setData] = useState<ReadonlyArray<TvShow>>();
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(false);
+type Type = "popular" | "latest" | "airing_today" | "top_rated" | "on_the_air";
 
-    useEffect(() => {
-        const fetchTvShows = async () => {
-            const response = await fetchTmdb(`/tv/${type}`);
+async function fetchTvShows(_key: string, type: Type) {
+    const response = await fetchTmdb(`/tv/${type}`);
 
-            setLoading(false);
-            if (response.ok) {
-                const tvShows = await response.json();
-                setData(tvShows.results.map(convertTvShow));
-            } else {
-                setError(true);
-            }
-        };
-        fetchTvShows();
-    }, [type]);
+    if (response.ok) {
+        const tvShows = await response.json();
+        return tvShows.results.map(convertTvShow) as ReadonlyArray<TvShow>;
+    }
+    throw new Error("Error fetching TV Shows");
+}
 
-    return { data, loading, error };
-};
+function useTvShows(type: Type) {
+    return useQuery(["tv-shows", type], fetchTvShows);
+}
 
 export default useTvShows;
