@@ -18,7 +18,7 @@ describe("utils - useFeedback", () => {
                                 message: "Message",
                                 iconName: "star",
                             },
-                            1000,
+                            1000
                         )
                     }
                 />
@@ -28,20 +28,20 @@ describe("utils - useFeedback", () => {
         const { queryByText, queryAllByTestId, getByTestId } = render(
             <FeedbackProvider>
                 <Component />
-            </FeedbackProvider>,
+            </FeedbackProvider>
         );
 
         expect(queryByText("Feedback Title")).toBeNull();
         expect(queryAllByTestId("feedbackMessage")![0]).toHaveProperty(
             "props.visible",
-            false,
+            false
         );
 
         fireEvent.press(getByTestId("button"));
         expect(queryByText("Feedback Title")).not.toBeNull();
         expect(queryAllByTestId("feedbackMessage")![0]).toHaveProperty(
             "props.visible",
-            true,
+            true
         );
     });
 });
