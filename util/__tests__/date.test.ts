@@ -1,7 +1,7 @@
 import { formatDate } from "../date";
 
 jest.mock("react-native-localize", () => ({
-    getLocales: jest.fn().mockReturnValue([{ languageTag: "ar-EG" }]),
+    getLocales: jest.fn().mockReturnValue([{ languageTag: "en-EN" }]),
 }));
 
 describe("utils - date", () => {
