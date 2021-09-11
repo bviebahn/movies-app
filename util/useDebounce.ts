@@ -15,7 +15,7 @@ export function useDebouncedValue<T>(value: T, delay: number) {
 }
 
 function useDebounce<T extends any[]>(fn: (...args: T) => void, delay: number) {
-    const [timeoutId, setTimeoutId] = useState<number>();
+    const [timeoutId, setTimeoutId] = useState<ReturnType<typeof setTimeout>>();
 
     useEffect(() => {
         return () => {

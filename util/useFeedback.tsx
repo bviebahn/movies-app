@@ -24,7 +24,7 @@ export const FeedbackProvider: React.FC<{ children: React.ReactNode }> = ({
         visible: boolean;
     }>({ title: "", visible: false });
 
-    const timeout = useRef<number>();
+    const timeout = useRef<ReturnType<typeof setTimeout>>();
 
     const showFeedback: ShowFeedbackFn = (
         { iconName, title, message },
