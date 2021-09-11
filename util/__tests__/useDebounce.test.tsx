@@ -5,8 +5,6 @@ import { act } from "react-test-renderer";
 
 import useDebounce, { useDebouncedValue } from "../useDebounce";
 
-jest.useFakeTimers();
-
 describe("utils - useDebounce", () => {
     it("useDebouncedValue", () => {
         function Component() {
