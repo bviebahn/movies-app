@@ -1,8 +1,8 @@
 import { RouteProp } from "@react-navigation/native";
 import {
-    createStackNavigator,
-    StackNavigationProp,
-} from "@react-navigation/stack";
+    createNativeStackNavigator,
+    NativeStackNavigationProp,
+} from "@react-navigation/native-stack";
 import React from "react";
 import MovieDetails from "../screens/MovieDetails";
 import PersonDetails from "../screens/PersonDetails";
@@ -29,18 +29,16 @@ type SearchStackParams = {
     };
 };
 
-const SearchStack = createStackNavigator<SearchStackParams>();
+const SearchStack = createNativeStackNavigator<SearchStackParams>();
 
 const SearchStackNavigator: React.FC = () => {
     return (
-        <SearchStack.Navigator
-            screenOptions={{
-                headerTransparent: true,
-                headerTitle: () => null,
-                headerBackTitleVisible: false,
-            }}
-            initialRouteName="Search">
-            <SearchStack.Screen name="Search" component={Search} />
+        <SearchStack.Navigator initialRouteName="Search">
+            <SearchStack.Screen
+                name="Search"
+                component={Search}
+                options={{ headerShown: false }}
+            />
             <SearchStack.Screen
                 name="MovieDetails"
                 component={MovieDetails}
@@ -67,7 +65,7 @@ const SearchStackNavigator: React.FC = () => {
 
 export type SearchStackNavigationProp<
     Screen extends keyof SearchStackParams
-> = StackNavigationProp<SearchStackParams, Screen>;
+> = NativeStackNavigationProp<SearchStackParams, Screen>;
 
 export type SearchStackRouteProp<
     Screen extends keyof SearchStackParams

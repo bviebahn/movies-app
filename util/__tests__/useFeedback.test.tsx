@@ -1,6 +1,6 @@
+import { fireEvent, render } from "@testing-library/react-native";
 import React from "react";
 import { TouchableOpacity } from "react-native";
-import { fireEvent, render } from "react-native-testing-library";
 import useFeedbackMessage, { FeedbackProvider } from "../useFeedback";
 
 describe("utils - useFeedback", () => {

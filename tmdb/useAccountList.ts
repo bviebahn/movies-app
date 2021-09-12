@@ -1,4 +1,5 @@
 import { useInfiniteQuery } from "react-query";
+import QueryKeys from "../util/queryKeys";
 import { ListResult, Movie, TmdbListResult, TvShow } from "./types";
 import useUser from "./useUser";
 import {
@@ -25,12 +26,19 @@ type Type<
 > = T extends "rated" ? MediaType[M] & { accountRating: number } : MediaType[M];
 
 async function fetchList<T extends AccountListType, M extends keyof MediaType>(
-    accountId: string,
+    accountId: string | undefined,
     type: T,
     mediaType: M,
-    accessToken: string,
+    accessToken: string | undefined,
     page?: unknown
 ): Promise<ListResult<Type<T, M>>> {
+    if (!accountId) {
+        throw new Error("Error fetching account list: missing accountId");
+    }
+    if (!accessToken) {
+        throw new Error("Error fetching account list: missing accessToken");
+    }
+
     const response = await fetchTmdb(
         `/account/${accountId}/${mediaType}/${type}${
             page ? `?page=${page}` : ""
@@ -63,13 +71,11 @@ function useAccountList<T extends AccountListType, M extends keyof MediaType>(
     mediaType: M
 ) {
     const { accountId, accessToken } = useUser();
-    if (!accountId || !accessToken) {
-        throw new Error("Missing accountId or access token");
-    }
 
     return useInfiniteQuery(
-        ["account-list", accountId, type, mediaType, accessToken],
-        () => fetchList(accountId, type, mediaType, accessToken),
+        QueryKeys.AccountList(accountId, type, mediaType, accessToken),
+        ({ pageParam }) =>
+            fetchList(accountId, type, mediaType, accessToken, pageParam),
         {
             getNextPageParam: prevPage =>
                 prevPage.page < prevPage.totalPages && prevPage.page + 1,

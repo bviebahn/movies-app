@@ -1,7 +1,5 @@
-import { ParamListBase, RouteProp } from "@react-navigation/native";
-import { TransitionPresets } from "@react-navigation/stack";
+import { NativeStackNavigationOptions } from "@react-navigation/native-stack";
 import React from "react";
-import { StyleSheet } from "react-native";
 import CloseButton from "../components/CloseButton";
 import HeaderTitleWithIcon from "../components/HeaderTitleWithIcon";
 import {
@@ -17,21 +15,16 @@ import {
 import translate from "../i18/Locale";
 import { ProfileStackRouteProp } from "./ProfileStackNavigator";
 
-export function cardNavigationOptions<
-    ParamList extends ParamListBase,
-    RouteName extends keyof ParamList
->(props: { route: RouteProp<ParamList, RouteName>; navigation: any }): object {
+export const cardNavigationOptions: (props: {
+    navigation: any;
+}) => NativeStackNavigationOptions = props => {
     return {
-        ...TransitionPresets.ModalTransition,
-        headerBackImage: () => null,
-        headerRight: () => (
-            <CloseButton
-                onPress={props.navigation.goBack}
-                style={styles.closeButton}
-            />
-        ),
+        presentation: "containedModal",
+        headerTransparent: true,
+        title: "",
+        headerRight: () => <CloseButton onPress={props.navigation.goBack} />,
     };
-}
+};
 
 export function accountListNavigationOptions(props: {
     route: ProfileStackRouteProp<"AccountList">;
@@ -87,5 +80,3 @@ export function accountListNavigationOptions(props: {
         },
     };
 }
-
-const styles = StyleSheet.create({ closeButton: { marginRight: 20 } });

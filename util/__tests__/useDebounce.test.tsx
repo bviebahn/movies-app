@@ -1,6 +1,6 @@
+import { fireEvent, render } from "@testing-library/react-native";
 import React, { useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
-import { fireEvent, render } from "react-native-testing-library";
 import { act } from "react-test-renderer";
 import useDebounce, { useDebouncedValue } from "../useDebounce";
 

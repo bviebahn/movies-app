@@ -85,14 +85,14 @@ const Search: React.FC = () => {
     const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
         const newScrollOffset = event.nativeEvent.contentOffset.y;
         const diff = Math.abs(scrollOffset.current - newScrollOffset);
-        if (diff > 100) {
+        if (diff > 100 && newScrollOffset > 100) {
             setScreenTitleHidden(newScrollOffset > scrollOffset.current);
             scrollOffset.current = newScrollOffset;
         }
     };
 
     return (
-        <SafeAreaView style={styles.search}>
+        <SafeAreaView style={styles.search} edges={["top"]}>
             <Animated.View
                 style={[
                     styles.animatedWrapper,

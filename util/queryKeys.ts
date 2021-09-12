@@ -1,3 +1,4 @@
+import { AccountListType } from "../tmdb/useAccountList";
 import type { MovieListType } from "../tmdb/useMovies";
 import type { TvShowListType } from "../tmdb/useTvShows";
 
@@ -23,6 +24,17 @@ const QueryKeys = {
         sessionId,
     ],
     User: (sessionId: string | undefined) => ["user", sessionId],
+    Search: (query: string) => ["search", query],
+    AccountLists: (
+        accountId: string | undefined,
+        accessToken: string | undefined
+    ) => ["account-lists", accountId, accessToken],
+    AccountList: (
+        accountId: string | undefined,
+        type: AccountListType,
+        mediaType: "movie" | "tv",
+        accessToken: string | undefined
+    ) => ["account-list", accountId, type, mediaType, accessToken],
 };
 
 export default QueryKeys;
