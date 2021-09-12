@@ -12,7 +12,6 @@ import {
     View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-
 import ActionsWidget from "../components/ActionsWidget";
 import DotSeperatedLine from "../components/DotSeperatedLine";
 import DynamicSizedTitle from "../components/DynamicSizedTitle";
@@ -40,8 +39,8 @@ import useMovieDetails from "../tmdb/useMovieDetails";
 import useRate from "../tmdb/useRate";
 import { formatDate } from "../util/date";
 import { convertMinutesToTimeString } from "../util/time";
-import useParallax from "../util/useParallax";
 import useAccountListSelector from "../util/useAccountListSelector";
+import useParallax from "../util/useParallax";
 
 const MovieDetails: React.FC = () => {
     const route = useRoute<StartStackRouteProp<"MovieDetails">>();

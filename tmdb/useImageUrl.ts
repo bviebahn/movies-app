@@ -1,5 +1,5 @@
+import { ImageSize, ImageType } from "./types";
 import useConfiguration from "./useConfiguration";
-import { ImageType, ImageSize } from "./types";
 
 function useImageUrl() {
     const { data: configuration } = useConfiguration();
