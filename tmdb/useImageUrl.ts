@@ -11,7 +11,7 @@ function useImageUrl() {
         const {
             images: {
                 backdropSizes,
-                baseUrl,
+                secureBaseUrl,
                 logoSizes,
                 posterSizes,
                 profileSizes,
@@ -53,7 +53,7 @@ function useImageUrl() {
                 Math.min(Math.max(index, 0), matchingArray.length - 1)
             ];
 
-        return `${baseUrl}${matchingSize}${path}`;
+        return `${secureBaseUrl}${matchingSize}${path}`;
     }
 
     return getImageUrl;
