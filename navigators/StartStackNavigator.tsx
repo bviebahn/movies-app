@@ -1,8 +1,8 @@
 import { RouteProp } from "@react-navigation/native";
 import {
-    createStackNavigator,
-    StackNavigationProp,
-} from "@react-navigation/stack";
+    createNativeStackNavigator,
+    NativeStackNavigationProp,
+} from "@react-navigation/native-stack";
 import React from "react";
 import Home from "../screens/Home";
 import MovieDetails from "../screens/MovieDetails";
@@ -29,17 +29,11 @@ type StartStackParams = {
     };
 };
 
-const StartStack = createStackNavigator<StartStackParams>();
+const StartStack = createNativeStackNavigator<StartStackParams>();
 
 const StartStackNavigator: React.FC = () => {
     return (
-        <StartStack.Navigator
-            screenOptions={{
-                headerTransparent: true,
-                headerTitle: () => null,
-                headerBackTitleVisible: false,
-            }}
-            initialRouteName="Home">
+        <StartStack.Navigator initialRouteName="Home">
             <StartStack.Screen name="Home" component={Home} />
             <StartStack.Screen
                 name="MovieDetails"
@@ -67,7 +61,7 @@ const StartStackNavigator: React.FC = () => {
 
 export type StartStackNavigationProp<
     Screen extends keyof StartStackParams
-> = StackNavigationProp<StartStackParams, Screen>;
+> = NativeStackNavigationProp<StartStackParams, Screen>;
 
 export type StartStackRouteProp<
     Screen extends keyof StartStackParams

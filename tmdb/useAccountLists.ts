@@ -1,4 +1,5 @@
 import { useInfiniteQuery } from "react-query";
+import QueryKeys from "../util/queryKeys";
 import { AccountList } from "./types";
 import useUser from "./useUser";
 import { convertAccountLists, fetchTmdb } from "./util";
@@ -48,8 +49,8 @@ function useAccountLists(
     const { accountId, accessToken } = useUser();
 
     return useInfiniteQuery(
-        ["account-lists", accountId, accessToken],
-        () => fetchAccountLists(accountId, accessToken),
+        QueryKeys.AccountLists(accountId, accessToken),
+        ({ pageParam }) => fetchAccountLists(accountId, accessToken, pageParam),
         {
             enabled: enabled && !!accountId && !!accessToken,
             getNextPageParam: prevPage =>

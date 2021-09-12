@@ -273,8 +273,8 @@ PODS:
   - React-jsinspector (0.65.1)
   - react-native-blur (0.8.0):
     - React
-  - react-native-safe-area-context (3.0.6):
-    - React
+  - react-native-safe-area-context (3.3.2):
+    - React-Core
   - react-native-webview (10.2.3):
     - React
   - React-perflogger (0.65.1)
@@ -378,8 +378,9 @@ PODS:
     - React-RCTVibration
     - ReactCommon/turbomodule/core
     - Yoga
-  - RNScreens (2.9.0):
-    - React
+  - RNScreens (3.7.0):
+    - React-Core
+    - React-RCTImage
   - RNSVG (12.1.1):
     - React
   - RNVectorIcons (6.6.0):
@@ -585,7 +586,7 @@ SPEC CHECKSUMS:
   React-jsiexecutor: 43f2542aed3c26e42175b339f8d37fe3dd683765
   React-jsinspector: 41e58e5b8e3e0bf061fdf725b03f2144014a8fb0
   react-native-blur: cad4d93b364f91e7b7931b3fa935455487e5c33c
-  react-native-safe-area-context: e22a8ca00f758273d2408953965cb8db67da7925
+  react-native-safe-area-context: 584dc04881deb49474363f3be89e4ca0e854c057
   react-native-webview: 0bacc79175bc44869e4c1a015b9bc21df8cf4feb
   React-perflogger: fd28ee1f2b5b150b00043f0301d96bd417fdc339
   React-RCTActionSheet: 7f3fa0855c346aa5d7c60f9ced16e067db6d29fa
@@ -604,7 +605,7 @@ SPEC CHECKSUMS:
   RNGestureHandler: a479ebd5ed4221a810967000735517df0d2db211
   RNLocalize: b6df30cc25ae736d37874f9bce13351db2f56796
   RNReanimated: d29057cf85e771be4f0180ba1d00a7185e423a7d
-  RNScreens: c526239bbe0e957b988dacc8d75ac94ec9cb19da
+  RNScreens: 2a71d74b4e530f051f5684c8111d7591176722cf
   RNSVG: 551acb6562324b1d52a4e0758f7ca0ec234e278f
   RNVectorIcons: 0bb4def82230be1333ddaeee9fcba45f0b288ed4
   Yoga: aa0cb45287ebe1004c02a13f279c55a95f1572f4

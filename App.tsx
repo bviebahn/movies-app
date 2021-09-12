@@ -38,6 +38,7 @@ const App = () => {
                         card: gray2,
                         text: textColor,
                         border: black,
+                        notification: gray2,
                     },
                 }}>
                 <SafeAreaProvider>

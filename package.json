@@ -13,9 +13,10 @@
         "@react-native-community/async-storage": "^1.11.0",
         "@react-native-community/blur": "^3.6.0",
         "@react-native-community/masked-view": "^0.1.10",
-        "@react-navigation/bottom-tabs": "^5.5.2",
-        "@react-navigation/native": "^5.5.1",
-        "@react-navigation/stack": "^5.5.1",
+        "@react-navigation/bottom-tabs": "^6.0.5",
+        "@react-navigation/core": "^6.0.1",
+        "@react-navigation/native": "^6.0.2",
+        "@react-navigation/native-stack": "^6.1.0",
         "@types/react-native-vector-icons": "^6.4.5",
         "iso-countries-languages": "^0.3.0",
         "react": "17.0.2",
@@ -27,8 +28,8 @@
         "react-native-modal": "^13.0.0",
         "react-native-platform-searchbar": "^1.1.0",
         "react-native-reanimated": "^2.2.1",
-        "react-native-safe-area-context": "^3.0.6",
-        "react-native-screens": "^2.9.0",
+        "react-native-safe-area-context": "^3.3.2",
+        "react-native-screens": "^3.7.0",
         "react-native-star-rating-widget": "^1.0.21",
         "react-native-svg": "^12.1.1",
         "react-native-tab-view": "^2.14.4",
@@ -40,6 +41,7 @@
         "@babel/core": "^7.15.5",
         "@babel/runtime": "^7.15.4",
         "@react-native-community/eslint-config": "^3.0.1",
+        "@testing-library/react-native": "^7.2.0",
         "@types/jest": "^24.0.24",
         "@types/react-native": "^0.63.1",
         "@types/react-test-renderer": "16.9.2",
@@ -54,8 +56,7 @@
         "prettier": "^2.0.4",
         "prettier-plugin-organize-imports": "^2.3.3",
         "react-native-codegen": "^0.0.7",
-        "react-native-testing-library": "^2.1.0",
         "react-test-renderer": "17.0.2",
-        "typescript": "^3.9.5"
+        "typescript": "^4.4.3"
     }
 }

@@ -1,8 +1,8 @@
 import { RouteProp } from "@react-navigation/native";
 import {
-    createStackNavigator,
-    StackNavigationProp,
-} from "@react-navigation/stack";
+    createNativeStackNavigator,
+    NativeStackNavigationProp,
+} from "@react-navigation/native-stack";
 import React from "react";
 import AccountList from "../screens/AccountList";
 import Authenticate from "../screens/Authenticate";
@@ -41,7 +41,7 @@ type ProfileStackParams = {
     };
 };
 
-const ProfileStack = createStackNavigator<ProfileStackParams>();
+const ProfileStack = createNativeStackNavigator<ProfileStackParams>();
 
 const ProfileStackNavigator: React.FC = () => {
     return (
@@ -92,7 +92,7 @@ const ProfileStackNavigator: React.FC = () => {
 
 export type ProfileStackNavigationProp<
     Screen extends keyof ProfileStackParams
-> = StackNavigationProp<ProfileStackParams, Screen>;
+> = NativeStackNavigationProp<ProfileStackParams, Screen>;
 
 export type ProfileStackRouteProp<
     Screen extends keyof ProfileStackParams
