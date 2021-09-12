@@ -8,10 +8,9 @@ import {
 } from "react-native";
 import StarRating from "react-native-star-rating-widget";
 import Icon from "react-native-vector-icons/FontAwesome";
-
+import { yellowLight } from "../constants/colors";
 import { shadowStyle } from "../constants/styles";
 import Blur from "./Blur";
-import { yellowLight } from "../constants/colors";
 
 type Props = {
     initialValue?: number;

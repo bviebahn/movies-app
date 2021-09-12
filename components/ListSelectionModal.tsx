@@ -1,11 +1,11 @@
 import React from "react";
-import useAccountLists from "../tmdb/useAccountLists";
+import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 import Modal from "react-native-modal";
-import { View, ActivityIndicator, Text, StyleSheet } from "react-native";
-import { AccountList } from "../tmdb/types";
-import { gray0, textColorSecondary } from "../constants/colors";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { gray0, textColorSecondary } from "../constants/colors";
 import { headline } from "../constants/styles";
+import { AccountList } from "../tmdb/types";
+import useAccountLists from "../tmdb/useAccountLists";
 
 type Props = {
     visible: boolean;
@@ -16,9 +16,9 @@ const ListSelectionModal: React.FC<Props> = ({ visible, onClose }) => {
     const { data, isLoading } = useAccountLists({ enabled: visible });
     const { bottom } = useSafeAreaInsets();
 
-    const lists = data?.reduce<AccountList[]>(
+    const lists = (data?.pages || []).reduce(
         (prev, curr) => [...prev, ...curr.results],
-        []
+        [] as AccountList[]
     );
 
     const content = (() => {

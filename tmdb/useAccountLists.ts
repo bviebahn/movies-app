@@ -1,7 +1,7 @@
-import useUser from "./useUser";
 import { useInfiniteQuery } from "react-query";
-import { fetchTmdb, convertAccountLists } from "./util";
 import { AccountList } from "./types";
+import useUser from "./useUser";
+import { convertAccountLists, fetchTmdb } from "./util";
 
 export type AccountListsResult = {
     page: number;
@@ -11,11 +11,16 @@ export type AccountListsResult = {
 };
 
 async function fetchAccountLists(
-    _key: string,
-    accountId: string,
-    accessToken: string,
+    accountId: string | undefined,
+    accessToken: string | undefined,
     page: number = 1
 ): Promise<AccountListsResult> {
+    if (!accountId) {
+        throw new Error("Error fetching account lists: missing accountId");
+    }
+    if (!accessToken) {
+        throw new Error("Error fetching account lists: missing accessToken");
+    }
     const response = await fetchTmdb(
         `/account/${accountId}/lists?page=${page}`,
         {
@@ -34,7 +39,7 @@ async function fetchAccountLists(
         };
     }
 
-    throw new Error("Error fetching account lists");
+    throw new Error("Error fetching account lists: response not ok");
 }
 
 function useAccountLists(
@@ -43,11 +48,11 @@ function useAccountLists(
     const { accountId, accessToken } = useUser();
 
     return useInfiniteQuery(
-        ["account-lists", accountId!, accessToken!],
-        fetchAccountLists,
+        ["account-lists", accountId, accessToken],
+        () => fetchAccountLists(accountId, accessToken),
         {
-            enabled: enabled && accountId && accessToken,
-            getFetchMore: prevPage =>
+            enabled: enabled && !!accountId && !!accessToken,
+            getNextPageParam: prevPage =>
                 prevPage.page < prevPage.totalPages && prevPage.page + 1,
         }
     );

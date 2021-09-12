@@ -1,19 +1,19 @@
 import React from "react";
-import Carousel from "./Carousel";
-import { Review } from "../tmdb/types";
 import {
-    useWindowDimensions,
     StyleProp,
-    ViewStyle,
+    StyleSheet,
     Text,
     TouchableOpacity,
-    StyleSheet,
+    useWindowDimensions,
     View,
+    ViewStyle,
 } from "react-native";
 import Markdown from "react-native-markdown-display";
-import { textColor, gray2, primaryColor } from "../constants/colors";
-import { shadowStyle, headline } from "../constants/styles";
+import { gray2, primaryColor, textColor } from "../constants/colors";
+import { headline, shadowStyle } from "../constants/styles";
 import translate from "../i18/Locale";
+import { Review } from "../tmdb/types";
+import Carousel from "./Carousel";
 
 type Props = {
     reviews: ReadonlyArray<Review>;

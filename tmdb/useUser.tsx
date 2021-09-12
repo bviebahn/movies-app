@@ -1,7 +1,13 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, {
+    useCallback,
+    useContext,
+    useEffect,
+    useMemo,
+    useState,
+} from "react";
 import { useQuery } from "react-query";
-
-import { read, write, remove } from "../util/asyncStorage";
+import { read, remove, write } from "../util/asyncStorage";
+import QueryKeys from "../util/queryKeys";
 import { Account, TmdbAccount } from "./types";
 import { convertAccount, fetchTmdb } from "./util";
 
@@ -25,7 +31,7 @@ const ACCESS_TOKEN_KEY = "ACCESS_TOKEN";
 const ACCOUNT_ID_KEY = "ACCOUNT_ID";
 const SESSION_ID_KEY = "SESSION_ID";
 
-async function fetchUser(_key: string, sessionId?: string) {
+async function fetchUser(sessionId?: string) {
     if (!sessionId) {
         throw new Error("sessionId missing in fetchUser");
     }
@@ -96,11 +102,11 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
     const [accessToken, setAccessToken] = useState<string>();
     const [accountId, setAccountId] = useState<string>();
     const [sessionId, setSessionId] = useState<string>();
-    const { data: user, status, refetch } = useQuery(
-        ["user", sessionId],
-        fetchUser,
+    const { data: user, status } = useQuery(
+        QueryKeys.User(sessionId),
+        () => fetchUser(sessionId),
         {
-            enabled: false,
+            enabled: !!sessionId,
         }
     );
 
@@ -128,12 +134,6 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
         })();
     }, []);
 
-    useEffect(() => {
-        if (sessionId) {
-            refetch();
-        }
-    }, [sessionId, refetch]);
-
     async function auth(requestToken: string) {
         const {
             accessToken: newAccessToken,
@@ -152,7 +152,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
         ]);
     }
 
-    const logout = async () => {
+    const logout = useCallback(async () => {
         // TODO: use react-query and clear user related caches
         const response = await fetchTmdb(
             `/authentication/session?session_id=${sessionId}`,
@@ -173,21 +173,23 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
         }
 
         return success;
-    };
+    }, [sessionId]);
+
+    const context = useMemo(
+        () => ({
+            user: sessionId ? user : undefined,
+            loading: status === "loading",
+            accessToken,
+            accountId,
+            sessionId,
+            auth,
+            logout,
+        }),
+        [accessToken, accountId, logout, sessionId, status, user]
+    );
 
     return (
-        <UserContext.Provider
-            value={{
-                user: sessionId ? user : undefined,
-                loading: status === "loading",
-                accessToken,
-                accountId,
-                sessionId,
-                auth,
-                logout,
-            }}>
-            {children}
-        </UserContext.Provider>
+        <UserContext.Provider value={context}>{children}</UserContext.Provider>
     );
 };
 

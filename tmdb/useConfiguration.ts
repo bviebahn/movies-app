@@ -1,6 +1,6 @@
 import { useQuery } from "react-query";
-
 import { read, write } from "../util/asyncStorage";
+import QueryKeys from "../util/queryKeys";
 import { Configuration, TmdbConfiguration } from "./types";
 import { fetchTmdb } from "./util";
 
@@ -54,7 +54,7 @@ async function fetchConfiguration() {
 }
 
 function useConfiguration() {
-    return useQuery("configuration", fetchConfiguration, {
+    return useQuery(QueryKeys.Configuration, fetchConfiguration, {
         staleTime: Infinity,
         onSuccess: config => {
             write(LAST_FETCHED_STORAGE_KEY, Date.now().toString(10));

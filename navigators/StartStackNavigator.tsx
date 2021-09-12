@@ -4,14 +4,13 @@ import {
     StackNavigationProp,
 } from "@react-navigation/stack";
 import React from "react";
-
 import Home from "../screens/Home";
 import MovieDetails from "../screens/MovieDetails";
+import PersonDetails from "../screens/PersonDetails";
 import SeasonDetails from "../screens/SeasonDetails";
 import TvShowDetails from "../screens/TvShowDetails";
 import { Movie, Season, TvShow } from "../tmdb/types";
 import { cardNavigationOptions } from "./navigationOptions";
-import PersonDetails from "../screens/PersonDetails";
 
 type StartStackParams = {
     Home: undefined;

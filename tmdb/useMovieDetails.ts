@@ -1,5 +1,5 @@
 import { useQuery } from "react-query";
-
+import QueryKeys from "../util/queryKeys";
 import { MovieDetails, TmdbMovieDetails } from "./types";
 import useUser from "./useUser";
 import { convertCredits, convertMovie, fetchTmdb } from "./util";
@@ -41,7 +41,8 @@ function convertMovieDetails(details: TmdbMovieDetails): MovieDetails {
     };
 }
 
-async function fetchMovieDetails(_key: string, id: number, sessionId?: string) {
+async function fetchMovieDetails(id: number, sessionId?: string) {
+    // TODO: test sessionId = undefined?
     const response = await fetchTmdb(
         `/movie/${id}?append_to_response=credits,reviews,recommendations${
             sessionId ? `,account_states&session_id=${sessionId}` : ""
@@ -58,7 +59,9 @@ async function fetchMovieDetails(_key: string, id: number, sessionId?: string) {
 
 function useMovieDetails(id: number) {
     const { sessionId } = useUser();
-    return useQuery(["movie-details", id, sessionId], fetchMovieDetails);
+    return useQuery(QueryKeys.MovieDetails(id, sessionId), () =>
+        fetchMovieDetails(id, sessionId)
+    );
 }
 
 export default useMovieDetails;

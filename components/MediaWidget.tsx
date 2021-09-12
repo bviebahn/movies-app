@@ -1,14 +1,14 @@
 import React from "react";
 import {
-    View,
-    Text,
     ActivityIndicator,
-    StyleSheet,
     StyleProp,
+    StyleSheet,
+    Text,
+    View,
     ViewStyle,
 } from "react-native";
-import Carousel from "./Carousel";
 import { headline } from "../constants/styles";
+import Carousel from "./Carousel";
 
 type Props<T> = {
     title: string;

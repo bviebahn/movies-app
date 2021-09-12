@@ -2,13 +2,12 @@ import { useNavigation } from "@react-navigation/native";
 import React from "react";
 import { FlatList, FlatListProps, StyleSheet, Text, View } from "react-native";
 import { RectButton } from "react-native-gesture-handler";
-
 import {
+    gray3,
+    gray4,
     gray5,
     gray6,
     textColorSecondary,
-    gray4,
-    gray3,
 } from "../../constants/colors";
 import translate from "../../i18/Locale";
 import { StartStackNavigationProp } from "../../navigators/StartStackNavigator";
@@ -87,7 +86,7 @@ const CreditsList: React.FC<Props> = ({ credits, ...restProps }) => {
                     />
                 );
             }}
-            keyExtractor={(item) => item.creditId}
+            keyExtractor={item => item.creditId}
             {...restProps}
         />
     );

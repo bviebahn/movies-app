@@ -1,8 +1,8 @@
 import { useQuery } from "react-query";
-
+import QueryKeys from "../util/queryKeys";
 import { SeasonDetails, TmdbSeasonDetails } from "./types";
-import { fetchTmdb } from "./util";
 import useUser from "./useUser";
+import { fetchTmdb } from "./util";
 
 function convertSeasonDetails(details: TmdbSeasonDetails): SeasonDetails {
     return {
@@ -34,11 +34,11 @@ function convertSeasonDetails(details: TmdbSeasonDetails): SeasonDetails {
 }
 
 async function fetchSeasonDetails(
-    _key: string,
     id: number,
     seasonNumber: number,
     sessionId?: string
 ) {
+    // TODO: test sessionId undefined?
     const response = await fetchTmdb(
         `/tv/${id}/season/${seasonNumber}${
             sessionId
@@ -56,9 +56,8 @@ async function fetchSeasonDetails(
 
 function useSeasonDetails(id: number, seasonNumber: number) {
     const { sessionId } = useUser();
-    return useQuery(
-        ["season-details", id, seasonNumber, sessionId],
-        fetchSeasonDetails
+    return useQuery(QueryKeys.SeasonDetails(id, seasonNumber, sessionId), () =>
+        fetchSeasonDetails(id, seasonNumber, sessionId)
     );
 }
 

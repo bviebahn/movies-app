@@ -1,8 +1,7 @@
 import React from "react";
 import { TouchableOpacity } from "react-native";
-
+import { fireEvent, render } from "react-native-testing-library";
 import useFeedbackMessage, { FeedbackProvider } from "../useFeedback";
-import { render, fireEvent } from "react-native-testing-library";
 
 describe("utils - useFeedback", () => {
     it("renders FeedbackMessage", () => {

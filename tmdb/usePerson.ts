@@ -1,7 +1,8 @@
-import { fetchTmdb, convertPersonDetails } from "./util";
 import { useQuery } from "react-query";
+import QueryKeys from "../util/queryKeys";
+import { convertPersonDetails, fetchTmdb } from "./util";
 
-async function fetchPersonDetails(_key: string, id: number) {
+async function fetchPersonDetails(id: number) {
     const response = await fetchTmdb(
         `/person/${id}?append_to_response=combined_credits`
     );
@@ -15,7 +16,7 @@ async function fetchPersonDetails(_key: string, id: number) {
 }
 
 function usePersonDetails(id: number) {
-    return useQuery(["person-details", id], fetchPersonDetails);
+    return useQuery(QueryKeys.PersonDetails(id), () => fetchPersonDetails(id));
 }
 
 export default usePersonDetails;

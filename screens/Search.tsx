@@ -1,5 +1,5 @@
 import { useNavigation } from "@react-navigation/native";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
     ActivityIndicator,
     Animated,
@@ -10,9 +10,8 @@ import {
     Text,
     View,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import SearchBar from "react-native-platform-searchbar";
-
+import { SafeAreaView } from "react-native-safe-area-context";
 import ChipSelector from "../components/ChipSelector";
 import MediaList from "../components/MediaList";
 import { textColorSecondary } from "../constants/colors";
@@ -28,15 +27,21 @@ const SearchResults: React.FC<{
     handleScroll: (event: NativeSyntheticEvent<NativeScrollEvent>) => void;
     navigation: SearchStackNavigationProp<"Search">;
 }> = ({ query, handleScroll, navigation }) => {
-    const { data, isFetchingMore, fetchMore, canFetchMore } = useSearch(query);
-    const fetchMoreDebounced = useDebounce(fetchMore, 1000);
+    const { data, fetchNextPage, hasNextPage, isFetching } = useSearch(query);
+    const fetchMoreDebounced = useDebounce(fetchNextPage, 1000);
+
+    const results = useMemo(
+        () =>
+            (data?.pages || []).reduce(
+                (prev, curr) => [...prev, ...curr.results],
+                [] as SearchResult["results"]
+            ),
+        [data]
+    );
 
     return data ? (
         <MediaList
-            data={data.reduce<SearchResult["results"]>(
-                (prev, curr) => [...prev, ...curr.results],
-                []
-            )}
+            data={results}
             onPressItem={item => {
                 if (item.mediaType === "movie") {
                     navigation.push("MovieDetails", { movie: item });
@@ -46,10 +51,8 @@ const SearchResults: React.FC<{
                     navigation.push("PersonDetails", { id: item.id });
                 }
             }}
-            onEndReached={() => canFetchMore && fetchMoreDebounced()}
-            ListFooterComponent={
-                isFetchingMore ? <ActivityIndicator /> : undefined
-            }
+            onEndReached={() => hasNextPage && fetchMoreDebounced()}
+            ListFooterComponent={isFetching ? <ActivityIndicator /> : undefined}
             ListFooterComponentStyle={styles.listFooter}
             onScroll={handleScroll}
         />

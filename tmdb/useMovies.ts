@@ -1,11 +1,16 @@
 import { useQuery } from "react-query";
-
-import { convertMovie, fetchTmdb } from "./util";
+import QueryKeys from "../util/queryKeys";
 import { Movie } from "./types";
+import { convertMovie, fetchTmdb } from "./util";
 
-type Type = "popular" | "latest" | "now_playing" | "top_rated" | "upcoming";
+export type MovieListType =
+    | "popular"
+    | "latest"
+    | "now_playing"
+    | "top_rated"
+    | "upcoming";
 
-async function fetchMovies(_key: string, type: Type) {
+async function fetchMovies(type: MovieListType) {
     const response = await fetchTmdb(`/movie/${type}`);
     if (response.ok) {
         const movies = await response.json();
@@ -14,8 +19,8 @@ async function fetchMovies(_key: string, type: Type) {
     throw new Error("Error fetching Movies");
 }
 
-function useMovies(type: Type) {
-    return useQuery(["movies", type], fetchMovies);
+function useMovies(type: MovieListType) {
+    return useQuery(QueryKeys.Movies(type), () => fetchMovies(type));
 }
 
 export default useMovies;

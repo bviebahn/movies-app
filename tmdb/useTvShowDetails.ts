@@ -1,5 +1,5 @@
 import { useQuery } from "react-query";
-
+import QueryKeys from "../util/queryKeys";
 import { TmdbTvShowDetails, TvShowDetails } from "./types";
 import useUser from "./useUser";
 import { convertCredits, convertTvShow, fetchTmdb } from "./util";
@@ -58,11 +58,7 @@ function convertTvShowDetails(details: TmdbTvShowDetails): TvShowDetails {
     };
 }
 
-async function fetchTvShowDetails(
-    _key: string,
-    id: number,
-    sessionId?: string
-) {
+async function fetchTvShowDetails(id: number, sessionId?: string) {
     const response = await fetchTmdb(
         `/tv/${id}?append_to_response=credits,reviews,recommendations${
             sessionId ? `,account_states&session_id=${sessionId}` : ""
@@ -79,7 +75,9 @@ async function fetchTvShowDetails(
 
 function useTvShowDetails(id: number) {
     const { sessionId } = useUser();
-    return useQuery(["tv-details", id, sessionId], fetchTvShowDetails);
+    return useQuery(QueryKeys.TvDetails(id, sessionId), () =>
+        fetchTvShowDetails(id, sessionId)
+    );
 }
 
 export default useTvShowDetails;

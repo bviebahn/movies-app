@@ -1,6 +1,6 @@
-import React from "react";
 import { BlurView, VibrancyView } from "@react-native-community/blur";
-import { Platform, StyleProp, ViewStyle, View, StyleSheet } from "react-native";
+import React from "react";
+import { Platform, StyleProp, StyleSheet, View, ViewStyle } from "react-native";
 
 const Blur: React.FC<{
     style?: StyleProp<ViewStyle>;

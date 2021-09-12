@@ -1,8 +1,8 @@
 import React from "react";
 import {
-    TouchableOpacity,
-    StyleSheet,
     StyleProp,
+    StyleSheet,
+    TouchableOpacity,
     ViewStyle,
 } from "react-native";
 import Svg, { Path } from "react-native-svg";

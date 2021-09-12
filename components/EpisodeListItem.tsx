@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { LayoutAnimation, StyleSheet, Text, View } from "react-native";
 import { RectButton } from "react-native-gesture-handler";
-
 import { gray0, gray2, gray5, textColorSecondary } from "../constants/colors";
 import Rating from "./Rating";
 import StarRatingWidget from "./StarRatingWidget";

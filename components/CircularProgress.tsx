@@ -1,6 +1,6 @@
 import React from "react";
-import { View, StyleProp, ViewStyle } from "react-native";
-import { Svg, Path, G, Circle } from "react-native-svg";
+import { StyleProp, View, ViewStyle } from "react-native";
+import { Circle, G, Path, Svg } from "react-native-svg";
 
 type Props = {
     style?: StyleProp<ViewStyle>;

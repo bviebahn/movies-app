@@ -4,20 +4,19 @@ import {
     StackNavigationProp,
 } from "@react-navigation/stack";
 import React from "react";
-
 import AccountList from "../screens/AccountList";
 import Authenticate from "../screens/Authenticate";
 import MovieDetails from "../screens/MovieDetails";
+import PersonDetails from "../screens/PersonDetails";
 import Profile from "../screens/Profile";
 import SeasonDetails from "../screens/SeasonDetails";
 import TvShowDetails from "../screens/TvShowDetails";
 import { Movie, Season, TvShow } from "../tmdb/types";
+import { AccountListType } from "../tmdb/useAccountList";
 import {
     accountListNavigationOptions,
     cardNavigationOptions,
 } from "./navigationOptions";
-import { AccountListType } from "../tmdb/useAccountList";
-import PersonDetails from "../screens/PersonDetails";
 
 type ProfileStackParams = {
     Profile: undefined;
