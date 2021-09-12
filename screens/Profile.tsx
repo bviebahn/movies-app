@@ -4,7 +4,6 @@ import { ActivityIndicator, Image, StyleSheet, Text, View } from "react-native";
 import { RectButton } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Icon from "react-native-vector-icons/FontAwesome";
-
 import AccountLists from "../components/AccountLists";
 import ListTile from "../components/ListTile";
 import {

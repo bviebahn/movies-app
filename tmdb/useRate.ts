@@ -1,7 +1,8 @@
+import { useMutation, useQueryClient } from "react-query";
+import QueryKeys from "../util/queryKeys";
+import { MovieDetails, SeasonDetails, TvShowDetails } from "./types";
 import useUser from "./useUser";
 import { fetchTmdb } from "./util";
-import { useMutation, queryCache } from "react-query";
-import { MovieDetails, TvShowDetails, SeasonDetails } from "./types";
 
 type Variables = { rating?: number } & (
     | {
@@ -37,24 +38,24 @@ async function rate(variables: Variables & { sessionId: string }) {
 
 function useRate() {
     const { sessionId } = useUser();
+    const queryClient = useQueryClient();
 
-    const [mutate] = useMutation(rate, {
-        onMutate: variables => {
-            const { mediaType, rating } = variables;
+    const { mutate } = useMutation(rate, {
+        onMutate: (variables: Parameters<typeof rate>[0]) => {
+            const { rating } = variables;
             if (variables.mediaType === "episode") {
                 const { tvId, seasonNumber, episodeNumber } = variables;
-                const queryKey = [
-                    "season-details",
+                const queryKey = QueryKeys.SeasonDetails(
                     tvId,
                     seasonNumber,
-                    sessionId,
-                ];
-                const seasonDetails = queryCache.getQueryData<SeasonDetails>(
+                    sessionId
+                );
+                const seasonDetails = queryClient.getQueryData<SeasonDetails>(
                     queryKey
                 );
 
                 if (seasonDetails) {
-                    queryCache.setQueryData<SeasonDetails>(queryKey, {
+                    queryClient.setQueryData<SeasonDetails>(queryKey, {
                         ...seasonDetails,
                         accountStates: seasonDetails.accountStates?.map(
                             accState =>
@@ -66,18 +67,19 @@ function useRate() {
                                     : accState
                         ),
                     });
-                    return () =>
-                        queryCache.setQueryData(queryKey, seasonDetails);
+                    return { previousData: seasonDetails };
                 }
             } else {
                 const { mediaId } = variables;
-                const queryKey = [`${mediaType}-details`, mediaId, sessionId];
-                const oldDetails = queryCache.getQueryData<
+                const queryKey =
+                    variables.mediaType === "movie"
+                        ? QueryKeys.MovieDetails(mediaId, sessionId)
+                        : QueryKeys.TvDetails(mediaId, sessionId);
+                const oldDetails = queryClient.getQueryData<
                     MovieDetails | TvShowDetails
                 >(queryKey);
-
                 if (oldDetails) {
-                    queryCache.setQueryData<MovieDetails | TvShowDetails>(
+                    queryClient.setQueryData<MovieDetails | TvShowDetails>(
                         queryKey,
                         {
                             ...oldDetails,
@@ -87,12 +89,30 @@ function useRate() {
                             },
                         }
                     );
-                    return () => queryCache.setQueryData(queryKey, oldDetails);
+                    return {
+                        previousData: oldDetails,
+                    };
                 }
             }
         },
-        onError: (_error, _vars, rollback) =>
-            rollback && (rollback as () => void)(),
+        onError: (_error, vars, context) => {
+            if (context) {
+                const queryKey =
+                    vars.mediaType === "episode"
+                        ? QueryKeys.SeasonDetails(
+                              vars.tvId,
+                              vars.seasonNumber,
+                              sessionId
+                          )
+                        : vars.mediaType === "movie"
+                        ? QueryKeys.MovieDetails(vars.mediaId, sessionId)
+                        : QueryKeys.TvDetails(vars.mediaId, sessionId);
+
+                queryClient.setQueryData<
+                    MovieDetails | TvShowDetails | SeasonDetails
+                >(queryKey, context.previousData);
+            }
+        },
     });
 
     return (variables: Variables) => {

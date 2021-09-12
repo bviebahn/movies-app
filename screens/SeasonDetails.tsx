@@ -9,7 +9,7 @@ import {
     View,
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
-
+import DynamicSizedTitle from "../components/DynamicSizedTitle";
 import EpisodeListItem from "../components/EpisodeListItem";
 import {
     primaryColor,
@@ -24,7 +24,6 @@ import useRate from "../tmdb/useRate";
 import useSeasonDetails from "../tmdb/useSeasonDetails";
 import { formatDate } from "../util/date";
 import useParallax from "../util/useParallax";
-import DynamicSizedTitle from "../components/DynamicSizedTitle";
 
 const SeasonDetails: React.FC = () => {
     const route = useRoute<StartStackRouteProp<"SeasonDetails">>();

@@ -1,10 +1,9 @@
 import React, { useState } from "react";
 import { StyleProp, StyleSheet, Text, View, ViewStyle } from "react-native";
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
-
 import { gray1, textColor, textColorSecondary } from "../constants/colors";
-import CircularProgress from "./CircularProgress";
 import translate from "../i18/Locale";
+import CircularProgress from "./CircularProgress";
 
 const colors = {
     bad: ["#db2360", "#571435"],

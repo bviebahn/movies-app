@@ -1,7 +1,7 @@
-import React from "react";
 import { useRoute } from "@react-navigation/native";
-import { ProfileStackRouteProp } from "../navigators/ProfileStackNavigator";
+import React from "react";
 import WebView from "react-native-webview";
+import { ProfileStackRouteProp } from "../navigators/ProfileStackNavigator";
 
 const Authenticate: React.FC = () => {
     const route = useRoute<ProfileStackRouteProp<"Authenticate">>();

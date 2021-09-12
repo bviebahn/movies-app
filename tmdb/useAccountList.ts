@@ -1,12 +1,12 @@
 import { useInfiniteQuery } from "react-query";
+import { ListResult, Movie, TmdbListResult, TvShow } from "./types";
+import useUser from "./useUser";
 import {
-    fetchTmdb,
     convertListResult,
     convertMovie,
     convertTvShow,
+    fetchTmdb,
 } from "./util";
-import useUser from "./useUser";
-import { ListResult, Movie, TvShow, TmdbListResult } from "./types";
 
 type MediaType = {
     movie: Movie;
@@ -25,7 +25,6 @@ type Type<
 > = T extends "rated" ? MediaType[M] & { accountRating: number } : MediaType[M];
 
 async function fetchList<T extends AccountListType, M extends keyof MediaType>(
-    _key: string,
     accountId: string,
     type: T,
     mediaType: M,
@@ -70,9 +69,9 @@ function useAccountList<T extends AccountListType, M extends keyof MediaType>(
 
     return useInfiniteQuery(
         ["account-list", accountId, type, mediaType, accessToken],
-        fetchList,
+        () => fetchList(accountId, type, mediaType, accessToken),
         {
-            getFetchMore: prevPage =>
+            getNextPageParam: prevPage =>
                 prevPage.page < prevPage.totalPages && prevPage.page + 1,
         }
     );

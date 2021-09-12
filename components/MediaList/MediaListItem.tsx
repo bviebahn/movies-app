@@ -1,20 +1,19 @@
 import React from "react";
 import { Image, StyleSheet, Text, View } from "react-native";
 import { RectButton } from "react-native-gesture-handler";
-
+import Icon from "react-native-vector-icons/FontAwesome";
 import {
     gray0,
     gray5,
-    textColorSecondary,
     ratedYellow,
+    textColorSecondary,
 } from "../../constants/colors";
 import { shadowStyle } from "../../constants/styles";
 import { Movie, Person, TvShow } from "../../tmdb/types";
 import useImageUrl from "../../tmdb/useImageUrl";
 import { formatDate } from "../../util/date";
-import Rating from "../Rating";
-import Icon from "react-native-vector-icons/FontAwesome";
 import DotSeperatedLine from "../DotSeperatedLine";
+import Rating from "../Rating";
 
 type Props = {
     item: ((Movie | TvShow) & { accountRating?: number }) | Person;
@@ -63,7 +62,7 @@ const MediaListItem: React.FC<Props> = ({ item, onPress }) => {
                                 uri: getImageUrl(
                                     imagePath,
                                     imageType,
-                                    imageSize,
+                                    imageSize
                                 ),
                             }}
                             style={styles.itemImage}

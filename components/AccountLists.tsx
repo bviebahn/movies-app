@@ -8,7 +8,6 @@ import {
     ViewStyle,
 } from "react-native";
 import { RectButton } from "react-native-gesture-handler";
-
 import { gray0, gray6, textColorSecondary } from "../constants/colors";
 import { headline, shadowStyle } from "../constants/styles";
 import translate from "../i18/Locale";
@@ -44,9 +43,9 @@ const AccountLists: React.FC<Props> = ({ style, ListHeaderComponent }) => {
     const { data } = useAccountLists();
     console.log(data);
 
-    const lists = data?.reduce<AccountList[]>(
+    const lists = (data?.pages || []).reduce(
         (prev, curr) => [...prev, ...curr.results],
-        []
+        [] as AccountList[]
     );
 
     const listHeader = (

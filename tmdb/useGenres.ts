@@ -1,9 +1,9 @@
+import { useQuery } from "react-query";
+import QueryKeys from "../util/queryKeys";
 import { Genre } from "./types";
 import { fetchTmdb } from "./util";
-import { useQuery } from "react-query";
 
 async function fetchGenres(
-    _key: string,
     type: "movie" | "tv"
 ): Promise<ReadonlyArray<Genre>> {
     const response = await fetchTmdb(`/genre/${type}/list`);
@@ -16,7 +16,9 @@ async function fetchGenres(
 }
 
 function useGenres(type: "movie" | "tv") {
-    return useQuery(["genres", type], fetchGenres, { staleTime: Infinity });
+    return useQuery(QueryKeys.Genres(type), () => fetchGenres(type), {
+        staleTime: Infinity,
+    });
 }
 
 export default useGenres;

@@ -2,7 +2,6 @@ import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import Modal from "react-native-modal";
 import Icon from "react-native-vector-icons/FontAwesome";
-
 import { gray0, gray5 } from "../constants/colors";
 import Blur from "./Blur";
 

@@ -1,11 +1,10 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import React from "react";
 import Icon from "react-native-vector-icons/FontAwesome";
-
 import { gray1, primaryColor } from "../constants/colors";
+import ProfileStackNavigator from "./ProfileStackNavigator";
 import SearchStackNavigator from "./SearchStackNavigator";
 import StartStackNavigator from "./StartStackNavigator";
-import ProfileStackNavigator from "./ProfileStackNavigator";
 
 type TabParams = {
     Start: undefined;

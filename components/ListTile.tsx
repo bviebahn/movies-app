@@ -2,7 +2,6 @@ import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { RectButton } from "react-native-gesture-handler";
 import Icon from "react-native-vector-icons/FontAwesome";
-
 import { textColorSecondary } from "../constants/colors";
 import { shadowStyle } from "../constants/styles";
 

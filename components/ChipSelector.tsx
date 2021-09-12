@@ -1,6 +1,5 @@
 import React from "react";
 import { FlatList, StyleSheet, Text, TouchableOpacity } from "react-native";
-
 import { gray2 } from "../constants/colors";
 import { secondaryText } from "../constants/styles";
 

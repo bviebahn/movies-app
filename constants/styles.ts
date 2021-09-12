@@ -1,5 +1,5 @@
-import { textColor, textColorSecondary } from "./colors";
 import { StyleProp, TextStyle, ViewStyle } from "react-native";
+import { textColor, textColorSecondary } from "./colors";
 
 export const shadowStyle: StyleProp<ViewStyle> = {
     shadowColor: "#000",

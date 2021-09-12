@@ -1,9 +1,9 @@
-import "react-native-gesture-handler";
-
 import { NavigationContainer } from "@react-navigation/native";
-import React from "react";
-import { StatusBar, Platform, UIManager } from "react-native";
-
+import React, { useState } from "react";
+import { Platform, StatusBar, UIManager } from "react-native";
+import "react-native-gesture-handler";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import { QueryClient, QueryClientProvider } from "react-query";
 import {
     black,
     gray1,
@@ -13,9 +13,8 @@ import {
 } from "./constants/colors";
 import TabNavigator from "./navigators/TabNavigator";
 import { UserProvider } from "./tmdb/useUser";
-import { FeedbackProvider } from "./util/useFeedback";
 import { AccountListSelectorProvider } from "./util/useAccountListSelector";
-import { SafeAreaProvider } from "react-native-safe-area-context";
+import { FeedbackProvider } from "./util/useFeedback";
 
 declare const global: { HermesInternal: null | {} };
 
@@ -26,6 +25,7 @@ if (Platform.OS === "android") {
 }
 
 const App = () => {
+    const [queryClient] = useState(() => new QueryClient());
     return (
         <>
             <StatusBar barStyle="light-content" />
@@ -41,13 +41,15 @@ const App = () => {
                     },
                 }}>
                 <SafeAreaProvider>
-                    <FeedbackProvider>
-                        <UserProvider>
-                            <AccountListSelectorProvider>
-                                <TabNavigator />
-                            </AccountListSelectorProvider>
-                        </UserProvider>
-                    </FeedbackProvider>
+                    <QueryClientProvider client={queryClient}>
+                        <FeedbackProvider>
+                            <UserProvider>
+                                <AccountListSelectorProvider>
+                                    <TabNavigator />
+                                </AccountListSelectorProvider>
+                            </UserProvider>
+                        </FeedbackProvider>
+                    </QueryClientProvider>
                 </SafeAreaProvider>
             </NavigationContainer>
         </>

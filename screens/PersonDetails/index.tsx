@@ -2,7 +2,6 @@ import { useRoute } from "@react-navigation/native";
 import React, { useMemo } from "react";
 import { ActivityIndicator, Image, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-
 import DynamicSizedTitle from "../../components/DynamicSizedTitle";
 import InfoBox from "../../components/InfoBox";
 import { textColorSecondary } from "../../constants/colors";

@@ -9,7 +9,6 @@ import {
 } from "react-native";
 import { BorderlessButton } from "react-native-gesture-handler";
 import Icon from "react-native-vector-icons/FontAwesome";
-
 import {
     gray2,
     gray5,

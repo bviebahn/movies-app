@@ -1,5 +1,5 @@
-import { Translations, SubstituteTranslation } from "./types";
 import { findBestAvailableLanguage } from "react-native-localize";
+import { SubstituteTranslation, Translations } from "./types";
 
 let translations: Translations;
 

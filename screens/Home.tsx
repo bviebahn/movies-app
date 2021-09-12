@@ -2,7 +2,6 @@ import { useNavigation } from "@react-navigation/native";
 import React from "react";
 import { ScrollView, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-
 import MediaTile from "../components/MediaTile";
 import MediaWidget from "../components/MediaWidget";
 import { TILE_HORIZONTAL_MARGIN, TILE_WIDTH_M } from "../constants/values";

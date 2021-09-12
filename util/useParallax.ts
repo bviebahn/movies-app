@@ -1,9 +1,9 @@
+import { useRef } from "react";
 import {
     Animated,
-    NativeSyntheticEvent,
     NativeScrollEvent,
+    NativeSyntheticEvent,
 } from "react-native";
-import { useRef } from "react";
 
 function useParallax(
     amount: number

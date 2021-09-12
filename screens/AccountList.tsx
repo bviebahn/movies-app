@@ -1,28 +1,27 @@
 import { useNavigation, useRoute } from "@react-navigation/native";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
+import { ActivityIndicator, StyleSheet, Text } from "react-native";
 import { SceneMap, TabBar, TabView } from "react-native-tab-view";
-
 import MediaList from "../components/MediaList";
+import {
+    favoriteRed,
+    favoriteRedDark,
+    ratedYellow,
+    ratedYellowDark,
+    recommendationsColor,
+    recommendationsColorDark,
+    textColor,
+    textColorSecondary,
+    watchlistGreen,
+    watchlistGreenDark,
+} from "../constants/colors";
 import translate from "../i18/Locale";
 import {
     ProfileStackNavigationProp,
     ProfileStackRouteProp,
 } from "../navigators/ProfileStackNavigator";
-import useAccountList, { AccountListType } from "../tmdb/useAccountList";
-import {
-    favoriteRedDark,
-    ratedYellowDark,
-    watchlistGreenDark,
-    recommendationsColorDark,
-    textColorSecondary,
-    favoriteRed,
-    ratedYellow,
-    watchlistGreen,
-    recommendationsColor,
-    textColor,
-} from "../constants/colors";
-import { Text, StyleSheet, ActivityIndicator } from "react-native";
 import { Movie, TvShow } from "../tmdb/types";
+import useAccountList, { AccountListType } from "../tmdb/useAccountList";
 
 type ListProps = {
     route: {
@@ -37,19 +36,25 @@ const List: React.FC<ListProps> = ({ route }) => {
     const {
         data,
         status,
-        fetchMore,
-        canFetchMore,
-        isFetchingMore,
+        fetchNextPage,
+        hasNextPage,
+        isFetching,
     } = useAccountList(type, mediaType);
+
+    const lists = useMemo(
+        () =>
+            (data?.pages || []).reduce(
+                (prev: any, curr) => [...prev, ...curr.results],
+                [] as (Movie | TvShow)[]
+            ),
+        [data]
+    );
 
     return status === "loading" ? (
         <ActivityIndicator style={styles.activityIndicator} />
     ) : (
         <MediaList<Movie | TvShow>
-            data={data?.reduce(
-                (prev: any, curr) => [...prev, ...curr.results],
-                []
-            )}
+            data={lists}
             onPressItem={item => {
                 if (item.mediaType === "movie") {
                     navigation.push("MovieDetails", { movie: item });
@@ -57,10 +62,8 @@ const List: React.FC<ListProps> = ({ route }) => {
                     navigation.push("TvShowDetails", { tvShow: item });
                 }
             }}
-            onEndReached={() => canFetchMore && fetchMore()}
-            ListFooterComponent={
-                isFetchingMore ? <ActivityIndicator /> : undefined
-            }
+            onEndReached={() => hasNextPage && fetchNextPage()}
+            ListFooterComponent={isFetching ? <ActivityIndicator /> : undefined}
             ListFooterComponentStyle={styles.listFooter}
         />
     );

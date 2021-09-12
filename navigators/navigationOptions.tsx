@@ -1,21 +1,21 @@
-import React from "react";
+import { ParamListBase, RouteProp } from "@react-navigation/native";
 import { TransitionPresets } from "@react-navigation/stack";
-import CloseButton from "../components/CloseButton";
-import { RouteProp, ParamListBase } from "@react-navigation/native";
+import React from "react";
 import { StyleSheet } from "react-native";
+import CloseButton from "../components/CloseButton";
 import HeaderTitleWithIcon from "../components/HeaderTitleWithIcon";
 import {
-    ratedYellow,
-    ratedYellowDark,
-    watchlistGreen,
-    watchlistGreenDark,
     favoriteRed,
     favoriteRedDark,
+    ratedYellow,
+    ratedYellowDark,
     recommendationsColor,
     recommendationsColorDark,
+    watchlistGreen,
+    watchlistGreenDark,
 } from "../constants/colors";
-import { ProfileStackRouteProp } from "./ProfileStackNavigator";
 import translate from "../i18/Locale";
+import { ProfileStackRouteProp } from "./ProfileStackNavigator";
 
 export function cardNavigationOptions<
     ParamList extends ParamListBase,
